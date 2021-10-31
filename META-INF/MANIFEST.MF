@@ -1,9 +1,10 @@
 Manifest-Version: 1.0
+Automatic-Module-Name: aventurasGame
 Bundle-ManifestVersion: 2
-Bundle-Name: juego_aventura_tp
+Bundle-Name: aventurasGame
 Bundle-Vendor: My Company
 Bundle-Version: 1.0.0.qualifier
-Bundle-SymbolicName: juego_aventura_tp; singleton:=true
+Bundle-SymbolicName: aventurasGame; singleton:=true
 Bundle-ActivationPolicy: lazy
 Require-Bundle: com.ibm.icu,
  org.eclipse.xtext,

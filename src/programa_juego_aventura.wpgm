@@ -1,14 +1,17 @@
 import wollok.game.*
 import nivel1.*
+import personajes.*
 
 program juego_aventura {
-
 	game.title("Oh qué aventura objetosa")
-	game.height(15)
-	game.width(15)
+	game.height(10)
+	game.width(10)
 	game.boardGround("fondoBlanco.png")
-
-	nivelBloques.configurate()	
-	
+	nivelBloques.configurate()
+	// game.addVisualCharacter(personajeSimple)
+	keyboard.right().onPressDo{ personajeSimple.moverALaDerecha() }
+	keyboard.left().onPressDo{ personajeSimple.moverALaIzquierda() }
+	keyboard.up().onPressDo{ personajeSimple.moverArriba() }
+	keyboard.down().onPressDo{ personajeSimple.moverAbajo() }
 	game.start()
 }
