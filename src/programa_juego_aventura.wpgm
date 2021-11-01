@@ -4,12 +4,12 @@ import personajes.*
 
 program juego_aventura {
 	game.title("Oh qué aventura objetosa")
-	game.height(10)
-	game.width(10)
+	game.height(15)
+	game.width(15)
 	game.boardGround("fondoBlanco.png")
 	nivelBloques.configurate()
-	game.addVisualCharacter(personajeSimple)
-	keyboard.right().onPressDo{ personajeSimple.moverALaDerecha()}
+	game.addVisual(personajeSimple)
+	keyboard.right().onPressDo{ personajeSimple.moverALaDerecha() }
 	keyboard.left().onPressDo{ personajeSimple.moverALaIzquierda() }
 	keyboard.up().onPressDo{ personajeSimple.moverArriba() }
 	keyboard.down().onPressDo{ personajeSimple.moverAbajo() }

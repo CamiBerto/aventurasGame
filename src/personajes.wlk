@@ -9,7 +9,7 @@ object personajeSimple {
 	var property vida = 25
 	var property energia = 30
 	var property granadas = 0
-	var property position = game.at(5, 5)
+	var property position = game.at(5,5)
 	const property image = "player.png"
 	var property nivelActual = nivelBloques
 	method actualizarEnergiaVisual(){
@@ -22,20 +22,20 @@ object personajeSimple {
 		nivelActual.granadaVisual().actualizarDato(granadas)
 	}
 	method moverALaDerecha() {
-		if (game.width() == self.coordenadaX() + 1) {
+		if (game.width() == self.coordenadaX()+1) {
 			self.cambiarCoordenada(0, self.coordenadaY())
-		} else {
-			self.position(self.position().right(0))
+		}else {
+			self.position(self.position().right(1))
 		}
 		energia = (energia-1).max(0)
 		self.actualizarEnergiaVisual()
 	}
-
+	
 	method moverALaIzquierda() {
 		if (self.coordenadaX() == 0) {
 			self.cambiarCoordenada(game.width() - 1, self.coordenadaY())
 		} else {
-			self.position(self.position().left(0))
+			self.position(self.position().left(1))
 		}
 		energia = (energia-1).max(0)
 		self.actualizarEnergiaVisual()
@@ -45,7 +45,7 @@ object personajeSimple {
 		if (self.coordenadaY() == 0) {
 			self.cambiarCoordenada(self.coordenadaX(), game.height() - 1)
 		} else {
-			self.position(self.position().down(0))
+			self.position(self.position().down(1))
 		}
 		energia = (energia-1).max(0)
 		self.actualizarEnergiaVisual()
@@ -55,7 +55,7 @@ object personajeSimple {
 		if (game.height() == self.coordenadaY() + 1) {
 			self.cambiarCoordenada(self.coordenadaX(), 0)
 		} else {
-			self.position(self.position().up(0))
+			self.position(self.position().up(1))
 		}
 		energia = (energia-1).max(0)
 		self.actualizarEnergiaVisual()

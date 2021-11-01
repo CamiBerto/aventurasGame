@@ -38,7 +38,7 @@ class Indicador{
 }
 
 class Vida inherits Indicador {
-	var property imagenes = [ "green (0).png", "green (1).png", "green (2).png", "green (3).png", "green (4).png", "green (5).png", "green (6).png", "green (7).png", "green (8).png", "green (9).png" ]
+	var property imagenes = [ "red (0).png", "red (1).png", "red (2).png", "red (3).png", "red (4).png", "red (5).png", "red (6).png", "red (7).png", "red (8).png", "red (9).png" ]
 	// asignar posicion de los numeros y titulo
 	override method imagenesDato(){
 		self.decimal().image( self.imagenDeValor(personajeSimple.vida()).get(0))
@@ -49,7 +49,7 @@ class Vida inherits Indicador {
 }
 
 class Granada inherits Indicador {
-	var property imagenes = [ "red (0).png", "red (1).png", "red (2).png", "red (3).png", "red (4).png", "red (5).png", "red (6).png", "red (7).png", "red (8).png", "red (9).png" ]
+	var property imagenes = [ "green (0).png", "green (1).png", "green (2).png", "green (3).png", "green (4).png", "green (5).png", "green (6).png", "green (7).png", "green (8).png", "green (9).png" ]
 	// asignar posicion de los numeros y titulo
 	override method imagenesDato(){
 		self.decimal().image( self.imagenDeValor(personajeSimple.granadas()).get(0))
