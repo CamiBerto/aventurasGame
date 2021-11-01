@@ -8,8 +8,8 @@ program juego_aventura {
 	game.width(10)
 	game.boardGround("fondoBlanco.png")
 	nivelBloques.configurate()
-	// game.addVisualCharacter(personajeSimple)
-	keyboard.right().onPressDo{ personajeSimple.moverALaDerecha() }
+	game.addVisualCharacter(personajeSimple)
+	keyboard.right().onPressDo{ personajeSimple.moverALaDerecha()}
 	keyboard.left().onPressDo{ personajeSimple.moverALaIzquierda() }
 	keyboard.up().onPressDo{ personajeSimple.moverArriba() }
 	keyboard.down().onPressDo{ personajeSimple.moverAbajo() }
