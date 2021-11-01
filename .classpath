@@ -5,55 +5,12 @@
 			<attribute name="ignore_optional_problems" value="true"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="src" path="assets"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8">
 		<attributes>
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
-	<classpathentry exported="true" kind="lib" path="assets/adas.png"/>
-	<classpathentry kind="lib" path="assets/blue (0).png"/>
-	<classpathentry kind="lib" path="assets/blue (1).png"/>
-	<classpathentry kind="lib" path="assets/blue (2).png"/>
-	<classpathentry kind="lib" path="assets/blue (3).png"/>
-	<classpathentry kind="lib" path="assets/blue (4).png"/>
-	<classpathentry kind="lib" path="assets/blue (5).png"/>
-	<classpathentry kind="lib" path="assets/blue (6).png"/>
-	<classpathentry kind="lib" path="assets/blue (7).png"/>
-	<classpathentry kind="lib" path="assets/blue (8).png"/>
-	<classpathentry kind="lib" path="assets/blue (9).png"/>
-	<classpathentry kind="lib" path="assets/da.png"/>
-	<classpathentry kind="lib" path="assets/el 1.png"/>
-	<classpathentry kind="lib" path="assets/ene.png"/>
-	<classpathentry kind="lib" path="assets/finNivel1.png"/>
-	<classpathentry kind="lib" path="assets/fondoBlanco.png"/>
-	<classpathentry kind="lib" path="assets/fondoCompleto.png"/>
-	<classpathentry kind="lib" path="assets/ganamos.png"/>
-	<classpathentry kind="lib" path="assets/gran.png"/>
-	<classpathentry kind="lib" path="assets/green (0).png"/>
-	<classpathentry kind="lib" path="assets/green (1).png"/>
-	<classpathentry kind="lib" path="assets/green (2).png"/>
-	<classpathentry kind="lib" path="assets/green (3).png"/>
-	<classpathentry kind="lib" path="assets/green (4).png"/>
-	<classpathentry kind="lib" path="assets/green (5).png"/>
-	<classpathentry kind="lib" path="assets/green (6).png"/>
-	<classpathentry kind="lib" path="assets/green (7).png"/>
-	<classpathentry kind="lib" path="assets/green (8).png"/>
-	<classpathentry kind="lib" path="assets/green (9).png"/>
-	<classpathentry kind="lib" path="assets/market.png"/>
-	<classpathentry kind="lib" path="assets/niv.png"/>
-	<classpathentry kind="lib" path="assets/player.png"/>
-	<classpathentry kind="lib" path="assets/red (0).png"/>
-	<classpathentry kind="lib" path="assets/red (1).png"/>
-	<classpathentry kind="lib" path="assets/red (2).png"/>
-	<classpathentry kind="lib" path="assets/red (3).png"/>
-	<classpathentry kind="lib" path="assets/red (4).png"/>
-	<classpathentry kind="lib" path="assets/red (5).png"/>
-	<classpathentry kind="lib" path="assets/red (6).png"/>
-	<classpathentry kind="lib" path="assets/red (7).png"/>
-	<classpathentry kind="lib" path="assets/red (8).png"/>
-	<classpathentry kind="lib" path="assets/red (9).png"/>
-	<classpathentry kind="lib" path="assets/rgia.png"/>
-	<classpathentry kind="lib" path="assets/vi.png"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
