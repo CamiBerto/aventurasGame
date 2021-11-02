@@ -19,11 +19,9 @@ object nivelBloques {
 		energiaVisual.iniciarGrafico("ene.png","rgia.png")
 		// teclado
 			// este es para probar, no es necesario dejarlo
-		keyboard.t().onPressDo({ self.terminar()})
-		
+		keyboard.t().onPressDo({ self.terminar()})		
 	// en este no hacen falta colisiones
 	}
-
 	method terminar() {
 		// game.clear() limpia visuals, teclado, colisiones y acciones
 		

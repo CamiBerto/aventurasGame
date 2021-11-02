@@ -4,7 +4,7 @@ import personajes.*
 class Bloque {
 
 	var property position
-	var property image = "market.png"
+	var property image = "fantasma.png"
 
 // generarPosicionAleatoria
 // coordenadaX, coordenadaY

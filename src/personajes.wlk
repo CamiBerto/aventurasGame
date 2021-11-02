@@ -10,7 +10,7 @@ object personajeSimple {
 	var property energia = 30
 	var property granadas = 0
 	var property position = game.at(5,5)
-	const property image = "player.png"
+	const property image = "heroe.png"
 	var property nivelActual = nivelBloques
 	method actualizarEnergiaVisual(){
 		nivelActual.energiaVisual().actualizarDato(energia)
