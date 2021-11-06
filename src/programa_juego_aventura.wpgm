@@ -1,17 +1,20 @@
 import wollok.game.*
-import nivel1.*
-import personajes.*
+import nivel_bloques.*
+import nivel_llaves.*
 
 program juego_aventura {
-	game.title("Oh qué aventura objetosa")
+	
+	game.sound("101.mp3")
+
+	game.title("Oh qué aventura")
 	game.height(15)
 	game.width(15)
 	game.boardGround("fondoBlanco.png")
+
 	nivelBloques.configurate()
-	game.addVisual(personajeSimple)
-	keyboard.right().onPressDo{ personajeSimple.moverALaDerecha() }
-	keyboard.left().onPressDo{ personajeSimple.moverALaIzquierda() }
-	keyboard.up().onPressDo{ personajeSimple.moverArriba() }
-	keyboard.down().onPressDo{ personajeSimple.moverAbajo() }
+	const rain = game.sound("nivel.mp3")
+	rain.shouldLoop(true)
+	game.schedule(500, {rain.play()})
+	
 	game.start()
 }
