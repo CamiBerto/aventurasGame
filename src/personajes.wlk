@@ -37,7 +37,7 @@ class Personaje {
 		llavesVisual.actualizarDato(llavesAgarradas)
 	}
 
-// Valores de estado
+	// Valores de estado
 	method perderEnergia() {
 		self.energia(self.energia() - 1)
 		self.actualizarEnergiaVisual()
@@ -46,6 +46,13 @@ class Personaje {
 	method ganarEnergia(cantidad) {
 		self.energia(self.energia() + cantidad)
 		self.actualizarEnergiaVisual()
+	}
+
+	method guardarLlave() {
+		if (llavesAgarradas < 3) {
+			llavesAgarradas++
+			self.actualizarLLaveVisual()
+		}
 	}
 
 	/* MOVIMIENTOS */
@@ -89,6 +96,36 @@ class Personaje {
 		self.position(posicion)
 	} // Mueve el personaje a una posicion	
 
+	// Agarrar priemer elemento que se encuentre a mi alrededor
+	method agarrarElemento() {
+		const elementosRecolectables = self.elementosRecolectablesAlrededor()
+		if (not elementosRecolectables.isEmpty()) {
+			elementosRecolectables.first().reaccionarA(self)
+		}
+	}
+
+	// Elementos recolectables alrededor
+	method elementosRecolectablesAlrededor() {
+		const lindanteDerecha = new Position(x = self.position().x() + 1, y = self.position().y())
+		const lindanteIzquierda = new Position(x = self.position().x() - 1, y = self.position().y())
+		const lindanteArriba = new Position(x = self.position().x(), y = self.position().y() + 1)
+		const lindanteAbajo = new Position(x = self.position().x(), y = self.position().y() - 1)
+		const elementosRecolectables = []
+		if (not lindanteDerecha.allElements().isEmpty()) {
+			elementosRecolectables.add(lindanteDerecha.allElements())
+		}
+		if (not lindanteIzquierda.allElements().isEmpty()) {
+			elementosRecolectables.add(lindanteIzquierda.allElements())
+		}
+		if (not lindanteArriba.allElements().isEmpty()) {
+			elementosRecolectables.add(lindanteArriba.allElements())
+		}
+		if (not lindanteAbajo.allElements().isEmpty()) {
+			elementosRecolectables.add(lindanteAbajo.allElements())
+		}
+		return elementosRecolectables.filter{ e => e.esRecolectable() }
+	}
+
 }
 
 /* CON personajes como Clases heredadas */
@@ -114,11 +151,6 @@ class PersonajeNivelLlaves inherits Personaje {
 		nivelLlaves.AgregarPollo()
 	}
 
-	method guardarLlave() { // guarda las llaves y al tener todas, indica al tablero poner la salida
-		self.llavesConseguidas(self.llavesConseguidas() + 1)
-		if (self.llavesConseguidas() == 3) nivelLlaves.ponerSalida()
-	}
-
 	/* EVALUADORES */
 	method determinarAccionPara(posicion) {
 		if (self.energia() == 0) nivelLlaves.perder() else self.ganarSiDebe()
@@ -137,8 +169,8 @@ class PersonajeNivelLlaves inherits Personaje {
 		if (nivelLlaves.hayElementoEn(posicion)) {
 			const unElemento = nivelLlaves.elementoDe(posicion)
 			unElemento.reaccionarA(self)
+			self.avanzar()
 		}
-		self.avanzar()
 	}
 
 	override method moverA(posicion) { // se sobreescrive el metodo para que pierda energia y evalue si corresponde avanzar, ganar o perder el juego.

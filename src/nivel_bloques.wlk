@@ -13,12 +13,13 @@ object nivelBloques inherits Nivel {
 	const property personaje = new PersonajeNivelBloques()
 
 	override method faltanRequisitos() {
-		if (self.todasLasCajasEnDeposito()) game.say(personaje, "Debo ir a la salida") else game.say(personaje, "Faltan cajas en el depósito")
+		if (self.todasLasCajasEnDeposito()) self.ganar() else game.say(personaje, "Faltan cajas en el depósito")
 	}
 
-	method abrirPortalSiTieneSuficientesLlaves(numeroSuficiente) {
+	method abrirPortalSiTieneSuficientesLlaves() {
+		// const llavesEnNivel = elementosEnNivel.filter{c => c.image() == "llave.png"}
 		// si se cumple la cantidad de llaves aparece portal y resetea las llaves
-		if (personaje.llavesAgarradas() >= numeroSuficiente) {
+		if (personaje.llavesAgarradas() >= 3) {
 			llavesVisual.aparecerPortal()
 			personaje.llavesAgarradas(0)
 		}
@@ -50,6 +51,7 @@ object nivelBloques inherits Nivel {
 		keyboard.left().onPressDo{ personaje.moverIzquierda()}
 		keyboard.up().onPressDo{ personaje.moverArriba()}
 		keyboard.down().onPressDo{ personaje.moverAbajo()}
+		keyboard.q().onPressDo{ personaje.agarrarElemento()}
 		keyboard.n().onPressDo({ // al presionar "n" finaliza el juego o da indicaciones
 			if (self.todasLasCajasEnDeposito() and personaje.position() == salida.position()) self.terminar() else self.faltanRequisitos()
 		})

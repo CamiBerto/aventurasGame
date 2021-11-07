@@ -5,14 +5,15 @@ import personajes.*
 import elementos.*
 
 program juego_aventura {
-	// game.sound("audio/101.mp3")
+	game.sound("audio/101.mp3")
 	game.title("Oh qué aventura")
 	game.height(15)
 	game.width(15)
 	game.boardGround("imgs/fondoBlanco.png")
 	nivelBloques.configurate()
-		// const rain = game.sound("audio/nivel.mp3")
-		// rain.shouldLoop(true)
-		// game.schedule(500, {rain.play()})
+	nivelBloques.abrirPortalSiTieneSuficientesLlaves()
+	const rain = game.sound("audio/nivel.mp3")
+	rain.shouldLoop(true)
+	game.schedule(500, {rain.play()})
 	game.start()
 }

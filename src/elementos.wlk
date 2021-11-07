@@ -14,6 +14,12 @@ class ElementoJuego {
 
 	var property position = utilidadesParaJuego.posicionArbitraria()
 
+	method esRecolectable() = true
+
+	method serAgarrado() {
+		game.removeVisual(self)
+	}
+
 	// agregar comportamiento
 	method estaEnDeposito() = deposito.contieneElemento(self.position())
 
@@ -33,6 +39,8 @@ class Caja inherits ElementoJuego { // Caja
 	// El nivel en el que se encuentra la caja actualmente
 	var property nivelActual
 
+	override method esRecolectable() = false
+
 	// agregar comportamiento
 	override method estaEnDeposito() = deposito.contieneElemento(self)
 
@@ -51,6 +59,8 @@ object deposito {
 	var property position = utilidadesParaJuego.posicionArbitraria()
 	var property image = "imgs/alfombra4x4.png"
 
+	method esRecolectable() = false
+
 	method contieneElemento(unElemento) = unElemento.position().x().between(self.position().x(), self.position().x() + 2) && unElemento.position().y().between(self.position().y(), self.position().y() + 2)
 
 }
@@ -59,8 +69,10 @@ object deposito {
 object salida { // la salida se visualiza siempre en el mismo lugar del tablero
 
 	const property position = game.at(game.width() - 1, 0)
-	var property image = "imgs/portal.png" // TODO: poner "salida.png" (no lo tenía)
+	var property image = "imgs/portal.png"
 	const property sonido = "audio/salir.mp3"
+
+	method esRecolectable() = false
 
 	method reaccionarA(unPersonaje) {
 	} // no hace nada para respetar el polimorfismo
@@ -76,6 +88,8 @@ class Recolectable {
 		unPersonaje.position(self.position())
 	}
 
+	method esRecolectable() = true
+
 	method esCeldaSorpresa() {
 		return false
 	}
@@ -86,12 +100,13 @@ class Recolectable {
 
 }
 
-// TODO: resolver agarrar
 class Llave inherits Recolectable {
 
 	var property image = "imgs/llave.png"
 
 	override method sonido() = "audio/salir.mp3"
+
+	override method esRecolectable() = true
 
 	override method reaccionarA(unPersonaje) {
 		super(unPersonaje)
