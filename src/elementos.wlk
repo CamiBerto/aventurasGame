@@ -3,15 +3,40 @@ import utilidades.*
 import nivel_bloques.*
 import nivel_llaves.*
 
-class Bloque { // Cajas
+class Visual {
+
+	var property position
+	var property image = ""
+
+}
+
+class ElementoJuego {
 
 	var property position = utilidadesParaJuego.posicionArbitraria()
-	var property image = "caja.png"
 
 	// agregar comportamiento
-	method estaEnDeposito() = deposito.contiene(self.position())
+	method estaEnDeposito() = deposito.contieneElemento(self.position())
 
-	method sePuedeEmpujarA(posicion) = utilidadesParaJuego.sePuedeMover(posicion) and not nivelBloques.hayBloque(posicion)
+	method sePuedeEmpujarA(posicion) = utilidadesParaJuego.sePuedeMover(posicion)
+
+	method empujarA(posicion) {
+		if (self.sePuedeEmpujarA(posicion)) {
+			self.position(posicion)
+		}
+	}
+
+}
+
+class Caja inherits ElementoJuego { // Caja
+
+	var property image = "imgs/caja.png"
+	// El nivel en el que se encuentra la caja actualmente
+	var property nivelActual
+
+	// agregar comportamiento
+	override method estaEnDeposito() = deposito.contieneElemento(self)
+
+	override method sePuedeEmpujarA(posicion) = super(posicion) && nivelActual.hayCaja(posicion)
 
 	method empujar(posicion) {
 		if (self.sePuedeEmpujarA(posicion)) {
@@ -21,10 +46,12 @@ class Bloque { // Cajas
 
 }
 
-// TODO: resolver posición aleatoria
-object deposito { // esta determinado por la zona de baldozas color naranja
+object deposito {
 
-	method contiene(posicion) = posicion.x().between(5, 9) and posicion.y().between(7, 12)
+	var property position = utilidadesParaJuego.posicionArbitraria()
+	var property image = "imgs/alfombra4x4.png"
+
+	method contieneElemento(unElemento) = unElemento.position().x().between(self.position().x(), self.position().x() + 2) && unElemento.position().y().between(self.position().y(), self.position().y() + 2)
 
 }
 
@@ -32,18 +59,18 @@ object deposito { // esta determinado por la zona de baldozas color naranja
 object salida { // la salida se visualiza siempre en el mismo lugar del tablero
 
 	const property position = game.at(game.width() - 1, 0)
-	var property image = "salida.png"
-	const property sonido = "salir.mp3"
+	var property image = "imgs/portal.png" // TODO: poner "salida.png" (no lo tenía)
+	const property sonido = "audio/salir.mp3"
 
 	method reaccionarA(unPersonaje) {
 	} // no hace nada para respetar el polimorfismo
 
 }
 
-class Elemento {
+class Recolectable {
 
 	var property position = game.at(0, 0)
-	const property sonido = "coin.mp3"
+	const property sonido = "audio/coin.mp3"
 
 	method dejarPasar(unPersonaje) {
 		unPersonaje.position(self.position())
@@ -60,11 +87,11 @@ class Elemento {
 }
 
 // TODO: resolver agarrar
-class Llave inherits Elemento {
+class Llave inherits Recolectable {
 
-	var property image = "llave.png"
+	var property image = "imgs/llave.png"
 
-	override method sonido() = "salir.mp3"
+	override method sonido() = "audio/salir.mp3"
 
 	override method reaccionarA(unPersonaje) {
 		super(unPersonaje)
@@ -73,12 +100,12 @@ class Llave inherits Elemento {
 
 }
 
-class Pollo inherits Elemento {
+class Pollo inherits Recolectable {
 
 	var property energia = 30
-	var property image = "pollo.png"
+	var property image = "imgs/pollo.png"
 
-	override method sonido() = "comer.mp3"
+	override method sonido() = "audio/comer.mp3"
 
 	override method reaccionarA(unPersonaje) {
 		super(unPersonaje)
@@ -87,9 +114,7 @@ class Pollo inherits Elemento {
 
 }
 
-class Modificador inherits Elemento {
-
-	var property image = "coin.png"
+class Modificador inherits Recolectable {
 
 	method efecto() {
 		return ({ unPollo , energiaActual => unPollo.energia() })
@@ -104,6 +129,8 @@ class Modificador inherits Elemento {
 
 class Duplicador inherits Modificador {
 
+	var property image = "imgs/coin.png"
+
 	override method efecto() {
 		return ({ unPollo , energiaActual => unPollo.energia() * 2 })
 	}
@@ -116,6 +143,8 @@ class Duplicador inherits Modificador {
 }
 
 class Reforzador inherits Modificador {
+
+	var property image = "imgs/coin.png"
 
 	method energiaExtra(energiaActual) = if (energiaActual < 10) 20 else 0
 
@@ -132,6 +161,8 @@ class Reforzador inherits Modificador {
 
 class TripleOrNada inherits Modificador {
 
+	var property image = "imgs/coin.png"
+
 	method multiplicador(energia) = if (energia.even()) 0 else 3
 
 	override method efecto() {
@@ -145,13 +176,13 @@ class TripleOrNada inherits Modificador {
 
 }
 
-class CeldaSorpresa inherits Elemento {
+class CeldaSorpresa inherits Modificador {
 
 	var property fueActivada = false
-	var property image = "beer premio.png"
+	var property image = "imgs/beer premio.png"
 
 	method cambiarDeIMagen() {
-		image = "sorpresaUsada.png"
+		image = "imgs/sorpresaUsada.png"
 	}
 
 	override method reaccionarA(unPersonaje) { // DETERMINAR Y CODIFICAR ACCION

@@ -3,6 +3,8 @@ import utilidades.*
 import nivel_bloques.*
 import nivel_llaves.*
 import elementos.*
+import movimientos.*
+import indicadores.*
 
 // en la implementación real, conviene tener un personaje por nivel
 // los personajes probablemente tengan un comportamiendo más complejo que solamente
@@ -10,49 +12,69 @@ import elementos.*
 /* personaje generico */
 class Personaje {
 
+	// Config inicial
+	var property position = utilidadesParaJuego.posicionArbitraria()
+	var property image = "imgs/heroe.png"
+	var property direccion = arriba
+	// Valores de estado
 	var property oro = 10
 	var property vida = 25
 	var property energia = 30
 	var property granadas = 0
-	var property llavesAgarradas = []
-	var property position = utilidadesParaJuego.posicionArbitraria()
-	var property image = "heroe.png"
-	var proximaPosicion = self.position()
+	var property llavesAgarradas = 0
 	var property positionGuardadas = []
-	var property nivelActual = nivelBloques
 
 	/* VISUALES */
 	method actualizarEnergiaVisual() {
-		nivelActual.energiaVisual().actualizarDato(energia)
+		energiaVisual.actualizarDato(energia)
 	}
 
 	method actualizarVidaVisual() {
-		nivelActual.vidaVisual().actualizarDato(vida)
+		vidaVisual.actualizarDato(vida)
 	}
 
 	method actualizarLLaveVisual() {
-		nivelActual.llavesVisual().actualizarDato(llavesAgarradas)
+		llavesVisual.actualizarDato(llavesAgarradas)
+	}
+
+// Valores de estado
+	method perderEnergia() {
+		self.energia(self.energia() - 1)
+		self.actualizarEnergiaVisual()
+	}
+
+	method ganarEnergia(cantidad) {
+		self.energia(self.energia() + cantidad)
+		self.actualizarEnergiaVisual()
 	}
 
 	/* MOVIMIENTOS */
+	method proximaPosicion() = direccion.siguiente(position)
+
+	// Avanzar a la siguiente casilla según la dirección en la que se esté moviendo
+	method avanzar() {
+		position = self.proximaPosicion()
+		self.perderEnergia()
+	}
+
 	method moverDerecha() {
-		proximaPosicion = game.at(self.position().x() + 2, self.position().y())
-		self.moverA_Haciendo(self.position().right(1))
+		self.direccion(derecha)
+		self.moverA_Haciendo(direccion.siguiente(position))
 	}
 
 	method moverIzquierda() {
-		proximaPosicion = game.at(self.position().x() - 2, self.position().y())
-		self.moverA_Haciendo(self.position().left(1))
+		self.direccion(izquierda)
+		self.moverA_Haciendo(direccion.siguiente(position))
 	}
 
 	method moverArriba() {
-		proximaPosicion = game.at(self.position().x(), self.position().y() + 2)
-		self.moverA_Haciendo(self.position().up(1))
+		self.direccion(arriba)
+		self.moverA_Haciendo(direccion.siguiente(position))
 	}
 
 	method moverAbajo() {
-		proximaPosicion = game.at(self.position().x(), self.position().y() - 2)
-		self.moverA_Haciendo(self.position().down(1))
+		self.direccion(abajo)
+		self.moverA_Haciendo(direccion.siguiente(position))
 	}
 
 	method moverA_Haciendo(posicion) {
@@ -81,16 +103,9 @@ class PersonajeNivelLlaves inherits Personaje {
 		efectoModificador = unElemento.efecto()
 	} // usar con los potenciadores
 
-	method perderEnergia() {
-		self.energia(self.energia() - 1)
-	}
-
-	method ganarEnergia(cantidad) {
-		self.energia(self.energia() + cantidad)
-	}
-
 	method perderEnergia(cantidad) {
 		self.energia(self.energia() - cantidad)
+		self.actualizarEnergiaVisual()
 	}
 
 	method comerPollo(unpollo) {
@@ -109,7 +124,7 @@ class PersonajeNivelLlaves inherits Personaje {
 		if (self.energia() == 0) nivelLlaves.perder() else self.ganarSiDebe()
 	} // evalua energia y si corresponde avanzar, ganar o perder
 
-	method puedeGanar() = llavesConseguidas == 3 and proximaPosicion == salida.position() // Evalua si puede ganar
+	method puedeGanar() = llavesConseguidas == 3 and self.proximaPosicion() == salida.position() // Evalua si puede ganar
 
 	method ganarSiDebe() { // si cumple las condiciones gana el juego
 		if (self.puedeGanar()) {
@@ -122,9 +137,8 @@ class PersonajeNivelLlaves inherits Personaje {
 		if (nivelLlaves.hayElementoEn(posicion)) {
 			const unElemento = nivelLlaves.elementoDe(posicion)
 			unElemento.reaccionarA(self)
-		} else {
-			self.moverA(posicion)
 		}
+		self.avanzar()
 	}
 
 	override method moverA(posicion) { // se sobreescrive el metodo para que pierda energia y evalue si corresponde avanzar, ganar o perder el juego.
@@ -139,16 +153,16 @@ class PersonajeNivelLlaves inherits Personaje {
 class PersonajeNivelBloques inherits Personaje {
 
 	/* MOVIMIENTOS */
-	override method hacerSiHayObjetoEn(posicion) { // Se sobreescribe el metodo para mover bloque si lo hay en la posicion de destino y puede moverse
-		if (nivelBloques.hayBloque(posicion) and not nivelBloques.hayBloque(proximaPosicion)) {
-			const unBloque = nivelBloques.bloquesEnTablero().find({ b => b.position() == posicion })
-			unBloque.empujar(proximaPosicion)
+	override method hacerSiHayObjetoEn(posicion) { // Se sobreescribe el metodo para mover caja si la hay en la posicion de destino y puede moverse
+		if (nivelBloques.hayCaja(posicion) and not nivelBloques.hayCaja(self.proximaPosicion())) {
+			const unaCaja = nivelBloques.cajasEnTablero().find({ b => b.position() == posicion })
+			unaCaja.empujar(self.proximaPosicion())
 		}
-		self.moverA(posicion)
+		self.avanzar()
 	}
 
 	override method moverA(posicion) { // se sobreescrive el metodo para validar que no haya bloques cuando se mueve.
-		if (not nivelBloques.hayBloque(posicion)) {
+		if (not nivelBloques.hayCaja(posicion)) {
 			super(posicion)
 		}
 	}

@@ -40,7 +40,7 @@ method entroEnZona(posicionPersonaje,posicionCelda) {
 	method configurate() {
 		
 		// fondo - es importante que sea el primer visual que se agregue
-		game.addVisual(new Fondo(image="fondoCompleto.png"))
+		game.addVisual(new Fondo(image="imgs/fondoCompleto.png"))
 				 
 		// otros visuals, p.ej. bloques o llaves
 		self.ponerElementos(3,llave)
@@ -70,7 +70,7 @@ method entroEnZona(posicionPersonaje,posicionCelda) {
 		game.whenCollideDo(personaje, { 
 			objeto => game.removeVisual(objeto)
 			elementosEnNivel.remove(objeto)
-			game.sound(objeto.sonido()).play()
+			// game.sound(objeto.sonido()).play()
 			self.estado()
 		} )
 	}
@@ -103,19 +103,19 @@ method entroEnZona(posicionPersonaje,posicionCelda) {
 	
 	method ganar() {
 		//sonido ganar
-		game.sound("ganar.mp3").play()
+		// game.sound("audio/ganar.mp3").play()
 		// es muy parecido al terminar() de nivelBloques
 		// el perder() también va a ser parecido
 		
 		// game.clear() limpia visuals, teclado, colisiones y acciones
 		game.clear()
 		// después puedo volver a agregar el fondo, y algún visual para que no quede tan pelado
-		game.addVisual(new Fondo(image="fondoCompleto.png"))
+		game.addVisual(new Fondo(image="imgs/fondoCompleto.png"))
 		// después de un ratito ...
 		game.schedule(1000, {
 			game.clear()
 			// cambio de fondo
-			game.addVisual(new Fondo(image="ganamos.png"))
+			game.addVisual(new Fondo(image="imgs/ganamos.png"))
 			// después de un ratito ...
 			game.schedule(1500, {
 				// fin del juego
@@ -126,16 +126,16 @@ method entroEnZona(posicionPersonaje,posicionCelda) {
 
 	method perder() {
 		//sonido perder
-		game.sound("perder.mp3").play()
+		// game.sound("audio/perder.mp3").play()
 		// game.clear() limpia visuals, teclado, colisiones y acciones
 		game.clear()
 		// después puedo volver a agregar el fondo, y algún visual para que no quede tan pelado
-		game.addVisual(new Fondo(image="fondoCompleto.png"))
+		game.addVisual(new Fondo(image="imgs/fondoCompleto.png"))
 		// después de un ratito ...
 		game.schedule(1000, {
 			game.clear()
 			// cambio de fondo
-			game.addVisual(new Fondo(image="perdimos.png"))
+			game.addVisual(new Fondo(image="imgs/perdimos.png"))
 			// después de un ratito ...
 			game.schedule(3000, {
 				// fin del juego

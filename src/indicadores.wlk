@@ -5,51 +5,55 @@ import personajes.*
 
 class Indicador {
 
-	var property personaje
-	// creacion bloques imagenes de numeros
-	var property decimal = new Bloque(position = self.positionDecimal())
-	var property unidad = new Bloque(position = self.positionUnidad())
+	// creacion imagenes de numeros
+	var property decimal = new Visual(position = self.positionDecimal())
+	var property unidad = new Visual(position = self.positionUnidad())
 
 	method imagenes()
 
-	/* Obtiene un array con los strings de la primera y segunda imagen para los números*/
-	method imagenDeValor(valor) {
-		return [ self.imagenes().get((valor * 0.1).truncate(0)), self.imagenes().get(valor % 10) ]
+	/* Obtiene el string de una imagen para un valor de 0 a 9*/
+	method imagenDeValor(unValor) {
+		return self.imagenes().get(unValor)
 	}
 
+	/* Asignar las imágenes para un número de dos cifras */
+	method definirImagenesContador(unNumero) {
+		const numeroUnidad = unNumero % 10
+		const numeroDecena = (unNumero * 0.1).truncate(0)
+			// Asigno la imagen para decimal
+		self.decimal().image(self.imagenDeValor(numeroDecena))
+			// Asigno la imagen para decimal
+		self.unidad().image(self.imagenDeValor(numeroUnidad))
+	}
+
+	// La posición del decimal
 	method positionDecimal()
 
+	// La posición de la unidad
 	method positionUnidad()
 
-	method imagenesDato()
-
 	// iniciar graficos de numero y titulo
-	method iniciarGrafico(imagenDecimal, imagenUnidad) {
-		self.imagenesDato()
-			// visual de datos
+	method iniciarGrafico(valorInicial, partTituloDecimal, partTituloUnidad) {
+		// Definir las imagenes para decimal y unidad
+		self.definirImagenesContador(valorInicial)
+			// agregar visual unidad y decimal
 		game.addVisual(self.decimal())
 		game.addVisual(self.unidad())
-			// visual de titulo
-		game.addVisual(new Bloque(position = self.positionDecimal(), image = imagenDecimal))
-		game.addVisual(new Bloque(position = self.positionUnidad(), image = imagenUnidad))
+			// agregar visual de titulo (la posición es la misma que la de los números)
+		game.addVisual(new Visual(position = self.positionDecimal(), image = partTituloDecimal))
+		game.addVisual(new Visual(position = self.positionUnidad(), image = partTituloUnidad))
 	}
 
-	method actualizarDato(elemento) {
-		unidad.image(self.imagenDeValor(elemento).get(1))
-		decimal.image(self.imagenDeValor(elemento).get(0))
+	// Actualiza las imágenes según un nuevo valor
+	method actualizarDato(nuevoValor) {
+		self.definirImagenesContador(nuevoValor)
 	}
 
 }
 
-class VidaVisual inherits Indicador {
+object vidaVisual inherits Indicador {
 
-	var property imagenes = [ "red (0).png", "red (1).png", "red (2).png", "red (3).png", "red (4).png", "red (5).png", "red (6).png", "red (7).png", "red (8).png", "red (9).png" ]
-
-	// asignar posicion de los numeros y titulo
-	override method imagenesDato() {
-		self.decimal().image(self.imagenDeValor(self.personaje().vida()).get(0))
-		self.unidad().image(self.imagenDeValor(self.personaje().vida()).get(1))
-	}
+	var property imagenes = [ "imgs/red (0).png", "imgs/red (1).png", "imgs/red (2).png", "imgs/red (3).png", "imgs/red (4).png", "imgs/red (5).png", "imgs/red (6).png", "imgs/red (7).png", "imgs/red (8).png", "imgs/red (9).png" ]
 
 	override method positionDecimal() = game.at(0, game.height() - 1)
 
@@ -57,15 +61,9 @@ class VidaVisual inherits Indicador {
 
 }
 
-class GranadaVisual inherits Indicador {
+object granadaVisual inherits Indicador {
 
-	var property imagenes = [ "green (0).png", "green (1).png", "green (2).png", "green (3).png", "green (4).png", "green (5).png", "green (6).png", "green (7).png", "green (8).png", "green (9).png" ]
-
-	// asignar posicion de los numeros y titulo
-	override method imagenesDato() {
-		self.decimal().image(self.imagenDeValor(self.personaje().granadas()).get(0))
-		self.unidad().image(self.imagenDeValor(self.personaje().granadas()).get(1))
-	}
+	var property imagenes = [ "imgs/green (0).png", "imgs/green (1).png", "imgs/green (2).png", "imgs/green (3).png", "imgs/green (4).png", "imgs/green (5).png", "imgs/green (6).png", "imgs/green (7).png", "imgs/green (8).png", "imgs/green (9).png" ]
 
 	override method positionDecimal() = game.at(game.center().x() - 1, game.height() - 1)
 
@@ -73,15 +71,9 @@ class GranadaVisual inherits Indicador {
 
 }
 
-class EnergiaVisual inherits Indicador {
+object energiaVisual inherits Indicador {
 
-	var property imagenes = [ "blue (0).png", "blue (1).png", "blue (2).png", "blue (3).png", "blue (4).png", "blue (5).png", "blue (6).png", "blue (7).png", "blue (8).png", "blue (9).png" ]
-
-	// asignar posicion de los numeros y titulo
-	override method imagenesDato() {
-		self.decimal().image(self.imagenDeValor(self.personaje().energia()).get(0))
-		self.unidad().image(self.imagenDeValor(self.personaje().energia()).get(1))
-	}
+	var property imagenes = [ "imgs/blue (0).png", "imgs/blue (1).png", "imgs/blue (2).png", "imgs/blue (3).png", "imgs/blue (4).png", "imgs/blue (5).png", "imgs/blue (6).png", "imgs/blue (7).png", "imgs/blue (8).png", "imgs/blue (9).png" ]
 
 	override method positionDecimal() = game.at(game.width() - 2, game.height() - 1)
 
@@ -89,15 +81,9 @@ class EnergiaVisual inherits Indicador {
 
 }
 
-class OroVisual inherits Indicador {
+object oroVisual inherits Indicador {
 
-	var property imagenes = [ "oro (0).png", "oro (1).png", "oro (2).png", "oro (3).png", "oro (4).png", "oro (5).png", "oro (6).png", "oro (7).png", "oro (8).png", "oro (9).png" ]
-
-	// asignar posicion de los numeros y titulo
-	override method imagenesDato() {
-		self.decimal().image(self.imagenDeValor(self.personaje().oro()).get(0))
-		self.unidad().image(self.imagenDeValor(self.personaje().oro()).get(1))
-	}
+	var property imagenes = [ "imgs/oro (0).png", "imgs/oro (1).png", "imgs/oro (2).png", "imgs/oro (3).png", "imgs/oro (4).png", "imgs/oro (5).png", "imgs/oro (6).png", "imgs/oro (7).png", "imgs/oro (8).png", "imgs/oro (9).png" ]
 
 	override method positionDecimal() = game.at(game.center().x() + 2, game.height() - 1)
 
@@ -105,31 +91,46 @@ class OroVisual inherits Indicador {
 
 }
 
-object portalLlaveVisual {
+// La visual de llaves recolectadas (3 por nivel)
+object llavesVisual inherits Indicador {
 
-	var property personaje
-	var property imagenes = [ "0-Llave.png", "1raLlave.png", "2dallave.png", "3raLlave.png" ]
-	const portal = new Bloque(position = utilidadesParaJuego.posicionArbitraria(), image = "portal.png")
+	var property imagenes = [ "imgs/0-Llave.png", "imgs/1raLlave.png", "imgs/2dallave.png", "imgs/3raLlave.png" ]
+	// El portal que aparece en el tablero
+	const portal = new Visual(position = utilidadesParaJuego.posicionArbitraria(), image = "imgs/portal.png")
+	// El contador de llaves que aparece en la cabecera
+	var property contadorLlaves = new Visual(position = game.at(3, game.height() - 1))
 
-	method portalLlave() = new Bloque(position = game.at(3, game.height() - 1), image = imagenes.get(self.personaje().llavesAgarradas().size()))
+	// Para respetar polimorfismo asigno misma posición
+	override method positionDecimal() = game.at(3, game.height() - 1)
 
-	// iniciar imagen
-	method iniciarGrafico(polimorf1, polimorf) {
-		// visual de datos
-		game.addVisual(self.portalLlave())
+	override method positionUnidad() = game.at(3, game.height() - 1)
+
+	/* Asignar las imágenes según la cantidad de llaves */
+	override method definirImagenesContador(unNumero) {
+		// Asigno la imagen del contador de llaves
+		contadorLlaves.image(self.imagenDeValor(unNumero))
 	}
 
-	method actualizarDato(elemento) {
-		if (not game.hasVisual(portal)) self.portalLlave().image(self.imagenes().get(elemento.size()))
+	// iniciar gráfico de contador de llaves
+	override method iniciarGrafico(valorInicial, inutilizado1, inutilizado2) {
+		// Definir la imagen del contador de llaves
+		self.definirImagenesContador(valorInicial)
+			// agregar visual de contador de llaves
+		game.addVisual(self.contadorLlaves())
+	}
+
+	// Actualiza las imágenes según un nuevo valor
+	override method actualizarDato(nuevoValor) {
+		if (not game.hasVisual(portal)) self.definirImagenesContador(nuevoValor)
 	}
 
 	method aparecerPortal() {
 		game.addVisual(portal)
 	}
 
-	method terminarSiEstaSobrePortal(nivel) {
-		game.onCollideDo(self.personaje(), { coliciono =>
-			if (coliciono == portal) {
+	method terminarSiEstaSobrePortal(nivel, personaje) {
+		game.onCollideDo(personaje, { colisiono =>
+			if (colisiono == portal) {
 				nivel.terminar()
 			}
 		})
