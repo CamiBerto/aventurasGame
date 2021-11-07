@@ -8,7 +8,7 @@ object nivelLlaves {
 	const property personaje = new PersonajeNivelLlaves()
 	const elementosEnNivel = []
 	
-									// EL NOMBRE DEL ELEMENTO ES UN OBJETO QUE GENERA UNA NUEVA INSTANCIA CON EL METODO instanciar()
+// EL NOMBRE DEL ELEMENTO ES UN OBJETO QUE GENERA UNA NUEVA INSTANCIA CON EL METODO instanciar()
 	method ponerElementos(cantidad,elemento) { 	// debe recibir cantidad y EL NOMBRE DE UN ELEMENTO
 		if(cantidad > 0) {
 			const unaPosicion = utilidadesParaJuego.posicionArbitraria()
@@ -24,7 +24,7 @@ object nivelLlaves {
 	}
 	 
 	/* Metodos que tambien interactuan con los movimientos del personaje */
-	method ponerSalida(){ game.addVisual(salida) }// Se agrega la salida al tablero
+method ponerSalida(){ game.addVisual(salida) }// Se agrega la salida al tablero
 	method elementoDe(posicion) = elementosEnNivel.find( { e => e.position() == posicion } )
 	method hayElementoEn(posicion) = elementosEnNivel.any( { e => e.position() == posicion } )
 	method estado() { game.say(personaje,personaje.nivelDeEnergia() ) } // indica el estado de energia
@@ -32,7 +32,7 @@ object nivelLlaves {
 			return elementosEnNivel.filter( { e => e.esCeldaSorpresa() } )
 	}
 	
-	method entroEnZona(posicionPersonaje,posicionCelda) {
+method entroEnZona(posicionPersonaje,posicionCelda) {
 		return (posicionCelda.x().between(posicionPersonaje.x() ,posicionPersonaje.x() ) and    posicionCelda.y().between(posicionPersonaje.y() -1 ,posicionPersonaje.y() +1)
 		or     posicionCelda.x().between(posicionPersonaje.x() -1 ,posicionPersonaje.x() +1) and    posicionCelda.y().between(posicionPersonaje.y()  ,posicionPersonaje.y() ))
 	}

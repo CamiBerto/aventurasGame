@@ -1,6 +1,8 @@
 import wollok.game.*
 import nivel_bloques.*
 import nivel_llaves.*
+import personajes.*
+import elementos.*
 
 program juego_aventura {
 	

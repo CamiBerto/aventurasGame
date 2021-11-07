@@ -5,8 +5,15 @@ import elementos.*
 import nivel_llaves.*
 import utilidades.*
 
-
+// TODO crear class Nivel para heredar código que se repite
 object nivelBloques {
+	// Indicadores 
+	var property vidaVisual = new VidaVisual()
+	var property energiaVisual = new EnergiaVisual()
+	var property oroVisual = new OroVisual()
+	var property llavesVisual = portalLlaveVisual
+
+
 	const property personaje= new PersonajeNivelBloques()
 	const property bloquesEnTablero = #{}
 	
@@ -33,7 +40,31 @@ object nivelBloques {
 			}
 		}
 	}
-	
+	method crearCantLlavesYAgregar(agregarALista, cantidad){
+		//es bucle que sigue hasta que la cantidad es menor que el incCont
+		if(llaves.size() < cantidad){
+			agregarALista.add(new Llave())
+			game.addVisual(agregarALista.last())
+			self.crearCantLlavesYAgregar( agregarALista, cantidad)
+		}
+	}
+	method crearCantCajasYAgregar(agregarALista, cantidad){
+		//es bucle que sigue hasta que la cantidad es menor que el incCont
+		if(cajas.size() < cantidad){
+			agregarALista.add(new Caja())
+			game.addVisual(agregarALista.last())
+			self.crearCantCajasYAgregar(agregarALista, cantidad)
+		}
+	}
+
+	method abrirPortalSiTiene(num){
+		//si se cumple la cantidad de llaves seteadas por game aparece portal y resetea las llaves
+		if (personajeSimple.llavesAgarradas().size() >= num) {
+			portalLlaveVisual.aparecerPortal()
+			personajeSimple.llavesAgarradas().clear()
+		}
+	}
+
 	method configurate() {
 		// fondo - es importante que sea el primer visual que se agregue
 		game.addVisual(new Fondo())
@@ -64,7 +95,11 @@ object nivelBloques {
 		})
 					
 	}
-	
+	method terminarSiCantCajas(num){
+		if (self.cajasEnDeposito().size() >= num) {
+			self.terminar()
+		}
+	}
 	method terminar() {
 		//sonido pasar
 		game.sound("pasar.mp3").play()		

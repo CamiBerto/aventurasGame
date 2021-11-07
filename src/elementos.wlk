@@ -3,7 +3,14 @@ import utilidades.*
 import nivel_bloques.*
 import nivel_llaves.*
 
-class Bloque {	// Cajas
+class Bloque {
+
+	var property position
+	var property image
+
+}
+
+class Caja inherits Bloque {	// Cajas
 	var property position
 	const property image = "caja.png"
 	
@@ -17,10 +24,13 @@ class Bloque {	// Cajas
 		}
 	}
 }
+
+// TODO: resolver posición aleatoria
 object deposito { // esta determinado por la zona de baldozas color naranja
 	method contiene(posicion) = posicion.x().between(5,9) and posicion.y().between(7,12)
 }
 
+// TODO: salida automática
 object salida { // la salida se visualiza siempre en el mismo lugar del tablero
 	const property position = game.at(game.width()-1,0)
 	const property image = "salida.png"
@@ -38,8 +48,9 @@ class Elemento{
 	method reaccionarA(unPersonaje){
 		self.dejarPasar(unPersonaje)
 	}
-	
 }
+
+// TODO: resolver agarrar
 class Llave inherits Elemento{
 	const property image = "llave.png"
 	override method sonido() = "salir.mp3"
@@ -50,7 +61,7 @@ class Llave inherits Elemento{
 }
 
 class Pollo inherits Elemento{
-	var property energia =  0.randomUpTo(30).truncate(0)
+	var property energia =  30
 	const property image = "pollo.png"
 	
 	override method sonido() = "comer.mp3"
@@ -97,7 +108,7 @@ class TripleOrNada inherits Modificador {
 
 class CeldaSorpresa inherits Elemento{
 	var property fueActivada = false
-	var property image = "sorpresa.png"
+	var property image = "beer premio.png"
 	
 	method cambiarDeIMagen(){image="sorpresaUsada.png"}
 	override method reaccionarA(unPersonaje){ // DETERMINAR Y CODIFICAR ACCION

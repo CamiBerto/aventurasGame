@@ -11,14 +11,30 @@ import elementos.*
 
 /* personaje generico */
 class Personaje {
+	var property oro = 10
+	var property vida = 25
+	var property energia = 30
+	var property granadas = 0
+	var property llavesAgarradas = []
 	var property position = utilidadesParaJuego.posicionArbitraria()
 	const property image = "heroe.png"
 	var proximaPosicion = self.position()
-	
+	var property positionGuardadas = []
+	/* VISUALES */
+	method actualizarEnergiaVisual(){
+		nivelActual.energiaVisual().actualizarDato(energia)
+	}
+	method actualizarVidaVisual(){
+		nivelActual.vidaVisual().actualizarDato(vida)
+	}
+	method actualizarLLaveVisual(){
+		nivelActual.llavesVisual().actualizarDato(llavesAgarradas)
+	}
 	/* MOVIMIENTOS */
 	method moverDerecha() {
 		proximaPosicion = game.at(self.position().x() + 2, self.position().y())
 		self.moverA_Haciendo(self.position().right(1))
+		
 	}
 	method moverIzquierda() {
 		proximaPosicion = game.at(self.position().x() - 2, self.position().y())
