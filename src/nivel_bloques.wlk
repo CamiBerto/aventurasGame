@@ -5,55 +5,15 @@ import elementos.*
 import nivel_llaves.*
 import utilidades.*
 import indicadores.*
+import nivel.*
 
 // TODO crear class Nivel para heredar código que se repite
-object nivelBloques {
+object nivelBloques inherits Nivel {
 
 	const property personaje = new PersonajeNivelBloques()
-	// Elementos del juego
-	const property cajasEnTablero = #{}
-	var property cajas = []
-	var property llaves = []
-	var property cajasEnDeposito = []
 
-	method todasLasCajasEnDeposito() = self.cajasEnTablero().all({ b => b.estaEnDeposito() })
-
-	method faltanRequisitos() {
+	override method faltanRequisitos() {
 		if (self.todasLasCajasEnDeposito()) game.say(personaje, "Debo ir a la salida") else game.say(personaje, "Faltan cajas en el depósito")
-	}
-
-	method hayCaja(posicion) = self.cajasEnTablero().any({ b => b.position() == posicion })
-
-	method ponerCajas(cantidad) { // debe recibir cantidad
-		if (cantidad > 0) {
-			const unaPosicion = utilidadesParaJuego.posicionArbitraria()
-			if (not self.hayCaja(unaPosicion)) { // si la posicion no esta ocupada
-				const unaCaja = new Caja(position = unaPosicion, nivelActual = self) // instancia el bloque en una posicion
-				cajasEnTablero.add(unaCaja) // Agrega el bloque a la lista
-				game.addVisual(unaCaja) // Agrega el bloque al tablero
-				self.ponerCajas(cantidad - 1) // llamada recursiva al proximo bloque a agregar
-			} else {
-				self.ponerCajas(cantidad)
-			}
-		}
-	}
-
-	method crearCantLlavesYAgregar(agregarALista, cantidad) {
-		// es bucle que sigue hasta que la cantidad es menor que el incCont
-		if (llaves.size() < cantidad) {
-			agregarALista.add(new Llave())
-			game.addVisual(agregarALista.last())
-			self.crearCantLlavesYAgregar(agregarALista, cantidad)
-		}
-	}
-
-	method crearCantCajasYAgregar(agregarALista, cantidad) {
-		// es bucle que sigue hasta que la cantidad es menor que el incCont
-		if (cajas.size() < cantidad) {
-			agregarALista.add(new Caja(nivelActual = self))
-			game.addVisual(agregarALista.last())
-			self.crearCantCajasYAgregar(agregarALista, cantidad)
-		}
 	}
 
 	method abrirPortalSiTieneSuficientesLlaves(numeroSuficiente) {
@@ -64,13 +24,19 @@ object nivelBloques {
 		}
 	}
 
-	method configurate() {
-		// fondo - es importante que sea el primer visual que se agregue
-		game.addVisual(new Fondo())
-			// Se agrega la salida al tablero
-		game.addVisual(salida)
-			// otros visuals, p.ej. bloques o llaves
+	override method configurate() {
+		super()
+			// otros visuals
 		self.ponerCajas(5)
+		self.ponerElementos(3, llave)
+		self.ponerElementos(1, pollo)
+		self.ponerElementos(1, tripleOrNada)
+		self.ponerElementos(1, reforzador)
+		self.ponerElementos(1, duplicador)
+		self.ponerElementos(1, sorpresaA)
+		self.ponerElementos(2, sorpresaB)
+		self.ponerElementos(1, sorpresaC)
+		self.ponerElementos(1, sorpresaD)
 			// Se agregan las visuales de estado de Cantidad de Oro, Vida, Llaves, Energía
 		oroVisual.iniciarGrafico(personaje.oro(), "imgs/IndOro.png", "imgs/IndOroCom.png")
 		vidaVisual.iniciarGrafico(personaje.vida(), "imgs/vi.png", "imgs/da.png")
@@ -89,12 +55,79 @@ object nivelBloques {
 		})
 	}
 
-	method terminar() {
-		// sonido pasar
-		// game.sound("audio/pasar.mp3").play()
+	method estado() {
+		game.say(personaje, personaje.nivelDeEnergia())
+	} // indica el estado de energia
+
+	method celdasSopresa() {
+		return elementosEnNivel.filter({ e => e.esCeldaSorpresa() })
+	}
+
+	method entroEnZona(posicionPersonaje, posicionCelda) {
+		return (posicionCelda.x().between(posicionPersonaje.x(), posicionPersonaje.x()) and posicionCelda.y().between(posicionPersonaje.y() - 1, posicionPersonaje.y() + 1) or posicionCelda.x().between(posicionPersonaje.x() - 1, posicionPersonaje.x() + 1) and posicionCelda.y().between(posicionPersonaje.y(), posicionPersonaje.y()))
+	}
+
+	method celdaSorpresaPisada() {
+		const celdas = self.celdasSopresa().filter({ e => self.entroEnZona(personaje.position(), e.position()) and not e.fueActivada() })
+		if (celdas.size() > 0) {
+			celdas.forEach{ celda => celda.activarSorpresa()}
+		}
+	}
+
+	method AgregarPollo() {
+		self.ponerElementos(1, pollo)
+	}
+
+	method EfectoPerderEnergia() {
+		personaje.perderEnergia(15)
+	}
+
+	method EfectoAgregarEnergia() {
+		personaje.ganarEnergia(30)
+	}
+
+	method Teletransportar() {
+		personaje.position(utilidadesParaJuego.posicionArbitraria())
+	}
+
+	method ganar() {
+		// sonido ganar
+		// game.sound("audio/ganar.mp3").play()
+		// es muy parecido al terminar() de nivelBloques
+		// el perder() también va a ser parecido
 		// game.clear() limpia visuals, teclado, colisiones y acciones
 		game.clear()
 			// después puedo volver a agregar el fondo, y algún visual para que no quede tan pelado
+		game.addVisual(new Fondo(image = "imgs/fondoCompleto.png"))
+			// después de un ratito ...
+		game.schedule(1000, { game.clear()
+				// cambio de fondo
+			game.addVisual(new Fondo(image = "imgs/ganamos.png"))
+				// después de un ratito ...
+			game.schedule(1500, { // fin del juego
+			game.stop()})
+		})
+	}
+
+	method perder() {
+		// sonido perder
+		// game.sound("audio/perder.mp3").play()
+		// game.clear() limpia visuals, teclado, colisiones y acciones
+		game.clear()
+			// después puedo volver a agregar el fondo, y algún visual para que no quede tan pelado
+		game.addVisual(new Fondo(image = "imgs/fondoCompleto.png"))
+			// después de un ratito ...
+		game.schedule(1000, { game.clear()
+				// cambio de fondo
+			game.addVisual(new Fondo(image = "imgs/perdimos.png"))
+				// después de un ratito ...
+			game.schedule(3000, { // fin del juego
+			game.stop()})
+		})
+	}
+
+	override method terminar() {
+		// después puedo volver a agregar el fondo, y algún visual para que no quede tan pelado
 		game.addVisual(new Fondo(image = "imgs/fondoCompleto.png"))
 		game.addVisual(personaje)
 			// después de un ratito ...
