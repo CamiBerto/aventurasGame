@@ -5,6 +5,7 @@ import personajes.*
 
 class Indicador {
 
+	var property personaje
 	// creacion bloques imagenes de numeros
 	var property decimal = new Bloque(position = self.positionDecimal())
 	var property unidad = new Bloque(position = self.positionUnidad())
@@ -46,8 +47,8 @@ class VidaVisual inherits Indicador {
 
 	// asignar posicion de los numeros y titulo
 	override method imagenesDato() {
-		self.decimal().image(self.imagenDeValor(personajeSimple.vida()).get(0))
-		self.unidad().image(self.imagenDeValor(personajeSimple.vida()).get(1))
+		self.decimal().image(self.imagenDeValor(self.personaje().vida()).get(0))
+		self.unidad().image(self.imagenDeValor(self.personaje().vida()).get(1))
 	}
 
 	override method positionDecimal() = game.at(0, game.height() - 1)
@@ -62,8 +63,8 @@ class GranadaVisual inherits Indicador {
 
 	// asignar posicion de los numeros y titulo
 	override method imagenesDato() {
-		self.decimal().image(self.imagenDeValor(personajeSimple.granadas()).get(0))
-		self.unidad().image(self.imagenDeValor(personajeSimple.granadas()).get(1))
+		self.decimal().image(self.imagenDeValor(self.personaje().granadas()).get(0))
+		self.unidad().image(self.imagenDeValor(self.personaje().granadas()).get(1))
 	}
 
 	override method positionDecimal() = game.at(game.center().x() - 1, game.height() - 1)
@@ -78,8 +79,8 @@ class EnergiaVisual inherits Indicador {
 
 	// asignar posicion de los numeros y titulo
 	override method imagenesDato() {
-		self.decimal().image(self.imagenDeValor(personajeSimple.energia()).get(0))
-		self.unidad().image(self.imagenDeValor(personajeSimple.energia()).get(1))
+		self.decimal().image(self.imagenDeValor(self.personaje().energia()).get(0))
+		self.unidad().image(self.imagenDeValor(self.personaje().energia()).get(1))
 	}
 
 	override method positionDecimal() = game.at(game.width() - 2, game.height() - 1)
@@ -94,8 +95,8 @@ class OroVisual inherits Indicador {
 
 	// asignar posicion de los numeros y titulo
 	override method imagenesDato() {
-		self.decimal().image(self.imagenDeValor(personajeSimple.oro()).get(0))
-		self.unidad().image(self.imagenDeValor(personajeSimple.oro()).get(1))
+		self.decimal().image(self.imagenDeValor(self.personaje().oro()).get(0))
+		self.unidad().image(self.imagenDeValor(self.personaje().oro()).get(1))
 	}
 
 	override method positionDecimal() = game.at(game.center().x() + 2, game.height() - 1)
@@ -106,9 +107,11 @@ class OroVisual inherits Indicador {
 
 object portalLlaveVisual {
 
+	var property personaje
 	var property imagenes = [ "0-Llave.png", "1raLlave.png", "2dallave.png", "3raLlave.png" ]
-	var property portalLlave = new Bloque(position = game.at(3, game.height() - 1), image = imagenes.get(personajeSimple.llavesAgarradas().size()))
 	const portal = new Bloque(position = utilidadesParaJuego.posicionArbitraria(), image = "portal.png")
+
+	method portalLlave() = new Bloque(position = game.at(3, game.height() - 1), image = imagenes.get(self.personaje().llavesAgarradas().size()))
 
 	// iniciar imagen
 	method iniciarGrafico(polimorf1, polimorf) {
@@ -117,15 +120,15 @@ object portalLlaveVisual {
 	}
 
 	method actualizarDato(elemento) {
-		if (not game.hasVisual(portal)) portalLlave.image(self.imagenes().get(elemento.size()))
+		if (not game.hasVisual(portal)) self.portalLlave().image(self.imagenes().get(elemento.size()))
 	}
 
 	method aparecerPortal() {
 		game.addVisual(portal)
 	}
 
-	method terminarSiEstaSobrePortal(nivel, personaje) {
-		game.onCollideDo(personaje, { coliciono =>
+	method terminarSiEstaSobrePortal(nivel) {
+		game.onCollideDo(self.personaje(), { coliciono =>
 			if (coliciono == portal) {
 				nivel.terminar()
 			}
