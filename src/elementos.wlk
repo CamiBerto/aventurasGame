@@ -11,26 +11,13 @@ class Visual {
 }
 
 class ElementoJuego {
-
 	var property position = utilidadesParaJuego.posicionArbitraria()
-
 	method esRecolectable() = true
-
 	method serAgarrado() {
 		game.removeVisual(self)
 	}
-
 	// agregar comportamiento
-	method estaEnDeposito() = deposito.contieneElemento(self.position())
-
-	method sePuedeEmpujarA(posicion) = utilidadesParaJuego.sePuedeMover(posicion)
-
-	method empujarA(posicion) {
-		if (self.sePuedeEmpujarA(posicion)) {
-			self.position(posicion)
-		}
-	}
-
+	
 }
 
 class Caja inherits ElementoJuego { // Caja
@@ -42,16 +29,20 @@ class Caja inherits ElementoJuego { // Caja
 	override method esRecolectable() = false
 
 	// agregar comportamiento
-	override method estaEnDeposito() = deposito.contieneElemento(self)
+	method estaEnDeposito() = deposito.contieneElemento(self)
 
-	override method sePuedeEmpujarA(posicion) = super(posicion) && nivelActual.hayCaja(posicion)
+	//method sePuedeEmpujarA(posicion) = super(posicion) && nivelActual.hayCaja(posicion)
 
-	method empujar(posicion) {
+	method empujarA(posicion) {
 		if (self.sePuedeEmpujarA(posicion)) {
 			self.position(posicion)
 		}
 	}
+	method reaccionarA(unPersonaje) {
+		self.empujarA(unPersonaje.direccion().siguiente(unPersonaje.proximaPosicion()))
+	}
 
+	method sePuedeEmpujarA(posicion) = posicion.allElements().isEmpty()
 }
 
 object deposito {
@@ -79,26 +70,23 @@ object salida { // la salida se visualiza siempre en el mismo lugar del tablero
 
 }
 
-class Recolectable {
-
-	var property position = game.at(0, 0)
+class Recolectable inherits ElementoJuego{
 	const property sonido = "audio/coin.mp3"
-
 	method dejarPasar(unPersonaje) {
 		unPersonaje.position(self.position())
 	}
-
-	method esRecolectable() = true
-
+	override method esRecolectable() = true
 	method esCeldaSorpresa() {
 		return false
 	}
-
+	override method serAgarrado(){
+		game.removeVisual(self)
+	}
 	method reaccionarA(unPersonaje) {
 		self.dejarPasar(unPersonaje)
 	}
-
 }
+
 
 class Llave inherits Recolectable {
 
@@ -106,28 +94,13 @@ class Llave inherits Recolectable {
 
 	override method sonido() = "audio/salir.mp3"
 
-	override method esRecolectable() = true
-
 	override method reaccionarA(unPersonaje) {
-		super(unPersonaje)
 		unPersonaje.guardarLlave()
+		self.serAgarrado()
 	}
 
 }
 
-class Pollo inherits Recolectable {
-
-	var property energia = 30
-	var property image = "imgs/pollo.png"
-
-	override method sonido() = "audio/comer.mp3"
-
-	override method reaccionarA(unPersonaje) {
-		super(unPersonaje)
-		unPersonaje.comerPollo(self)
-	}
-
-}
 
 class Modificador inherits Recolectable {
 
@@ -142,6 +115,19 @@ class Modificador inherits Recolectable {
 
 }
 
+class Pollo inherits Modificador {
+
+	var property energia = 30
+	var property image = "imgs/pollo.png"
+
+	override method sonido() = "audio/comer.mp3"
+
+	override method reaccionarA(unPersonaje) {
+		super(unPersonaje)
+		unPersonaje.comerPollo(self)
+	}
+
+}
 class Duplicador inherits Modificador {
 
 	var property image = "imgs/coin.png"
@@ -170,23 +156,6 @@ class Reforzador inherits Modificador {
 	override method reaccionarA(unPersonaje) {
 		super(unPersonaje)
 		game.say(self, "reforzador")
-	}
-
-}
-
-class TripleOrNada inherits Modificador {
-
-	var property image = "imgs/coin.png"
-
-	method multiplicador(energia) = if (energia.even()) 0 else 3
-
-	override method efecto() {
-		return ({ unPollo , energiaActual => unPollo.energia() * self.multiplicador(energiaActual) })
-	}
-
-	override method reaccionarA(unPersonaje) {
-		super(unPersonaje)
-		game.say(self, "triple Birra o nada")
 	}
 
 }

@@ -20,7 +20,6 @@ object llave{ method instanciar(unaPosicion) = new Llave(position=unaPosicion) }
 object pollo{ method instanciar(unaPosicion) = new Pollo(position=unaPosicion) }
 object duplicador{ method instanciar(unaPosicion) = new Duplicador(position=unaPosicion) }
 object reforzador{ method instanciar(unaPosicion) = new Reforzador(position=unaPosicion) }
-object tripleOrNada{ method instanciar(unaPosicion) = new TripleOrNada(position=unaPosicion) }
 /* CELDAS SORPRESA */
 object sorpresaA{ method instanciar(unaPosicion) = new CeldaSorpresaA(position=unaPosicion) }
 object sorpresaB{ method instanciar(unaPosicion) = new CeldaSorpresaB(position=unaPosicion) }

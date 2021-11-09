@@ -10,7 +10,7 @@ import nivel.*
 // TODO crear class Nivel para heredar código que se repite
 object nivelBloques inherits Nivel {
 
-	const property personaje = new PersonajeNivelBloques()
+	const property personaje = new PersonajeNivelBloques(nivelActual = self)
 
 	override method faltanRequisitos() {
 		if (self.todasLasCajasEnDeposito()) self.ganar() else game.say(personaje, "Faltan cajas en el depósito")
@@ -31,7 +31,6 @@ object nivelBloques inherits Nivel {
 		self.ponerCajas(5)
 		self.ponerElementos(3, llave)
 		self.ponerElementos(1, pollo)
-		self.ponerElementos(1, tripleOrNada)
 		self.ponerElementos(1, reforzador)
 		self.ponerElementos(1, duplicador)
 		self.ponerElementos(1, sorpresaA)
@@ -131,7 +130,6 @@ object nivelBloques inherits Nivel {
 	override method terminar() {
 		// después puedo volver a agregar el fondo, y algún visual para que no quede tan pelado
 		game.addVisual(new Fondo(image = "imgs/fondoCompleto.png"))
-		game.addVisual(personaje)
 			// después de un ratito ...
 		game.schedule(1000, { game.clear()
 				// cambio de fondo
