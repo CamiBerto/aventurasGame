@@ -67,7 +67,7 @@ class Personaje {
 		var siguientePosicion = direccion.siguiente(position)
 		if (direccion.esIgual(derecha)) {
 			// Si está en el borde derecho del tablero
-			if (game.width() < self.position().x() + 1) {
+			if (game.width() == self.position().x() + 1) {
 				siguientePosicion = game.at(0, self.position().y())
 			}
 		} else if (direccion.esIgual(izquierda)) {
@@ -78,10 +78,10 @@ class Personaje {
 		} else if (direccion.esIgual(abajo)) {
 			if (self.position().y() == 0) {
 				siguientePosicion = game.at(self.position().x(), game.height() - 1)
-			} else if (direccion.esIgual(arriba)) {
-				if (game.height() < self.position().y() + 1) {
-					siguientePosicion = game.at(self.position().x(), 0)
-				}
+			}
+		} else if (direccion.esIgual(arriba)) {
+			if (game.height() == self.position().y() + 2) {
+				siguientePosicion = game.at(self.position().x(), 0)
 			}
 		}
 		return siguientePosicion

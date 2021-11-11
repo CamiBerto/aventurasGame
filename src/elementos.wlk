@@ -61,10 +61,10 @@ class Caja inherits ElementoJuego { // Caja
 		} else if (direccion.esIgual(abajo)) {
 			if (posicion.y() == 0) {
 				siguientePosicion = game.at(posicion.x(), game.height() - 1)
-			} else if (direccion.esIgual(arriba)) {
-				if (game.height() == posicion.y() + 1) {
-					siguientePosicion = game.at(posicion.x(), 0)
-				}
+			}
+		} else if (direccion.esIgual(arriba)) {
+			if (game.height() == posicion.y() + 2) {
+				siguientePosicion = game.at(posicion.x(), 0)
 			}
 		}
 		return siguientePosicion
