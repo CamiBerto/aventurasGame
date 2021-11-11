@@ -13,7 +13,7 @@ class Nivel {
 	var property cajas = []
 	var property llaves = []
 	var property cajasEnDeposito = []
-	const property elementosEnNivel = []
+	var property elementosEnNivel = []
 
 	method todasLasCajasEnDeposito() = self.cajasEnTablero().all({ b => b.estaEnDeposito() })
 
@@ -24,8 +24,7 @@ class Nivel {
 	// Los elementos del nivel
 	method elementoDe(posicion) = elementosEnNivel.find({ e => e.position() == posicion })
 
-	method hayElementoEn(posicion) = elementosEnNivel.any({ e => e.position() == posicion }) || cajasEnTablero.any({ e => e.position() == posicion })
-
+	method hayElementoEn(posicion) = elementosEnNivel.any({ e => e.position() == posicion or self.hayCaja(posicion)}) 
 	/* Metodos que tambien interactuan con los movimientos del personaje */
 	method ponerSalida() {
 		game.addVisual(salida)

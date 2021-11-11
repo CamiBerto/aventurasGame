@@ -97,7 +97,7 @@ class Personaje {
 		self.hacerSiHayObjetoEn(posicion)
 	}
 
-	method hacerSiHayObjetoEn(posicion) // Metodo abstracto que, si hay un objeto en la posicion destino, realiza las acciones que correspondan
+	method hacerSiHayObjetoEn(posicion) {}// Metodo abstracto que, si hay un objeto en la posicion destino, realiza las acciones que correspondan
 
 	method moverA(posicion) {
 		self.position(posicion)
@@ -154,13 +154,12 @@ class PersonajeNivelLlaves inherits Personaje {
 		if (self.energia() == 0) nivelLlaves.perder() else self.ganarSiDebe()
 	} // evalua energia y si corresponde avanzar, ganar o perder
 
-	method puedeGanar() = llavesConseguidas == 3 and self.proximaPosicion() == salida.position() // Evalua si puede ganar
-
 	method ganarSiDebe() { // si cumple las condiciones gana el juego
 		if (self.puedeGanar()) {
 			nivelLlaves.ganar()
 		}
 	}
+	method puedeGanar() = llavesConseguidas == 3 and self.proximaPosicion() == salida.position() // Evalua si puede ganar
 
 	/* MOVIMIENTOS */
 	override method hacerSiHayObjetoEn(posicion) { // Se sobreescribe el metodo para activar un elemento si lo hay en la posicion de destino

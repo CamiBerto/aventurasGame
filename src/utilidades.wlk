@@ -14,47 +14,13 @@ object utilidadesParaJuego {
 }
 
 /* INSTANCIAR OBJETOS PARA NO USAR STRINGS*/
-object llave {
-
-	method instanciar(unaPosicion) = new Llave(position = unaPosicion)
-
-}
-
-object pollo {
-
-	method instanciar(unaPosicion) = new Pollo(position = unaPosicion)
-
-}
-
+object llave {method instanciar(unaPosicion) = new Llave(position = unaPosicion)}
+object pollo {method instanciar(unaPosicion) = new Pollo(position = unaPosicion)}
 // object duplicador{ method instanciar(unaPosicion) = new Duplicador(position=unaPosicion) }
-object reforzador {
-
-	method instanciar(unaPosicion) = new Reforzador(position = unaPosicion)
-
-}
-
+object reforzador {	method instanciar(unaPosicion) = new Reforzador(position = unaPosicion)}
 /* CELDAS SORPRESA */
-object sorpresaA {
-
-	method instanciar(unaPosicion) = new CeldaSorpresaA(position = unaPosicion)
-
-}
-
-object sorpresaB {
-
-	method instanciar(unaPosicion) = new CeldaSorpresaB(position = unaPosicion)
-
-}
-
-object sorpresaC {
-
-	method instanciar(unaPosicion) = new CeldaSorpresaC(position = unaPosicion)
-
-}
-
-object sorpresaD {
-
-	method instanciar(unaPosicion) = new CeldaSorpresaD(position = unaPosicion)
-
-}
+object sorpresaA {method instanciar(unaPosicion) = new CeldaSorpresaA(position = unaPosicion)}
+object sorpresaB {method instanciar(unaPosicion) = new CeldaSorpresaB(position = unaPosicion)}
+object sorpresaC {method instanciar(unaPosicion) = new CeldaSorpresaC(position = unaPosicion)}
+object sorpresaD {method instanciar(unaPosicion) = new CeldaSorpresaD(position = unaPosicion)}
 
