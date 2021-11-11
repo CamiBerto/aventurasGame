@@ -2,6 +2,8 @@ class Direccion {
 
 	method siguiente(position)
 
+	method esIgual(unaDireccion) = unaDireccion == self
+
 }
 
 object izquierda inherits Direccion {

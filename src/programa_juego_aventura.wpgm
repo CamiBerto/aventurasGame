@@ -1,6 +1,4 @@
 import wollok.game.*
-import nivel_bloques.*
-import nivel_llaves.*
 import personajes.*
 import elementos.*
 import nivel_1.*
@@ -12,7 +10,7 @@ program juego_aventura {
 	game.width(15)
 	game.boardGround("imgs/fondoBlanco.png")
 	nivel1.configurate()
-	// nivel1.abrirPortalSiTieneSuficientesLlaves()
+		// nivel1.abrirPortalSiTieneSuficientesLlaves()
 	const rain = game.sound("audio/nivel.mp3")
 	rain.shouldLoop(true)
 	game.schedule(500, { rain.play() })

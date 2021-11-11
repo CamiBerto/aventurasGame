@@ -1,23 +1,31 @@
 import wollok.game.*
 import utilidades.*
-import nivel_bloques.*
-import nivel_llaves.*
+import nivel_1.*
+import movimientos.*
 
 class Visual {
 
 	var property position
 	var property image = ""
 
+	method esInteractivo() = false
+
 }
 
 class ElementoJuego {
+
 	var property position = utilidadesParaJuego.posicionArbitraria()
+
 	method esRecolectable() = true
+
+	// Para que se ignore (alfombra)
+	method esInteractivo() = true
+
 	method serAgarrado() {
 		game.removeVisual(self)
 	}
-	// agregar comportamiento
-	
+
+// agregar comportamiento
 }
 
 class Caja inherits ElementoJuego { // Caja
@@ -31,62 +39,69 @@ class Caja inherits ElementoJuego { // Caja
 	// agregar comportamiento
 	method estaEnDeposito() = deposito.contieneElemento(self)
 
-	//method sePuedeEmpujarA(posicion) = super(posicion) && nivelActual.hayCaja(posicion)
-
+	// method sePuedeEmpujarA(posicion) = super(posicion) && nivelActual.hayCaja(posicion)
 	method empujarA(posicion) {
 		if (self.sePuedeEmpujarA(posicion)) {
 			self.position(posicion)
 		}
 	}
-	method reaccionarA(unPersonaje) {
-		self.empujarA(unPersonaje.direccion().siguiente(unPersonaje.proximaPosicion()))
+
+	method siguientePosicionDe(posicion, direccion) {
+		var siguientePosicion = direccion.siguiente(posicion)
+		if (direccion.esIgual(derecha)) {
+			// Si está en el borde derecho del tablero
+			if (game.width() == posicion.x() + 1) {
+				siguientePosicion = game.at(0, self.position().y())
+			}
+		} else if (direccion.esIgual(izquierda)) {
+			// Si está en el borde izquierdo del tablero
+			if (posicion.x() == 0) {
+				siguientePosicion = game.at(game.width() - 1, posicion.y())
+			}
+		} else if (direccion.esIgual(abajo)) {
+			if (posicion.y() == 0) {
+				siguientePosicion = game.at(posicion.x(), game.height() - 1)
+			} else if (direccion.esIgual(arriba)) {
+				if (game.height() == posicion.y() + 1) {
+					siguientePosicion = game.at(posicion.x(), 0)
+				}
+			}
+		}
+		return siguientePosicion
 	}
 
-	method sePuedeEmpujarA(posicion) = posicion.allElements().isEmpty()
-}
-
-object deposito {
-
-	var property position = utilidadesParaJuego.posicionArbitraria()
-	var property image = "imgs/alfombra4x4.png"
-
-	method esRecolectable() = false
-
-	method contieneElemento(unElemento) = unElemento.position().x().between(self.position().x(), self.position().x() + 2) && unElemento.position().y().between(self.position().y(), self.position().y() + 2)
-
-}
-
-// TODO: salida automática
-object salida { // la salida se visualiza siempre en el mismo lugar del tablero
-
-	const property position = game.at(game.width() - 1, 0)
-	var property image = "imgs/portal.png"
-	const property sonido = "audio/salir.mp3"
-
-	method esRecolectable() = false
-
 	method reaccionarA(unPersonaje) {
-	} // no hace nada para respetar el polimorfismo
+		const siguientePosicionCaja = self.siguientePosicionDe(unPersonaje.proximaPosicion(), unPersonaje.direccion())
+		self.empujarA(siguientePosicionCaja)
+	}
+
+	method sePuedeEmpujarA(posicion) = posicion.allElements().all{ e => not e.esInteractivo() }
 
 }
 
-class Recolectable inherits ElementoJuego{
+class Recolectable inherits ElementoJuego {
+
 	const property sonido = "audio/coin.mp3"
+
 	method dejarPasar(unPersonaje) {
 		unPersonaje.position(self.position())
 	}
+
 	override method esRecolectable() = true
+
 	method esCeldaSorpresa() {
 		return false
 	}
-	override method serAgarrado(){
+
+	override method serAgarrado() {
 		game.removeVisual(self)
 	}
+
 	method reaccionarA(unPersonaje) {
 		self.dejarPasar(unPersonaje)
 	}
-}
 
+}
 
 class Llave inherits Recolectable {
 
@@ -100,7 +115,6 @@ class Llave inherits Recolectable {
 	}
 
 }
-
 
 class Modificador inherits Recolectable {
 
@@ -128,6 +142,7 @@ class Pollo inherits Modificador {
 	}
 
 }
+
 class Duplicador inherits Modificador {
 
 	var property image = "imgs/coin.png"
@@ -187,7 +202,7 @@ class CeldaSorpresaA inherits CeldaSorpresa {
 
 	override method activarSorpresa() {
 		super()
-		nivelLlaves.Teletransportar()
+		nivel1.Teletransportar()
 	}
 
 }
@@ -196,7 +211,7 @@ class CeldaSorpresaB inherits CeldaSorpresa {
 
 	override method activarSorpresa() {
 		super()
-		nivelLlaves.EfectoAgregarEnergia()
+		nivel1.EfectoAgregarEnergia()
 	}
 
 }
@@ -205,7 +220,7 @@ class CeldaSorpresaC inherits CeldaSorpresa {
 
 	override method activarSorpresa() {
 		super()
-		nivelLlaves.EfectoPerderEnergia()
+		nivel1.EfectoPerderEnergia()
 	}
 
 }
@@ -214,8 +229,34 @@ class CeldaSorpresaD inherits CeldaSorpresa {
 
 	override method activarSorpresa() {
 		super()
-		nivelLlaves.AgregarPollo()
+		nivel1.AgregarPollo()
 	}
+
+}
+
+object deposito inherits ElementoJuego {
+
+	var property image = "imgs/alfombra4x4.png"
+
+	override method esRecolectable() = false
+
+	override method esInteractivo() = false
+
+	method contieneElemento(unElemento) = unElemento.position().x().between(self.position().x(), self.position().x() + 2) && unElemento.position().y().between(self.position().y(), self.position().y() + 2)
+
+}
+
+// TODO: salida automática
+object salida { // la salida se visualiza siempre en el mismo lugar del tablero
+
+	const property position = game.at(game.width() - 1, 0)
+	var property image = "imgs/portal.png"
+	const property sonido = "audio/salir.mp3"
+
+	method esRecolectable() = false
+
+	method reaccionarA(unPersonaje) {
+	} // no hace nada para respetar el polimorfismo
 
 }
 

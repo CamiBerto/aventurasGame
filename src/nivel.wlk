@@ -2,29 +2,22 @@ import wollok.game.*
 import fondo.*
 import personajes.*
 import elementos.*
-import nivel_llaves.*
 import utilidades.*
 import indicadores.*
 
 class Nivel {
 
 	// Elementos del nivel	
-	const property cajasEnTablero = #{}
-	var property cajas = []
 	var property llaves = []
-	var property cajasEnDeposito = []
 	var property elementosEnNivel = []
 
-	method todasLasCajasEnDeposito() = self.cajasEnTablero().all({ b => b.estaEnDeposito() })
-
 	method faltanRequisitos()
-
-	method hayCaja(posicion) = self.cajasEnTablero().any({ b => b.position() == posicion })
 
 	// Los elementos del nivel
 	method elementoDe(posicion) = elementosEnNivel.find({ e => e.position() == posicion })
 
-	method hayElementoEn(posicion) = elementosEnNivel.any({ e => e.position() == posicion or self.hayCaja(posicion)}) 
+	method hayElementoEn(posicion) = elementosEnNivel.any({ e => e.position() == posicion and e.esInteractivo() })
+
 	/* Metodos que tambien interactuan con los movimientos del personaje */
 	method ponerSalida() {
 		game.addVisual(salida)
@@ -45,12 +38,28 @@ class Nivel {
 		}
 	}
 
-	
 	method configurate() {
 		// fondo - es importante que sea el primer visual que se agregue
 		game.addVisual(new Fondo())
 			// Se agrega la salida al tablero
 		game.addVisual(salida)
+	}
+
+	method perder() {
+		// sonido perder
+		// game.sound("audio/perder.mp3").play()
+		// game.clear() limpia visuals, teclado, colisiones y acciones
+		game.clear()
+			// después puedo volver a agregar el fondo, y algún visual para que no quede tan pelado
+		game.addVisual(new Fondo(image = "imgs/fondo Completo.png"))
+			// después de un ratito ...
+		game.schedule(1000, { game.clear()
+				// cambio de fondo
+			game.addVisual(new Fondo(image = "imgs/perdimos.png"))
+				// después de un ratito ...
+			game.schedule(3000, { // fin del juego
+			game.stop()})
+		})
 	}
 
 	method terminar() {
