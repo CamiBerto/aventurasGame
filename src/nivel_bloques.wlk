@@ -30,9 +30,8 @@ object nivelBloques inherits Nivel {
 			// otros visuals
 		self.ponerCajas(5)
 		self.ponerElementos(3, llave)
-		self.ponerElementos(1, pollo)
+		self.ponerElementos(3, pollo)
 		self.ponerElementos(1, reforzador)
-		self.ponerElementos(1, duplicador)
 		self.ponerElementos(1, sorpresaA)
 		self.ponerElementos(2, sorpresaB)
 		self.ponerElementos(1, sorpresaC)

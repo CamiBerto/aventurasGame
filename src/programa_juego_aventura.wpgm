@@ -14,6 +14,6 @@ program juego_aventura {
 	nivelBloques.abrirPortalSiTieneSuficientesLlaves()
 	const rain = game.sound("audio/nivel.mp3")
 	rain.shouldLoop(true)
-	game.schedule(500, {rain.play()})
+	game.schedule(500, { rain.play() })
 	game.start()
 }

@@ -8,7 +8,7 @@ import indicadores.*
 
 object nivelLlaves inherits Nivel {
 
-	const property personaje = new PersonajeNivelLlaves()
+	const property personaje = new PersonajeNivelLlaves(nivelActual = self)
 
 	override method faltanRequisitos() {
 	}
@@ -31,7 +31,6 @@ object nivelLlaves inherits Nivel {
 		self.ponerElementos(3, llave)
 		self.ponerElementos(1, pollo)
 		self.ponerElementos(1, reforzador)
-		self.ponerElementos(1, duplicador)
 		self.ponerElementos(1, sorpresaA)
 		self.ponerElementos(2, sorpresaB)
 		self.ponerElementos(1, sorpresaC)
@@ -66,6 +65,7 @@ object nivelLlaves inherits Nivel {
 	}
 
 	method AgregarPollo() {
+		// controlar que no haya más de 3 pollos
 		self.ponerElementos(1, pollo)
 	}
 

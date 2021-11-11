@@ -12,6 +12,7 @@ import indicadores.*
 /* personaje generico */
 class Personaje {
 
+	var efectoModificador = { unPollo , energiaActual => unPollo.energia() }
 	// Config inicial
 	var property position = utilidadesParaJuego.posicionArbitraria()
 	var property image = "imgs/heroe.png"
@@ -42,14 +43,14 @@ class Personaje {
 	method perderEnergia() {
 		self.energia((0).max(self.energia() - 1))
 		self.actualizarEnergiaVisual()
-		if(self.energia() == 0){
+		if (self.energia() == 0) {
 			game.say(self, "Me MURI!!! T.T")
-			game.schedule(2000, { => nivelActual.perder() })
+			game.schedule(2000, { => nivelActual.perder()})
 		}
 	}
 
 	method ganarEnergia(cantidad) {
-		self.energia(self.energia() + cantidad)
+		self.energia((99).min(self.energia() + cantidad))
 		self.actualizarEnergiaVisual()
 	}
 
@@ -65,7 +66,7 @@ class Personaje {
 
 	// Avanzar a la siguiente casilla según la dirección en la que se esté moviendo
 	method avanzar() {
-		if(self.energia() > 0){
+		if (self.energia() > 0) {
 			position = self.proximaPosicion()
 			self.perderEnergia()
 		}
@@ -92,8 +93,8 @@ class Personaje {
 	}
 
 	method moverA_Haciendo(posicion) {
-		 // Si hay celdas en la posicion de destino habilita el movimiento
-			self.hacerSiHayObjetoEn(posicion)
+		// Si hay celdas en la posicion de destino habilita el movimiento
+		self.hacerSiHayObjetoEn(posicion)
 	}
 
 	method hacerSiHayObjetoEn(posicion) // Metodo abstracto que, si hay un objeto en la posicion destino, realiza las acciones que correspondan
@@ -118,9 +119,21 @@ class Personaje {
 		const lindanteAbajo = (new Position(x = self.position().x(), y = self.position().y() - 1)).allElements()
 		const celdasLindantes = lindanteDerecha + lindanteIzquierda + lindanteArriba + lindanteAbajo
 		return if (not celdasLindantes.isEmpty()) {
-			celdasLindantes.filter{ e => e.esRecolectable() }
-		}else{[]}
+			celdasLindantes.filter{ e => e.esRecolectable()}
+		} else {
+			[]
+		}
 	}
+
+	method comerPollo(unpollo) {
+		const energiaPolloModificada = efectoModificador.apply(unpollo, self.energia())
+		self.ganarEnergia(energiaPolloModificada)
+		nivelLlaves.AgregarPollo()
+	}
+
+	method incorporaEfecto(unElemento) {
+		efectoModificador = unElemento.efecto()
+	} // usar con los potenciadores
 
 }
 
@@ -128,23 +141,12 @@ class Personaje {
 class PersonajeNivelLlaves inherits Personaje {
 
 	var property llavesConseguidas = 0
-	var efectoModificador = { unPollo , energiaActual => unPollo.energia() }
 
 	method nivelDeEnergia() = "energia:" + self.energia().toString() + " - Llaves:" + self.llavesConseguidas().toString()
-
-	method incorporaEfecto(unElemento) {
-		efectoModificador = unElemento.efecto()
-	} // usar con los potenciadores
 
 	method perderEnergia(cantidad) {
 		self.energia(self.energia() - cantidad)
 		self.actualizarEnergiaVisual()
-	}
-
-	method comerPollo(unpollo) {
-		const energiaPolloModificada = efectoModificador.apply(unpollo, self.energia())
-		self.ganarEnergia(energiaPolloModificada)
-		nivelLlaves.AgregarPollo()
 	}
 
 	/* EVALUADORES */
@@ -188,7 +190,9 @@ class PersonajeNivelBloques inherits Personaje {
 			if (not nivelBloques.hayCaja(posicion)) {
 				self.avanzar()
 			}
-		}else{self.avanzar()}
+		} else {
+			self.avanzar()
+		}
 	}
 
 	override method moverA(posicion) { // se sobreescrive el metodo para validar que no haya bloques cuando se mueve.
