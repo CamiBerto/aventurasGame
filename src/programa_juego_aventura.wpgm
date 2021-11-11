@@ -3,6 +3,7 @@ import nivel_bloques.*
 import nivel_llaves.*
 import personajes.*
 import elementos.*
+import nivel_1.*
 
 program juego_aventura {
 	game.sound("audio/101.mp3")
@@ -10,8 +11,8 @@ program juego_aventura {
 	game.height(15)
 	game.width(15)
 	game.boardGround("imgs/fondoBlanco.png")
-	nivelBloques.configurate()
-	nivelBloques.abrirPortalSiTieneSuficientesLlaves()
+	nivel1.configurate()
+	// nivel1.abrirPortalSiTieneSuficientesLlaves()
 	const rain = game.sound("audio/nivel.mp3")
 	rain.shouldLoop(true)
 	game.schedule(500, { rain.play() })
