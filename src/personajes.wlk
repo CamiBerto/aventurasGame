@@ -62,57 +62,34 @@ class Personaje {
 		}
 	}
 
-	/* MOVIMIENTOS */
-	method proximaPosicion() {
-		var siguientePosicion = direccion.siguiente(position)
-		if (direccion.esIgual(derecha)) {
-			// Si está en el borde derecho del tablero
-			if (game.width() == self.position().x() + 1) {
-				siguientePosicion = game.at(0, self.position().y())
-			}
-		} else if (direccion.esIgual(izquierda)) {
-			// Si está en el borde izquierdo del tablero
-			if (self.position().x() == 0) {
-				siguientePosicion = game.at(game.width() - 1, self.position().y())
-			}
-		} else if (direccion.esIgual(abajo)) {
-			if (self.position().y() == 0) {
-				siguientePosicion = game.at(self.position().x(), game.height() - 1)
-			}
-		} else if (direccion.esIgual(arriba)) {
-			if (game.height() == self.position().y() + 2) {
-				siguientePosicion = game.at(self.position().x(), 0)
-			}
-		}
-		return siguientePosicion
-	}
+	
 
 	// Avanzar a la siguiente casilla según la dirección en la que se esté moviendo
 	method avanzar() {
 		if (self.energia() > 0) {
-			position = self.proximaPosicion()
+			position = direccion.proximaPosicion(self.position())
 			self.perderEnergia()
 		}
 	}
 
 	method moverDerecha() {
 		self.direccion(derecha)
-		self.moverA_Haciendo(self.proximaPosicion())
+		self.moverA_Haciendo(direccion.proximaPosicion(self.position()))
 	}
 
 	method moverIzquierda() {
 		self.direccion(izquierda)
-		self.moverA_Haciendo(self.proximaPosicion())
+		self.moverA_Haciendo(direccion.proximaPosicion(self.position()))
 	}
 
 	method moverArriba() {
 		self.direccion(arriba)
-		self.moverA_Haciendo(self.proximaPosicion())
+		self.moverA_Haciendo(direccion.proximaPosicion(self.position()))
 	}
 
 	method moverAbajo() {
 		self.direccion(abajo)
-		self.moverA_Haciendo(self.proximaPosicion())
+		self.moverA_Haciendo(direccion.proximaPosicion(self.position()))
 	}
 
 	method moverA_Haciendo(posicion) {
@@ -148,10 +125,10 @@ class Personaje {
 		}
 	}
 
-	method comerPollo(unpollo) {
-		const energiaPolloModificada = efectoModificador.apply(unpollo, self.energia())
+	method comerPollo(unPollo) {
+		const energiaPolloModificada = efectoModificador.apply(unPollo, self.energia())
 		self.ganarEnergia(energiaPolloModificada)
-		game.removeVisual(unpollo)
+		unPollo.serAgarrado()
 	}
 
 	method incorporaEfecto(unElemento) {
@@ -201,7 +178,7 @@ class PersonajeNivel1 inherits Personaje {
  * 			nivelLlaves.ganar()
  * 		}
  * 	}
- * 	method puedeGanar() = llavesAgarradas == 3 and self.proximaPosicion() == salida.position() // Evalua si puede ganar
+ * 	method puedeGanar() = llavesAgarradas == 3 and direccion.proximaPosicion(self.position()) == salida.position() // Evalua si puede ganar
 
  * 	// MOVIMIENTOS
  * 	override method hacerSiHayObjetoEn(posicion) { // Se sobreescribe el metodo para activar un elemento si lo hay en la posicion de destino

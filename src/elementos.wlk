@@ -46,32 +46,10 @@ class Caja inherits ElementoJuego { // Caja
 		}
 	}
 
-	method siguientePosicionDe(posicion, direccion) {
-		var siguientePosicion = direccion.siguiente(posicion)
-		if (direccion.esIgual(derecha)) {
-			// Si está en el borde derecho del tablero
-			if (game.width() == posicion.x() + 1) {
-				siguientePosicion = game.at(0, self.position().y())
-			}
-		} else if (direccion.esIgual(izquierda)) {
-			// Si está en el borde izquierdo del tablero
-			if (posicion.x() == 0) {
-				siguientePosicion = game.at(game.width() - 1, posicion.y())
-			}
-		} else if (direccion.esIgual(abajo)) {
-			if (posicion.y() == 0) {
-				siguientePosicion = game.at(posicion.x(), game.height() - 1)
-			}
-		} else if (direccion.esIgual(arriba)) {
-			if (game.height() == posicion.y() + 2) {
-				siguientePosicion = game.at(posicion.x(), 0)
-			}
-		}
-		return siguientePosicion
-	}
+	method siguientePosicion(posicion, direccion) = direccion.proximaPosicion(posicion)
 
 	method reaccionarA(unPersonaje) {
-		const siguientePosicionCaja = self.siguientePosicionDe(unPersonaje.proximaPosicion(), unPersonaje.direccion())
+		const siguientePosicionCaja = self.siguientePosicion(unPersonaje.direccion().proximaPosicion(unPersonaje.position()), unPersonaje.direccion())
 		self.empujarA(siguientePosicionCaja)
 	}
 
@@ -137,7 +115,6 @@ class Pollo inherits Modificador {
 	override method sonido() = "audio/comer.mp3"
 
 	override method reaccionarA(unPersonaje) {
-		super(unPersonaje)
 		unPersonaje.comerPollo(self)
 	}
 
