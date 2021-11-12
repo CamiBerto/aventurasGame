@@ -185,7 +185,10 @@ class CeldaSorpresaA inherits CeldaSorpresa {
 		super()
 		nivel1.teletransportar()
 	}
-
+	override method cambiarDeIMagen() {
+		image = "imgs/ver.png"
+		game.say(self, "MALDITOS PORTALES")	
+	}
 }
 
 class CeldaSorpresaB inherits CeldaSorpresa {
@@ -193,6 +196,10 @@ class CeldaSorpresaB inherits CeldaSorpresa {
 	override method activarSorpresa() {
 		super()
 		nivel1.efectoAgregarEnergia()
+	}
+	override method cambiarDeIMagen() {
+		image = "imgs/manzana.png"
+		game.say(self, "energia")
 	}
 
 }
@@ -203,7 +210,10 @@ class CeldaSorpresaC inherits CeldaSorpresa {
 		super()
 		nivel1.efectoPerderEnergia()
 	}
-
+	override method cambiarDeIMagen() {
+		image = "imgs/caiste.png"
+		game.say(self, "Golpe Bajo de Energia")
+	}
 }
 
 class CeldaSorpresaD inherits CeldaSorpresa {
@@ -211,6 +221,10 @@ class CeldaSorpresaD inherits CeldaSorpresa {
 	override method activarSorpresa() {
 		super()
 		nivel1.agregarPollo()
+	}
+	override method cambiarDeIMagen() {
+		image = "imgs/ver.png"
+		game.say(self, "mas pollos!!!")
 	}
 
 }
@@ -221,7 +235,7 @@ object deposito {
 	var property position = self.posicionAleatoria()
 
 	method posicionAleatoria() {
-		return game.at(1.randomUpTo(game.width() - 5).truncate(0), 1.randomUpTo(game.height() - 6).truncate(0))
+		return game.at(0.randomUpTo(game.width() - 4).truncate(0), 0.randomUpTo(game.height() - 5).truncate(0))
 	}
 
 	method esRecolectable() = false

@@ -21,7 +21,7 @@ class Direccion {
 			}
 		} else if (self.esIgual(abajo)) {
 			if (posicion.y() == 0) {
-				siguientePosicion = game.at(posicion.x(), game.height() - 1)
+				siguientePosicion = game.at(posicion.x(), game.height() - 2)
 			}
 		} else if (self.esIgual(arriba)) {
 			if (game.height() == posicion.y() + 2) {
