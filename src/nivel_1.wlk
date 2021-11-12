@@ -5,15 +5,14 @@ import utilidades.*
 import indicadores.*
 import nivel.*
 import personajes.*
+import config.*
 
 object nivel1 inherits Nivel {
 
 	var property personaje = new PersonajeNivel1(nivelActual = self)
 	const property cajasEnTablero = #{}
 
-	override method faltanRequisitos() {
-		if (self.todasLasCajasEnDeposito()) self.pasarDeNivel() else game.say(personaje, "Faltan cajas en el depósito")
-	}
+	override method faltanRequisitos() = not (self.todasLasCajasEnDeposito() && personaje.llavesAgarradas() == 3)
 
 	method hayCaja(posicion) = self.cajasEnTablero().any({ b => b.position() == posicion })
 
@@ -21,6 +20,17 @@ object nivel1 inherits Nivel {
 
 	method efectoAgregarEnergia() {
 		personaje.ganarEnergia(30)
+	}
+
+	method estadoActual() {
+		var palabras = ""
+		if (not self.todasLasCajasEnDeposito()) {
+			palabras = palabras + "Aún faltan cajas en el depósito."
+		}
+		if (personaje.llavesAgarradas() < 3) {
+			palabras = palabras + "No encontré todas las llaves."
+		}
+		return palabras
 	}
 
 	method teletransportar() {
@@ -60,7 +70,7 @@ object nivel1 inherits Nivel {
 			// otros visuals
 			// la alfombra : TODO: resolver que los otros objetos no colapsen
 		game.addVisual(deposito)
-		self.ponerCajas(5)
+		self.ponerCajas(dificultad.cajas())
 		self.ponerElementos(3, llave)
 		self.ponerElementos(3, pollo)
 		self.ponerElementos(1, sorpresaA)
@@ -82,7 +92,12 @@ object nivel1 inherits Nivel {
 		keyboard.down().onPressDo{ personaje.moverAbajo()}
 		keyboard.q().onPressDo{ personaje.agarrarElemento()}
 		keyboard.n().onPressDo({ // al presionar "n" finaliza el juego o da indicaciones
-			if (self.todasLasCajasEnDeposito()) self.pasarDeNivel() else self.faltanRequisitos()
+			if (not self.faltanRequisitos()) {
+				game.say(personaje, "Ganamos!!!")
+				game.schedule(1500, { self.pasarDeNivel()})
+			} else {
+				game.say(personaje, self.estadoActual())
+			}
 		})
 	}
 

@@ -185,10 +185,12 @@ class CeldaSorpresaA inherits CeldaSorpresa {
 		super()
 		nivel1.teletransportar()
 	}
+
 	override method cambiarDeIMagen() {
 		image = "imgs/ver.png"
-		game.say(self, "MALDITOS PORTALES")	
+		game.say(self, "MALDITOS PORTALES")
 	}
+
 }
 
 class CeldaSorpresaB inherits CeldaSorpresa {
@@ -197,9 +199,10 @@ class CeldaSorpresaB inherits CeldaSorpresa {
 		super()
 		nivel1.efectoAgregarEnergia()
 	}
+
 	override method cambiarDeIMagen() {
 		image = "imgs/manzana.png"
-		game.say(self, "energia")
+		game.say(self, "Energía")
 	}
 
 }
@@ -210,10 +213,12 @@ class CeldaSorpresaC inherits CeldaSorpresa {
 		super()
 		nivel1.efectoPerderEnergia()
 	}
+
 	override method cambiarDeIMagen() {
 		image = "imgs/caiste.png"
-		game.say(self, "Golpe Bajo de Energia")
+		game.say(self, "Golpe Bajo de Energía")
 	}
+
 }
 
 class CeldaSorpresaD inherits CeldaSorpresa {
@@ -222,9 +227,10 @@ class CeldaSorpresaD inherits CeldaSorpresa {
 		super()
 		nivel1.agregarPollo()
 	}
+
 	override method cambiarDeIMagen() {
 		image = "imgs/ver.png"
-		game.say(self, "mas pollos!!!")
+		game.say(self, "Más pollos!!!")
 	}
 
 }

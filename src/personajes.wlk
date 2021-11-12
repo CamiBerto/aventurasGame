@@ -61,8 +61,9 @@ class Personaje {
 		if (llavesAgarradas < 3) {
 			llavesAgarradas++
 			self.actualizarLLaveVisual()
-		} else {
-			llavesVisual.aparecerPortal()
+		}
+		if (llavesAgarradas == 3) {
+			game.say(self, "Tenemos todas las llaves!")
 		}
 	}
 
@@ -78,30 +79,25 @@ class Personaje {
 
 	method moverDerecha() {
 		self.direccion(derecha)
-		self.moverA_Haciendo(direccion.proximaPosicion(self.position()))
+		self.avanzarHaciendoA(direccion.proximaPosicion(self.position()))
 	}
 
 	method moverIzquierda() {
 		self.direccion(izquierda)
-		self.moverA_Haciendo(direccion.proximaPosicion(self.position()))
+		self.avanzarHaciendoA(direccion.proximaPosicion(self.position()))
 	}
 
 	method moverArriba() {
 		self.direccion(arriba)
-		self.moverA_Haciendo(direccion.proximaPosicion(self.position()))
+		self.avanzarHaciendoA(direccion.proximaPosicion(self.position()))
 	}
 
 	method moverAbajo() {
 		self.direccion(abajo)
-		self.moverA_Haciendo(direccion.proximaPosicion(self.position()))
+		self.avanzarHaciendoA(direccion.proximaPosicion(self.position()))
 	}
 
-	method moverA_Haciendo(posicion) {
-		// Si hay celdas en la posicion de destino habilita el movimiento
-		self.hacerSiHayObjetoEn(posicion)
-	}
-
-	method hacerSiHayObjetoEn(posicion)
+	method avanzarHaciendoA(posicion)
 
 	method moverA(posicion) {
 		self.position(posicion)
@@ -141,22 +137,31 @@ class Personaje {
 		efectoModificador = unElemento.efecto()
 	} // usar con los potenciadores
 
+	method avanzarOGanar()
+
 }
 
 class PersonajeNivel1 inherits Personaje {
 
-	override method hacerSiHayObjetoEn(posicion) {
+	override method avanzarOGanar() {
+		if (nivelActual.faltanRequisitos()) {
+			self.avanzar()
+		} else {
+			game.say(self, "Ganamos!!!")
+			game.schedule(1500, { nivelActual.pasarDeNivel()})
+		}
+	}
+
+	override method avanzarHaciendoA(posicion) {
 		/* SOLO LAS CAJAS BLOQUEAN EL PASO, LOS OTROS OBJETOS SE AGARRAN */
-		// Todos los niveles tienen cajas..?? O el 2 no??
 		if (nivelActual.hayCaja(posicion)) {
 			// ?? Esto podría hacerse con el getObjectsIn...?? asumiendo que solo hay una visual por celda
 			const unaCaja = nivelActual.cajasEnTablero().find({ b => b.position() == posicion })
 			unaCaja.reaccionarA(self)
-			if (not nivelActual.hayCaja(posicion)) {
-				self.avanzar()
-			}
-		} else {
-			self.avanzar()
+		}
+			// Si había caja, después del bloque anterior, no debería haber caja
+		if (not nivelActual.hayCaja(posicion)) {
+			self.avanzarOGanar()
 		}
 	}
 
@@ -187,7 +192,7 @@ class PersonajeNivel1 inherits Personaje {
  * 	method puedeGanar() = llavesAgarradas == 3 and direccion.proximaPosicion(self.position()) == salida.position() // Evalua si puede ganar
 
  * 	// MOVIMIENTOS
- * 	override method hacerSiHayObjetoEn(posicion) { // Se sobreescribe el metodo para activar un elemento si lo hay en la posicion de destino
+ * 	override method avanzarHaciendoA(posicion) { // Se sobreescribe el metodo para activar un elemento si lo hay en la posicion de destino
  * 		if (nivelLlaves.hayElementoEn(posicion)) {
  * 			const unElemento = nivelLlaves.elementoDe(posicion)
  * 			unElemento.reaccionarA(self)
@@ -206,7 +211,7 @@ class PersonajeNivel1 inherits Personaje {
 /* class PersonajeNivelBloques inherits Personaje {
 
  * 	// MOVIMIENTOS
- * 	override method hacerSiHayObjetoEn(posicion) { // Se sobreescribe el metodo para mover caja si la hay en la posicion de destino y puede moverse
+ * 	override method avanzarHaciendoA(posicion) { // Se sobreescribe el metodo para mover caja si la hay en la posicion de destino y puede moverse
  * 		if (nivelBloques.hayCaja(posicion)) {
  * 			const unaCaja = nivelBloques.cajasEnTablero().find({ b => b.position() == posicion })
  * 			unaCaja.reaccionarA(self)
