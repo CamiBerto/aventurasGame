@@ -3,15 +3,17 @@ import personajes.*
 import elementos.*
 import nivel_1.*
 import fondo.*
+import nivel.*
 
 program juego_aventura {
 	game.title("Oh qué aventura")
 	game.height(15)
 	game.width(15)
-	const fondoEntrada = new Fondo(image = "imgs/fondo entrada2.png")
+	/*const fondoEntrada = new Fondo(image = "imgs/fondo entrada2.png")
 	game.addVisual(fondoEntrada)
 	game.schedule(4000, { game.removeVisual(fondoEntrada) })
-	game.schedule(3500, { nivel1.configurate() })
+	game.schedule(3500, { nivel1.configurate() })*/
+	pantallaInicio.configurate()
 		// nivel1.abrirPortalSiTieneSuficientesLlaves()
 	const rain = game.sound("audio/nivel.mp3")
 	rain.shouldLoop(true)
