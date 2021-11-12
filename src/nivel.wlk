@@ -41,8 +41,6 @@ class Nivel {
 	method configurate() {
 		// fondo - es importante que sea el primer visual que se agregue
 		game.addVisual(new Fondo())
-			// Se agrega la salida al tablero
-		game.addVisual(salida)
 	}
 
 	method perder() {

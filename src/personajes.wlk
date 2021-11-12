@@ -61,6 +61,8 @@ class Personaje {
 		if (llavesAgarradas < 3) {
 			llavesAgarradas++
 			self.actualizarLLaveVisual()
+		} else {
+			llavesVisual.aparecerPortal()
 		}
 	}
 
