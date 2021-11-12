@@ -2,17 +2,26 @@ import wollok.game.*
 import personajes.*
 import elementos.*
 import nivel_1.*
+import fondo.*
 
 program juego_aventura {
-	game.sound("audio/101.mp3")
 	game.title("Oh qué aventura")
 	game.height(15)
 	game.width(15)
-	game.boardGround("imgs/fondoBlanco.png")
-	nivel1.configurate()
+	const fondoEntrada = new Fondo(image = "imgs/fondoEntrada.png")
+	game.addVisual(fondoEntrada)
+	game.schedule(4000, { game.removeVisual(fondoEntrada) })
+	game.schedule(3500, { nivel1.configurate() })
 		// nivel1.abrirPortalSiTieneSuficientesLlaves()
 	const rain = game.sound("audio/nivel.mp3")
 	rain.shouldLoop(true)
+	rain.volume(0.5)
+	keyboard.plusKey().onPressDo({ rain.volume(1) })
+	keyboard.minusKey().onPressDo({ rain.volume(0) })
+	keyboard.m().onPressDo({ rain.volume(0.5) })
+	keyboard.p().onPressDo({ rain.pause() })
+	keyboard.r().onPressDo({ rain.resume() })
+	keyboard.s().onPressDo({ rain.stop() })
 	game.schedule(500, { rain.play() })
 	game.start()
 }

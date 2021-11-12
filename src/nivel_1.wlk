@@ -17,28 +17,33 @@ object nivel1 inherits Nivel {
 
 	method hayCaja(posicion) = self.cajasEnTablero().any({ b => b.position() == posicion })
 
-	method todasLasCajasEnDeposito() = self.cajasEnTablero().all{ b => b.estaEnDeposito() }
+	method todasLasCajasEnDeposito() = not self.cajasEnTablero().any{ b => !b.estaEnDeposito()}
 
-	method EfectoAgregarEnergia() {
+	method efectoAgregarEnergia() {
 		personaje.ganarEnergia(30)
 	}
 
-	method Teletransportar() {
-		personaje.position(utilidadesParaJuego.posicionArbitraria())
+	method teletransportar() {
+		const unaPosicion = utilidadesParaJuego.posicionArbitraria()
+		if (not self.hayElementoEn(unaPosicion)) {
+			personaje.position(unaPosicion)
+		} else {
+			self.teletransportar()
+		}
 	}
 
-	method EfectoPerderEnergia() {
+	method efectoPerderEnergia() {
 		personaje.perderEnergia(15)
 	}
 
-	method AgregarPollo() {
+	method agregarPollo() {
 		self.ponerElementos(1, pollo)
 	}
 
 	// Este método es exclusivo del nivel 1
 	method ponerCajas(cantidad) { // debe recibir cantidad
+		const unaPosicion = utilidadesParaJuego.posicionArbitraria()
 		if (cantidad > 0) {
-			const unaPosicion = utilidadesParaJuego.posicionArbitraria()
 			if (not self.hayElementoEn(unaPosicion)) { // si la posicion no esta ocupada
 				const unaCaja = new Caja(position = unaPosicion, nivelActual = self) // instancia el bloque en una posicion
 				cajasEnTablero.add(unaCaja) // Agrega el bloque a la lista
@@ -59,6 +64,9 @@ object nivel1 inherits Nivel {
 		self.ponerElementos(3, llave)
 		self.ponerElementos(3, pollo)
 		self.ponerElementos(1, sorpresaA)
+		self.ponerElementos(1, sorpresaB)
+		self.ponerElementos(1, sorpresaC)
+		self.ponerElementos(1, sorpresaD)
 			// Se agregan las visuales de estado de Cantidad de Oro, Vida, Llaves, Energía
 		oroVisual.iniciarGrafico(personaje.oro(), "imgs/IndOro.png", "imgs/IndOroCom.png")
 		vidaVisual.iniciarGrafico(personaje.vida(), "imgs/vi.png", "imgs/da.png")
@@ -74,17 +82,19 @@ object nivel1 inherits Nivel {
 		keyboard.down().onPressDo{ personaje.moverAbajo()}
 		keyboard.q().onPressDo{ personaje.agarrarElemento()}
 		keyboard.n().onPressDo({ // al presionar "n" finaliza el juego o da indicaciones
-			if (self.todasLasCajasEnDeposito() and personaje.position() == salida.position()) self.pasarDeNivel() else self.faltanRequisitos()
+			if (self.todasLasCajasEnDeposito()) self.pasarDeNivel() else self.faltanRequisitos()
 		})
 	}
 
 	method pasarDeNivel() {
-		// después puedo volver a agregar el fondo, y algún visual para que no quede tan pelado
+		const pasarNivel = game.sound("audio/pasarNivel.mp3")
+		pasarNivel.play()
+			// después puedo volver a agregar el fondo, y algún visual para que no quede tan pelado
 		game.addVisual(new Fondo(image = "imgs/fondo Completo.png"))
 			// después de un ratito ...
 		game.schedule(1000, { game.clear()
 				// cambio de fondo
-			game.addVisual(new Fondo(image = "imgs/finNivel1.png"))
+			game.addVisual(new Fondo(image = "imgs/fondoFinNivel1.png"))
 				// después de un ratito ...
 			game.schedule(1500, { // ... limpio todo de nuevo
 			game.clear() // y arranco el siguiente nivel

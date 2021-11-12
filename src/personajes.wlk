@@ -39,13 +39,15 @@ class Personaje {
 	}
 
 	// Valores de estado
-	method perderEnergia() {
+	method perderEnergia(cantidad) {
 		// No puede bajar de 0
-		self.energia((0).max(self.energia() - 1))
+		self.energia((0).max(self.energia() - cantidad))
 		self.actualizarEnergiaVisual()
 			// Se queda sin energía
 		if (self.energia() == 0) {
 			game.say(self, "Me MURI!!! T.T")
+			const muri = game.sound("audio/muri.mp3")
+			muri.play()
 			game.schedule(2000, { => nivelActual.perder()})
 		}
 	}
@@ -62,13 +64,13 @@ class Personaje {
 		}
 	}
 
-	
-
 	// Avanzar a la siguiente casilla según la dirección en la que se esté moviendo
 	method avanzar() {
 		if (self.energia() > 0) {
+			const caminar = game.sound("audio/caminar.mp3")
+			caminar.play()
 			position = direccion.proximaPosicion(self.position())
-			self.perderEnergia()
+			self.perderEnergia(1)
 		}
 	}
 
@@ -126,6 +128,8 @@ class Personaje {
 	}
 
 	method comerPollo(unPollo) {
+		const comerpollo = game.sound("audio/comerpollo.mp3")
+		comerpollo.play()
 		const energiaPolloModificada = efectoModificador.apply(unPollo, self.energia())
 		self.ganarEnergia(energiaPolloModificada)
 		unPollo.serAgarrado()
@@ -190,7 +194,7 @@ class PersonajeNivel1 inherits Personaje {
  * 	}
 
  * 	override method moverA(posicion) { // se sobreescrive el metodo para que pierda energia y evalue si corresponde avanzar, ganar o perder el juego.
- * 		self.perderEnergia()
+ * 		self.perderEnergia(1)
  * 		self.determinarAccionPara(posicion)
  * 		super(posicion)
  * 		nivelLlaves.celdaSorpresaPisada()

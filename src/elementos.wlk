@@ -49,7 +49,9 @@ class Caja inherits ElementoJuego { // Caja
 	method siguientePosicion(posicion, direccion) = direccion.proximaPosicion(posicion)
 
 	method reaccionarA(unPersonaje) {
-		const siguientePosicionCaja = self.siguientePosicion(unPersonaje.direccion().proximaPosicion(unPersonaje.position()), unPersonaje.direccion())
+		const direccion = unPersonaje.direccion()
+		const proximaPosicionPersonaje = direccion.proximaPosicion(unPersonaje.position())
+		const siguientePosicionCaja = self.siguientePosicion(proximaPosicionPersonaje, direccion)
 		self.empujarA(siguientePosicionCaja)
 	}
 
@@ -158,19 +160,21 @@ class CeldaSorpresa inherits Modificador {
 	var property image = "imgs/beer premio.png"
 
 	method cambiarDeIMagen() {
-		image = "imgs/sorpresaUsada.png"
-	}
-
-	override method reaccionarA(unPersonaje) { // DETERMINAR Y CODIFICAR ACCION
+		image = "imgs/caiste.png"
 	}
 
 	override method esCeldaSorpresa() {
 		return true
 	}
 
+	override method reaccionarA(unPersonaje) {
+		self.activarSorpresa()
+	}
+
 	method activarSorpresa() {
 		self.cambiarDeIMagen()
 		fueActivada = true
+		game.schedule(500, { game.removeVisual(self)})
 	}
 
 }
@@ -179,7 +183,7 @@ class CeldaSorpresaA inherits CeldaSorpresa {
 
 	override method activarSorpresa() {
 		super()
-		nivel1.Teletransportar()
+		nivel1.teletransportar()
 	}
 
 }
@@ -188,7 +192,7 @@ class CeldaSorpresaB inherits CeldaSorpresa {
 
 	override method activarSorpresa() {
 		super()
-		nivel1.EfectoAgregarEnergia()
+		nivel1.efectoAgregarEnergia()
 	}
 
 }
@@ -197,7 +201,7 @@ class CeldaSorpresaC inherits CeldaSorpresa {
 
 	override method activarSorpresa() {
 		super()
-		nivel1.EfectoPerderEnergia()
+		nivel1.efectoPerderEnergia()
 	}
 
 }
@@ -206,20 +210,25 @@ class CeldaSorpresaD inherits CeldaSorpresa {
 
 	override method activarSorpresa() {
 		super()
-		nivel1.AgregarPollo()
+		nivel1.agregarPollo()
 	}
 
 }
 
-object deposito inherits ElementoJuego {
+object deposito {
 
 	var property image = "imgs/alfombra4x4.png"
+	var property position = self.posicionAleatoria()
 
-	override method esRecolectable() = false
+	method posicionAleatoria() {
+		return game.at(1.randomUpTo(game.width() - 5).truncate(0), 1.randomUpTo(game.height() - 6).truncate(0))
+	}
 
-	override method esInteractivo() = false
+	method esRecolectable() = false
 
-	method contieneElemento(unElemento) = unElemento.position().x().between(self.position().x(), self.position().x() + 2) && unElemento.position().y().between(self.position().y(), self.position().y() + 2)
+	method esInteractivo() = false
+
+	method contieneElemento(unElemento) = unElemento.position().x().between(self.position().x(), self.position().x() + 3) && unElemento.position().y().between(self.position().y(), self.position().y() + 3)
 
 }
 
