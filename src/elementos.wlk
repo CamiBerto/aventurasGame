@@ -88,7 +88,7 @@ class Recolectable inherits ElementoJuego {
 class Llave inherits Recolectable {
 
 	var property image = "imgs/llave.png"
-
+	
 	override method sonido() = "audio/salir.mp3"
 
 	override method reaccionarA(unPersonaje) {
@@ -156,7 +156,9 @@ class CeldaSorpresa inherits Modificador {
 	var property image = "imgs/beer premio.png"
 
 	method cambiarDeIMagen() {
+		
 		image = "imgs/caiste.png"
+		
 	}
 
 	override method esCeldaSorpresa() {
@@ -184,6 +186,8 @@ class CeldaSorpresaA inherits CeldaSorpresa {
 
 	override method cambiarDeIMagen() {
 		image = "imgs/ver.png"
+		const comerManzana = game.sound("audio/telepor.mp3")
+		comerManzana.play()
 		game.say(self, "MALDITOS PORTALES")
 	}
 
@@ -198,6 +202,8 @@ class CeldaSorpresaB inherits CeldaSorpresa {
 
 	override method cambiarDeIMagen() {
 		image = "imgs/manzana.png"
+		const comerManzana = game.sound("audio/comer_manzana.mp3")
+		comerManzana.play()
 		game.say(self, "Energía")
 	}
 
@@ -212,6 +218,8 @@ class CeldaSorpresaC inherits CeldaSorpresa {
 
 	override method cambiarDeIMagen() {
 		image = "imgs/caiste.png"
+		const caiste = game.sound("audio/caiste.mp3")
+		caiste.play()
 		game.say(self, "Golpe Bajo de Energía")
 	}
 
