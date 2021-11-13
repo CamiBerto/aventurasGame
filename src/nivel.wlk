@@ -9,9 +9,8 @@ import nivel_1.*
 class Nivel {
 
 	// Elementos del nivel	
-	var property llaves = []
 	var property elementosEnNivel = []
-
+	method personaje()
 	method faltanRequisitos()
 
 	// Los elementos del nivel
@@ -23,7 +22,26 @@ class Nivel {
 	method ponerSalida() {
 		game.addVisual(salida)
 	} // Se agrega la salida al tablero
-
+	
+	
+	method teletransportar() {
+		const unaPosicion = utilidadesParaJuego.posicionArbitraria()
+		if (not self.hayElementoEn(unaPosicion)) {
+			self.personaje().position(unaPosicion)
+		} else {
+			self.teletransportar()
+		}
+	}
+	method efectoPerderEnergia() {
+		self.personaje().perderEnergia(15)
+	}
+	method efectoAgregarEnergia() {
+		self.personaje().ganarEnergia(30)
+	}
+	
+	method agregarPollo() {
+		self.ponerElementos(1, pollo)
+	}
 // EL NOMBRE DEL ELEMENTO ES UN OBJETO QUE GENERA UNA NUEVA INSTANCIA CON EL METODO instanciar()
 	method ponerElementos(cantidad, elemento) { // debe recibir cantidad y EL NOMBRE DE UN ELEMENTO
 		if (cantidad > 0) {
@@ -66,6 +84,12 @@ class Nivel {
 		game.sound("audio/pasar.mp3").play()
 			// game.clear() limpia visuals, teclado, colisiones y acciones
 		game.clear()
+	}
+	
+	method pasarDeNivel() {
+		const pasarNivel = game.sound("audio/pasarNivel.mp3")
+		pasarNivel.play()
+			
 	}
 
 }

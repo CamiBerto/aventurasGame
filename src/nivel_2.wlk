@@ -6,19 +6,15 @@ import indicadores.*
 import nivel.*
 import personajes.*
 import config.*
-import nivel_2.*
+import nivel_1.*
 
-object nivel1 inherits Nivel {
-
-	var property personaje = new PersonajeNivel1(nivelActual = self)
+object nivel2 inherits Nivel {
+	
+	var property personaje = new PersonajeNivel2(nivelActual = self)
 	const property cajasEnTablero = #{}
-
 	override method faltanRequisitos() = not (self.todasLasCajasEnDeposito() && personaje.llavesAgarradas() == 3)
-
-	method hayCaja(posicion) = self.cajasEnTablero().any({ b => b.position() == posicion })
-
-	method todasLasCajasEnDeposito() = not self.cajasEnTablero().any{ b => !b.estaEnDeposito()}
-
+	
+	
 	method estadoActual() {
 		var palabras = ""
 		if (not self.todasLasCajasEnDeposito()) {
@@ -30,38 +26,33 @@ object nivel1 inherits Nivel {
 		return palabras
 	}
 
-	
-	// Este método es exclusivo del nivel 1
-	method ponerCajas(cantidad) { // debe recibir cantidad
-		const unaPosicion = utilidadesParaJuego.posicionArbitraria()
-		if (cantidad > 0) {
-			if (not self.hayElementoEn(unaPosicion)) { // si la posicion no esta ocupada
-				const unaCaja = new Caja(position = unaPosicion, nivelActual = self) // instancia el bloque en una posicion
-				cajasEnTablero.add(unaCaja) // Agrega el bloque a la lista
-				game.addVisual(unaCaja) // Agrega el bloque al tablero
-				self.ponerCajas(cantidad - 1) // llamada recursiva al proximo bloque a agregar
-			} else {
-				self.ponerCajas(cantidad)
-			}
-		}
+	method efectoPerderVida() {
+		personaje.perderEnergia(15)
 	}
-
+	method efectoAgregarVida() {
+		personaje.ganarEnergia(30)
+	}
+	
+	method agregarPollo() {
+		self.ponerElementos(1, pollo)
+	}
+	
 	override method configurate() {
 		super()
 			// otros visuals
 			// la alfombra : TODO: resolver que los otros objetos no colapsen
-		game.addVisual(deposito)
-		self.ponerCajas(dificultad.cajas())
-		self.ponerElementos(3, llave)
 		self.ponerElementos(3, pollo)
+		self.ponerElementos(3, pota)
+		self.ponerElementos(5, oro)
 		self.ponerElementos(1, sorpresaA)
 		self.ponerElementos(1, sorpresaB)
 		self.ponerElementos(1, sorpresaC)
 		self.ponerElementos(1, sorpresaD)
 			// Se agregan las visuales de estado de Cantidad de Oro, Vida, Llaves, Energía
+		oroVisual.iniciarGrafico(personaje.oro(), "imgs/IndOro.png", "imgs/IndOroCom.png")
 		vidaVisual.iniciarGrafico(personaje.vida(), "imgs/vi.png", "imgs/da.png")
 		energiaVisual.iniciarGrafico(personaje.energia(), "imgs/ene.png", "imgs/rgia.png")
-		llavesVisual.iniciarGrafico(personaje.llavesAgarradas(), "", "")
+
 			// personaje, es importante que sea el último visual que se agregue
 		game.addVisual(personaje)
 			// teclado
@@ -80,20 +71,5 @@ object nivel1 inherits Nivel {
 			}
 		})
 	}
-	override method pasarDeNivel() {
-		super()
-			// después puedo volver a agregar el fondo, y algún visual para que no quede tan pelado
-		game.addVisual(new Fondo(image = "imgs/fondo Completo.png"))
-			// después de un ratito ...
-		game.schedule(1000, { game.clear()
-				// cambio de fondo
-			game.addVisual(new Fondo(image = "imgs/fondoFinNivel1.png"))
-				// después de un ratito ...
-			game.schedule(1500, { // ... limpio todo de nuevo
-			game.clear() // y arranco el siguiente nivel
-			nivel2.configurate()
-			})
-		})
-	}
+	
 }
-

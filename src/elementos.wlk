@@ -24,6 +24,8 @@ class ElementoJuego {
 	method serAgarrado() {
 		game.removeVisual(self)
 	}
+	//method oroQueOtorga()
+
 
 // agregar comportamiento
 }
@@ -43,19 +45,19 @@ class Caja inherits ElementoJuego { // Caja
 	method empujarA(posicion) {
 		if (self.sePuedeEmpujarA(posicion)) {
 			self.position(posicion)
-		}
+		}		
 	}
-
+	
 	method siguientePosicion(posicion, direccion) = direccion.proximaPosicion(posicion)
 
 	method reaccionarA(unPersonaje) {
-		const direccion = unPersonaje.direccion()
-		const proximaPosicionPersonaje = direccion.proximaPosicion(unPersonaje.position())
-		const siguientePosicionCaja = self.siguientePosicion(proximaPosicionPersonaje, direccion)
+		const direccion = unPersonaje.direccion()//direccion de personaje actual
+		const proximaPosicionPersonaje = direccion.proximaPosicion(unPersonaje.position())//posicion proxima de personaje
+		const siguientePosicionCaja = self.siguientePosicion(proximaPosicionPersonaje, direccion)//posicion proxima de proxima de personaje
 		self.empujarA(siguientePosicionCaja)
 	}
 
-	method sePuedeEmpujarA(posicion) = posicion.allElements().all{ e => not e.esInteractivo() }
+	method sePuedeEmpujarA(posicion) = posicion.allElements().all{ e => not e.esInteractivo() }//interactivo es para ignorar alfombra
 
 }
 
@@ -91,15 +93,15 @@ class Llave inherits Recolectable {
 
 	override method reaccionarA(unPersonaje) {
 		unPersonaje.guardarLlave()
+		
 		self.serAgarrado()
 	}
-
 }
 
 class Modificador inherits Recolectable {
 
 	method efecto() {
-		return ({ unPollo , energiaActual => unPollo.energia() })
+		return ({ unPollo /*energiaActual*/ => unPollo.energia() })
 	}
 
 	override method reaccionarA(unPersonaje) {
@@ -107,6 +109,32 @@ class Modificador inherits Recolectable {
 		unPersonaje.incorporaEfecto(self)
 	}
 
+}
+class Pota inherits Recolectable {
+	var property image = "imgs/pota.png"
+	var property vida = 30
+	method efecto() {
+		return ({ potita /*energiaActual*/ => potita.vida() })
+	}
+
+	override method reaccionarA(unPersonaje) {
+		super(unPersonaje)
+		self.serAgarrado()
+		unPersonaje.incorporaEfecto(self)
+	}
+	
+}
+class Oro inherits Recolectable {
+	var property image = "imgs/moneda.png"
+	var property oro = 30
+	method efecto() {
+		return ({ dinero  => dinero.oro() })
+	}
+
+	override method reaccionarA(unPersonaje) {
+		super(unPersonaje)
+		unPersonaje.incorporaEfecto(self)
+	}
 }
 
 class Pollo inherits Modificador {
@@ -118,38 +146,6 @@ class Pollo inherits Modificador {
 
 	override method reaccionarA(unPersonaje) {
 		unPersonaje.comerPollo(self)
-	}
-
-}
-
-class Duplicador inherits Modificador {
-
-	var property image = "imgs/coin.png"
-
-	override method efecto() {
-		return ({ unPollo , energiaActual => unPollo.energia() * 2 })
-	}
-
-	override method reaccionarA(unPersonaje) {
-		super(unPersonaje)
-		game.say(self, "Duplicador")
-	}
-
-}
-
-class Reforzador inherits Modificador {
-
-	var property image = "imgs/coin.png"
-
-	method energiaExtra(energiaActual) = if (energiaActual < 10) 20 else 0
-
-	override method efecto() {
-		return ({ unPollo , energiaActual => unPollo.energia() * 2 + self.energiaExtra(energiaActual) })
-	}
-
-	override method reaccionarA(unPersonaje) {
-		super(unPersonaje)
-		game.say(self, "reforzador")
 	}
 
 }

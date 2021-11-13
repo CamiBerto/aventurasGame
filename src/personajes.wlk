@@ -16,7 +16,7 @@ class Personaje {
 	var property image = "imgs/heroe.png"
 	var property direccion = arriba
 	// Valores de estado
-	var property oro = 10
+	var property oro = 0
 	var property vida = 25
 	var property energia = 30
 	var property granadas = 0
@@ -24,7 +24,7 @@ class Personaje {
 	var property llavesAgarradas = 0
 	var property positionGuardadas = []
 	var nivelActual
-
+	method oro(num){oro += num}
 	/* VISUALES */
 	method actualizarEnergiaVisual() {
 		energiaVisual.actualizarDato(energia)
@@ -36,6 +36,9 @@ class Personaje {
 
 	method actualizarLLaveVisual() {
 		llavesVisual.actualizarDato(llavesAgarradas)
+	}
+	method actualizarOroVisual() {
+		oroVisual.actualizarDato(oro)
 	}
 
 	// Valores de estado
@@ -59,10 +62,14 @@ class Personaje {
 
 	method guardarLlave() {
 		if (llavesAgarradas < 3) {
+			//const llave = nivelActual.elementosEnNivel().find({c=>c.esLlave()})
+			//self.oro(llave.oroQueOtorga())
 			llavesAgarradas++
 			self.actualizarLLaveVisual()
+			self.actualizarOroVisual()
 		}
 		if (llavesAgarradas == 3) {
+			self.actualizarOroVisual()
 			game.say(self, "Tenemos todas las llaves!")
 		}
 	}
@@ -132,7 +139,9 @@ class Personaje {
 		self.ganarEnergia(energiaPolloModificada)
 		unPollo.serAgarrado()
 	}
-
+	method agarrarOro(){
+		
+	}
 	method incorporaEfecto(unElemento) {
 		efectoModificador = unElemento.efecto()
 	} // usar con los potenciadores
@@ -142,6 +151,31 @@ class Personaje {
 }
 
 class PersonajeNivel1 inherits Personaje {
+
+	override method avanzarOGanar() {
+		if (nivelActual.faltanRequisitos()) {
+			self.avanzar()
+		} else {
+			game.say(self, "Ganamos!!!")
+			game.schedule(1500, { nivelActual.pasarDeNivel()})
+		}
+	}
+
+	override method avanzarHaciendoA(posicion) {
+		/* SOLO LAS CAJAS BLOQUEAN EL PASO, LOS OTROS OBJETOS SE AGARRAN */
+		if (nivelActual.hayCaja(posicion)) {
+			// ?? Esto podría hacerse con el getObjectsIn...?? asumiendo que solo hay una visual por celda
+			const unaCaja = nivelActual.cajasEnTablero().find({ b => b.position() == posicion })
+			unaCaja.reaccionarA(self)
+		}
+			// Si había caja, después del bloque anterior, no debería haber caja
+		if (not nivelActual.hayCaja(posicion)) {
+			self.avanzarOGanar()
+		}
+	}
+
+}
+class PersonajeNivel2 inherits Personaje {
 
 	override method avanzarOGanar() {
 		if (nivelActual.faltanRequisitos()) {
