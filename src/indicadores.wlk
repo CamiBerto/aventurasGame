@@ -61,7 +61,7 @@ object vidaVisual inherits Indicador {
 
 }
 
-object granadaVisual inherits Indicador {
+object flechasVisual inherits Indicador {
 
 	var property imagenes = [ "imgs/green (0).png", "imgs/green (1).png", "imgs/green (2).png", "imgs/green (3).png", "imgs/green (4).png", "imgs/green (5).png", "imgs/green (6).png", "imgs/green (7).png", "imgs/green (8).png", "imgs/green (9).png" ]
 
@@ -85,9 +85,9 @@ object oroVisual inherits Indicador {
 
 	var property imagenes = [ "imgs/oro (0).png", "imgs/oro (1).png", "imgs/oro (2).png", "imgs/oro (3).png", "imgs/oro (4).png", "imgs/oro (5).png", "imgs/oro (6).png", "imgs/oro (7).png", "imgs/oro (8).png", "imgs/oro (9).png" ]
 
-	override method positionDecimal() = game.at(game.center().x() + 2, game.height() - 1)
+	override method positionDecimal() = game.at(game.center().x() - 1, game.height() - 1)
 
-	override method positionUnidad() = game.at(game.center().x() + 3, game.height() - 1)
+	override method positionUnidad() = game.at(game.center().x(), game.height() - 1)
 
 }
 

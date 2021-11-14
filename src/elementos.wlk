@@ -17,15 +17,15 @@ class ElementoJuego {
 	var property position = utilidadesParaJuego.posicionArbitraria()
 
 	method esRecolectable() = true
-	
+
 	method esOro() = false
+
 	// Para que se ignore (alfombra)
 	method esInteractivo() = true
 
 	method serAgarrado() {
 		game.removeVisual(self)
 	}
-	
 
 // agregar comportamiento
 }
@@ -45,19 +45,19 @@ class Caja inherits ElementoJuego { // Caja
 	method empujarA(posicion) {
 		if (self.sePuedeEmpujarA(posicion)) {
 			self.position(posicion)
-		}		
+		}
 	}
-	
+
 	method siguientePosicion(posicion, direccion) = direccion.proximaPosicion(posicion)
 
 	method reaccionarA(unPersonaje) {
-		const direccion = unPersonaje.direccion()//direccion de personaje actual
-		const proximaPosicionPersonaje = direccion.proximaPosicion(unPersonaje.position())//posicion proxima de personaje
-		const siguientePosicionCaja = self.siguientePosicion(proximaPosicionPersonaje, direccion)//posicion proxima de proxima de personaje
+		const direccion = unPersonaje.direccion() // direccion de personaje actual
+		const proximaPosicionPersonaje = direccion.proximaPosicion(unPersonaje.position()) // posicion proxima de personaje
+		const siguientePosicionCaja = self.siguientePosicion(proximaPosicionPersonaje, direccion) // posicion proxima de proxima de personaje
 		self.empujarA(siguientePosicionCaja)
 	}
 
-	method sePuedeEmpujarA(posicion) = posicion.allElements().all{ e => not e.esInteractivo() }//interactivo es para ignorar alfombra
+	method sePuedeEmpujarA(posicion) = posicion.allElements().all{ e => not e.esInteractivo() } // interactivo es para ignorar alfombra
 
 }
 
@@ -74,9 +74,13 @@ class Recolectable inherits ElementoJuego {
 	method esCeldaSorpresa() {
 		return false
 	}
+
 	method oroQueOtorga() = 0
+
 	method oroQueQuita() = 0
+
 	method vidaQueQuita() = 0
+
 	override method serAgarrado() {
 		game.removeVisual(self)
 	}
@@ -90,7 +94,7 @@ class Recolectable inherits ElementoJuego {
 class Llave inherits Recolectable {
 
 	var property image = "imgs/llave.png"
-	
+
 	override method sonido() = "audio/llave.mp3"
 
 	override method reaccionarA(unPersonaje) {
@@ -98,6 +102,7 @@ class Llave inherits Recolectable {
 		self.serAgarrado()
 		game.sound(self.sonido()).play()
 	}
+
 }
 
 class Modificador inherits Recolectable {
@@ -112,44 +117,64 @@ class Modificador inherits Recolectable {
 	}
 
 }
+
 class Pota inherits Recolectable {
+
 	var property image = "imgs/pocionRoja.png"
 	var property vidaQueOtorga = 15.randomUpTo(20).truncate(0)
+
 	override method sonido() = "audio/pota.mp3"
+
 	method efecto() {
 		return ({ potita /*energiaActual*/ => potita.vida() })
 	}
+
 	override method oroQueOtorga() = 3
+
 	override method reaccionarA(unPersonaje) {
 		unPersonaje.aumentarVida(self)
 		self.serAgarrado()
 		game.sound(self.sonido()).play()
 	}
+
 }
+
 class Oro inherits Recolectable {
+
 	var property image = "imgs/moneda.png"
+
 	override method sonido() = "audio/coin.mp3"
+
 	override method vidaQueQuita() = 15.randomUpTo(20).truncate(0)
+
 	override method oroQueOtorga() = 10
+
 	override method reaccionarA(unPersonaje) {
 		unPersonaje.actualizarOro(self)
 		unPersonaje.quitarVida(self)
 		self.serAgarrado()
 		game.sound(self.sonido()).play()
 	}
+
 	override method esOro() = true
+
 	override method esRecolectable() = false
+
 }
 
 class Pollo inherits Modificador {
 
 	var property energia = 30
 	var property image = "imgs/pollo.png"
+
 	override method oroQueOtorga() = 5
+
 	override method sonido() = "audio/comer.mp3"
+
 	override method reaccionarA(unPersonaje) {
 		unPersonaje.comerPollo(self)
 	}
+
 }
 
 class CeldaSorpresa inherits Modificador {
@@ -158,9 +183,7 @@ class CeldaSorpresa inherits Modificador {
 	var property image = "imgs/beer premio.png"
 
 	method cambiarDeIMagen() {
-		
 		image = "imgs/caiste.png"
-		
 	}
 
 	override method esCeldaSorpresa() {
@@ -186,7 +209,9 @@ class CeldaSorpresaA inherits CeldaSorpresa {
 		unNivel.personaje().actualizarOro(self)
 		unNivel.teletransportar()
 	}
+
 	override method oroQueQuita() = 5
+
 	override method cambiarDeIMagen() {
 		image = "imgs/ver.png"
 		const comerManzana = game.sound("audio/telepor.mp3")
@@ -203,8 +228,9 @@ class CeldaSorpresaB inherits CeldaSorpresa {
 		unNivel.personaje().actualizarOro(self)
 		unNivel.efectoAgregarEnergia()
 	}
+
 	override method oroQueOtorga() = 2
-	
+
 	override method cambiarDeIMagen() {
 		image = "imgs/manzana.png"
 		const comerManzana = game.sound("audio/comer_manzana.mp3")
@@ -221,7 +247,9 @@ class CeldaSorpresaC inherits CeldaSorpresa {
 		unNivel.personaje().actualizarOro(self)
 		unNivel.efectoPerderEnergia()
 	}
+
 	override method oroQueQuita() = 20
+
 	override method cambiarDeIMagen() {
 		image = "imgs/caiste.png"
 		const caiste = game.sound("audio/caiste.mp3")
@@ -237,10 +265,52 @@ class CeldaSorpresaD inherits CeldaSorpresa {
 		super(unNivel)
 		unNivel.agregarPollo()
 	}
+
 	override method cambiarDeIMagen() {
 		image = "imgs/ver.png"
 		game.say(self, "Más pollos!!!")
 	}
+
+}
+
+class Flecha inherits Recolectable {
+
+	var property image = "imgs/flechas.png"
+
+	override method sonido() = "audio/flechas.mp3"
+
+	override method reaccionarA(unPersonaje) {
+		unPersonaje.agarrarFlecha()
+		self.serAgarrado()
+		game.sound(self.sonido()).play()
+	}
+
+}
+
+class Bicho inherits ElementoJuego {
+
+	method saludQueQuita() = 20
+
+	override method esRecolectable() = false
+
+	method morir() {
+		game.removeVisual(self)
+	}
+
+}
+
+object cofre { // la salida se visualiza siempre en el mismo lugar del tablero
+
+	const property position = utilidadesParaJuego.posicionArbitraria()
+	var property image = "imgs/portal.png"
+	const property sonido = "audio/salir.mp3"
+
+	method esOro() = false
+
+	method esRecolectable() = false
+
+	method reaccionarA(unPersonaje) {
+	} // no hace nada para respetar el polimorfismo
 
 }
 
@@ -261,14 +331,14 @@ object deposito {
 
 }
 
-// TODO: salida automática
 object salida { // la salida se visualiza siempre en el mismo lugar del tablero
 
 	const property position = utilidadesParaJuego.posicionArbitraria()
 	var property image = "imgs/portal.png"
 	const property sonido = "audio/salir.mp3"
-	
+
 	method esOro() = false
+
 	method esRecolectable() = false
 
 	method reaccionarA(unPersonaje) {

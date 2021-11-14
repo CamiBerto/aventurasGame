@@ -6,27 +6,25 @@ import indicadores.*
 import nivel.*
 import personajes.*
 import config.*
-import nivel_1.*
-import nivel_3.*
 
-object nivel2 inherits Nivel {
+object nivelBonus inherits Nivel {
 
-	var property portalCreado = salida
+	var property cofreCreado = cofre
 	var property personaje = new PersonajeNivel2(nivelActual = self)
 
 	override method faltanRequisitos() = game.allVisuals().any{ c => c.image() == "imgs/moneda.png" }
 
 	method estadoActual() {
 		return if (self.faltanRequisitos()) {
-			"Aún faltan recolectar ORO."
+			"Aún faltan matar bichos."
 		} else {
-			"ir a la salida"
+			"Abrir el cofre"
 		}
 	}
 
-	method aparecerPortalSi() {
+	method aparecerCofreSi() {
 		if (not self.faltanRequisitos()) {
-			game.addVisual(portalCreado)
+			game.addVisual(cofreCreado)
 		}
 	}
 
@@ -41,7 +39,6 @@ object nivel2 inherits Nivel {
 	override method configurate() {
 		super()
 			// otros visuals
-			// la alfombra : TODO: resolver que los otros objetos no colapsen
 		self.ponerElementos(3, pollo)
 		self.ponerElementos(3, pota)
 		self.ponerElementos(5, oro)
@@ -49,8 +46,8 @@ object nivel2 inherits Nivel {
 		self.ponerElementos(1, sorpresaB)
 		self.ponerElementos(1, sorpresaC)
 		self.ponerElementos(1, sorpresaD)
-			// Se agregan las visuales de estado de Cantidad de Oro, Vida, Llaves, Energía
-		oroVisual.iniciarGrafico(personaje.oro(), "imgs/IndOro.png", "imgs/IndOroCom.png")
+			// Se agregan las visuales de estado de Cantidad de Flechas, Vida, Energía
+		flechaVisual.iniciarGrafico(personaje.flechas(), "imgs/fle.png", "imgs/chas.png")
 		vidaVisual.iniciarGrafico(personaje.vida(), "imgs/vi.png", "imgs/da.png")
 		energiaVisual.iniciarGrafico(personaje.energia(), "imgs/ene.png", "imgs/rgia.png")
 			// personaje, es importante que sea el último visual que se agregue
@@ -65,18 +62,17 @@ object nivel2 inherits Nivel {
 			// al presionar "n"  da indicaciones
 		keyboard.n().onPressDo{ game.say(personaje, self.estadoActual())}
 			// colicion con oro
-		game.onCollideDo(personaje, { objeto => self.hayOro(objeto)})
+		game.onCollideDo(personaje, { objeto => self.hayBichos(objeto)})
 		game.onCollideDo(personaje, { objeto =>
-			if (objeto == portalCreado) {
+			if (objeto == cofreCreado) {
 				self.pasarDeNivel()
 			}
 		})
 	}
 
-	method hayOro(objeto) {
-		if (objeto.esOro()) {
-			objeto.reaccionarA(personaje)
-			self.aparecerPortalSi()
+	method hayBichos(objeto) {
+		if (objeto.esBicho()) {
+			personaje.serAtacadoPorBicho()
 		}
 	}
 
@@ -84,7 +80,8 @@ object nivel2 inherits Nivel {
 		return "imgs/fondo ganaste.png"
 	}
 
-	override method siguienteNivel() = nivelBonus
+	override method siguienteNivel() {
+	}
 
 }
 

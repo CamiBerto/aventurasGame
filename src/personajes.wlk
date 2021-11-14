@@ -10,7 +10,7 @@ import indicadores.*
 /* personaje generico */
 class Personaje {
 
-	var efectoModificador = { unPollo, energiaActual => unPollo.energia() }
+	var efectoModificador = { unPollo , energiaActual => unPollo.energia() }
 	// Config inicial
 	var property position = utilidadesParaJuego.posicionArbitraria()
 	var property image = "imgs/heroe.png"
@@ -24,6 +24,7 @@ class Personaje {
 	var property llavesAgarradas = 0
 	var property positionGuardadas = []
 	var property nivelActual
+
 	/* VISUALES */
 	method actualizarEnergiaVisual() {
 		energiaVisual.actualizarDato(energia)
@@ -36,6 +37,7 @@ class Personaje {
 	method actualizarLLaveVisual() {
 		llavesVisual.actualizarDato(llavesAgarradas)
 	}
+
 	method actualizarOroVisual() {
 		oroVisual.actualizarDato(oro)
 	}
@@ -53,7 +55,7 @@ class Personaje {
 			game.schedule(2000, { => nivelActual.perder()})
 		}
 	}
-	
+
 	method ganarEnergia(cantidad) {
 		self.energia((99).min(self.energia() + cantidad))
 		self.actualizarEnergiaVisual()
@@ -68,21 +70,30 @@ class Personaje {
 			game.say(self, "Tenemos todas las llaves!")
 		}
 	}
-	method quitarVida(elemento){
-		self.vida( 0.max(self.vida() - elemento.vidaQueQuita()) )
+
+	method quitarVida(elemento) {
+		self.vida(0.max(self.vida() - elemento.vidaQueQuita()))
 		self.actualizarVidaVisual()
 	}
-	method aumentarVida(elemento){
-		self.vida( 99.min(self.vida() + elemento.vidaQueOtorga()) )
+
+	method aumentarVida(elemento) {
+		self.vida(99.min(self.vida() + elemento.vidaQueOtorga()))
 		self.actualizarVidaVisual()
 	}
-	method sacarOro(elemento) {oro = 0.max(self.oro() - elemento.oroQueQuita())}
-	method sumarOro(elemento) {oro = 99.min(self.oro() + elemento.oroQueOtorga())}
-	method actualizarOro(elemento){
+
+	method sacarOro(elemento) {
+		oro = 0.max(self.oro() - elemento.oroQueQuita())
+	}
+
+	method sumarOro(elemento) {
+		oro = 99.min(self.oro() + elemento.oroQueOtorga())
+	}
+
+	method actualizarOro(elemento) {
 		self.sacarOro(elemento)
 		self.sumarOro(elemento)
 		self.actualizarOroVisual()
-		if(not nivelActual.faltanRequisitos()){
+		if (not nivelActual.faltanRequisitos()) {
 			nivelActual.aparecerPortalSi()
 		}
 	}
@@ -148,16 +159,16 @@ class Personaje {
 	method comerPollo(unPollo) {
 		const comerpollo = game.sound("audio/comerpollo.mp3")
 		comerpollo.play()
-	
 		self.ganarEnergia(unPollo.energia())
 		unPollo.serAgarrado()
 	}
-	
+
 	method incorporaEfecto(unElemento) {
 		efectoModificador = unElemento.efecto()
 	} // usar con los potenciadores
 
 	method avanzarOGanar()
+
 }
 
 class PersonajeNivel1 inherits Personaje {
@@ -185,10 +196,13 @@ class PersonajeNivel1 inherits Personaje {
 	}
 
 }
+
 class PersonajeNivel2 inherits Personaje {
 
-	override method avanzarOGanar() {}
-	override method comerPollo(unPollo){
+	override method avanzarOGanar() {
+	}
+
+	override method comerPollo(unPollo) {
 		super(unPollo)
 		self.actualizarOro(unPollo)
 	}
@@ -196,7 +210,19 @@ class PersonajeNivel2 inherits Personaje {
 	override method avanzarHaciendoA(posicion) {
 		/* SOLO LAS CAJAS BLOQUEAN EL PASO, LOS OTROS OBJETOS SE AGARRAN */
 		// Si había caja, después del bloque anterior, no debería haber caja
-		
-			self.avanzar()
-		}
+		self.avanzar()
+	}
+
 }
+
+class PersonajeNivel3 inherits Personaje {
+
+	override method avanzarOGanar() {
+	}
+
+	override method avanzarHaciendoA(posicion) {
+		self.avanzar()
+	}
+
+}
+
