@@ -71,7 +71,7 @@ object nivel2 inherits Nivel {
 		}
 	}
 	override method imagenIntermedia(){
-		return "imgs/fondoFinNivel2.png"
+		return "imgs/fondo ganaste.png"
 	}
 	override method siguienteNivel() = nivelBonus
 }

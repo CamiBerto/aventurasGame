@@ -83,8 +83,7 @@ class Personaje {
 		self.sumarOro(elemento)
 		self.actualizarOroVisual()
 		if(not nivelActual.faltanRequisitos()){
-			nivelActual.aparecerPortal()
-			game.onCollideDo(nivelActual.portalCreado(), {objeto => if(objeto == self){nivelActual.pasarDeNivel()}})
+			nivelActual.aparecerPortalSi()
 		}
 	}
 
