@@ -17,15 +17,15 @@ class ElementoJuego {
 	var property position = utilidadesParaJuego.posicionArbitraria()
 
 	method esRecolectable() = true
-
+	
+	method esOro() = false
 	// Para que se ignore (alfombra)
 	method esInteractivo() = true
 
 	method serAgarrado() {
 		game.removeVisual(self)
 	}
-	//method oroQueOtorga()
-
+	
 
 // agregar comportamiento
 }
@@ -74,7 +74,9 @@ class Recolectable inherits ElementoJuego {
 	method esCeldaSorpresa() {
 		return false
 	}
-
+	method oroQueOtorga() = 0
+	method oroQueQuita() = 0
+	method vidaQueQuita() = 0
 	override method serAgarrado() {
 		game.removeVisual(self)
 	}
@@ -89,19 +91,19 @@ class Llave inherits Recolectable {
 
 	var property image = "imgs/llave.png"
 	
-	override method sonido() = "audio/salir.mp3"
+	override method sonido() = "audio/llave.mp3"
 
 	override method reaccionarA(unPersonaje) {
 		unPersonaje.guardarLlave()
-		
 		self.serAgarrado()
+		game.sound(self.sonido()).play()
 	}
 }
 
 class Modificador inherits Recolectable {
 
 	method efecto() {
-		return ({ unPollo /*energiaActual*/ => unPollo.energia() })
+		return ({ unPollo => unPollo.energia() })
 	}
 
 	override method reaccionarA(unPersonaje) {
@@ -111,43 +113,43 @@ class Modificador inherits Recolectable {
 
 }
 class Pota inherits Recolectable {
-	var property image = "imgs/pota.png"
-	var property vida = 30
+	var property image = "imgs/pocionRoja.png"
+	var property vidaQueOtorga = 15.randomUpTo(20).truncate(0)
+	override method sonido() = "audio/pota.mp3"
 	method efecto() {
 		return ({ potita /*energiaActual*/ => potita.vida() })
 	}
-
+	override method oroQueOtorga() = 3
 	override method reaccionarA(unPersonaje) {
-		super(unPersonaje)
+		unPersonaje.aumentarVida(self)
 		self.serAgarrado()
-		unPersonaje.incorporaEfecto(self)
+		game.sound(self.sonido()).play()
 	}
-	
 }
 class Oro inherits Recolectable {
 	var property image = "imgs/moneda.png"
-	var property oro = 30
-	method efecto() {
-		return ({ dinero  => dinero.oro() })
-	}
-
+	override method sonido() = "audio/coin.mp3"
+	override method vidaQueQuita() = 15.randomUpTo(20).truncate(0)
+	override method oroQueOtorga() = 10
 	override method reaccionarA(unPersonaje) {
-		super(unPersonaje)
-		unPersonaje.incorporaEfecto(self)
+		unPersonaje.actualizarOro(self)
+		unPersonaje.quitarVida(self)
+		self.serAgarrado()
+		game.sound(self.sonido()).play()
 	}
+	override method esOro() = true
+	override method esRecolectable() = false
 }
 
 class Pollo inherits Modificador {
 
 	var property energia = 30
 	var property image = "imgs/pollo.png"
-
+	override method oroQueOtorga() = 5
 	override method sonido() = "audio/comer.mp3"
-
 	override method reaccionarA(unPersonaje) {
 		unPersonaje.comerPollo(self)
 	}
-
 }
 
 class CeldaSorpresa inherits Modificador {
@@ -166,10 +168,10 @@ class CeldaSorpresa inherits Modificador {
 	}
 
 	override method reaccionarA(unPersonaje) {
-		self.activarSorpresa()
+		self.activarSorpresa(unPersonaje.nivelActual())
 	}
 
-	method activarSorpresa() {
+	method activarSorpresa(unNivel) {
 		self.cambiarDeIMagen()
 		fueActivada = true
 		game.schedule(500, { game.removeVisual(self)})
@@ -179,11 +181,12 @@ class CeldaSorpresa inherits Modificador {
 
 class CeldaSorpresaA inherits CeldaSorpresa {
 
-	override method activarSorpresa() {
-		super()
-		nivel1.teletransportar()
+	override method activarSorpresa(unNivel) {
+		super(unNivel)
+		unNivel.personaje().actualizarOro(self)
+		unNivel.teletransportar()
 	}
-
+	override method oroQueQuita() = 5
 	override method cambiarDeIMagen() {
 		image = "imgs/ver.png"
 		const comerManzana = game.sound("audio/telepor.mp3")
@@ -195,11 +198,13 @@ class CeldaSorpresaA inherits CeldaSorpresa {
 
 class CeldaSorpresaB inherits CeldaSorpresa {
 
-	override method activarSorpresa() {
-		super()
-		nivel1.efectoAgregarEnergia()
+	override method activarSorpresa(unNivel) {
+		super(unNivel)
+		unNivel.personaje().actualizarOro(self)
+		unNivel.efectoAgregarEnergia()
 	}
-
+	override method oroQueOtorga() = 2
+	
 	override method cambiarDeIMagen() {
 		image = "imgs/manzana.png"
 		const comerManzana = game.sound("audio/comer_manzana.mp3")
@@ -211,11 +216,12 @@ class CeldaSorpresaB inherits CeldaSorpresa {
 
 class CeldaSorpresaC inherits CeldaSorpresa {
 
-	override method activarSorpresa() {
-		super()
-		nivel1.efectoPerderEnergia()
+	override method activarSorpresa(unNivel) {
+		super(unNivel)
+		unNivel.personaje().actualizarOro(self)
+		unNivel.efectoPerderEnergia()
 	}
-
+	override method oroQueQuita() = 20
 	override method cambiarDeIMagen() {
 		image = "imgs/caiste.png"
 		const caiste = game.sound("audio/caiste.mp3")
@@ -227,11 +233,10 @@ class CeldaSorpresaC inherits CeldaSorpresa {
 
 class CeldaSorpresaD inherits CeldaSorpresa {
 
-	override method activarSorpresa() {
-		super()
-		nivel1.agregarPollo()
+	override method activarSorpresa(unNivel) {
+		super(unNivel)
+		unNivel.agregarPollo()
 	}
-
 	override method cambiarDeIMagen() {
 		image = "imgs/ver.png"
 		game.say(self, "Más pollos!!!")
@@ -259,10 +264,11 @@ object deposito {
 // TODO: salida automática
 object salida { // la salida se visualiza siempre en el mismo lugar del tablero
 
-	const property position = game.at(game.width() - 1, 0)
+	const property position = utilidadesParaJuego.posicionArbitraria()
 	var property image = "imgs/portal.png"
 	const property sonido = "audio/salir.mp3"
-
+	
+	method esOro() = false
 	method esRecolectable() = false
 
 	method reaccionarA(unPersonaje) {

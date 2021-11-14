@@ -18,7 +18,6 @@ object llave {method instanciar(unaPosicion) = new Llave(position = unaPosicion)
 object pollo {method instanciar(unaPosicion) = new Pollo(position = unaPosicion)}
 object oro {method instanciar(unaPosicion) = new Oro(position = unaPosicion)}
 object pota {method instanciar(unaPosicion) = new Pota(position = unaPosicion)}
-
 /* CELDAS SORPRESA */
 object sorpresaA {method instanciar(unaPosicion) = new CeldaSorpresaA(position = unaPosicion)}
 object sorpresaB {method instanciar(unaPosicion) = new CeldaSorpresaB(position = unaPosicion)}

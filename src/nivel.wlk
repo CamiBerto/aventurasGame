@@ -60,11 +60,10 @@ class Nivel {
 	method configurate() {
 		// fondo - es importante que sea el primer visual que se agregue
 		game.addVisual(new Fondo())
+		keyboard.z().onPressDo{ self.pasarDeNivel()}
 	}
 
 	method perder() {
-		// sonido perder
-		// game.sound("audio/perder.mp3").play()
 		// game.clear() limpia visuals, teclado, colisiones y acciones
 		game.clear()
 			// después puedo volver a agregar el fondo, y algún visual para que no quede tan pelado
@@ -85,11 +84,23 @@ class Nivel {
 			// game.clear() limpia visuals, teclado, colisiones y acciones
 		game.clear()
 	}
-	
+	method imagenIntermedia()
+	method siguienteNivel()
 	method pasarDeNivel() {
 		const pasarNivel = game.sound("audio/pasarNivel.mp3")
 		pasarNivel.play()
-			
+		// después puedo volver a agregar el fondo, y algún visual para que no quede tan pelado
+		game.addVisual(new Fondo(image = "imgs/fondo Completo.png"))
+			// después de un ratito ...
+		game.schedule(1000, { game.clear()
+				// cambio de fondo
+			game.addVisual(new Fondo(image = self.imagenIntermedia()))
+				// después de un ratito ...
+			game.schedule(1500, { // ... limpio todo de nuevo
+			game.clear() // y arranco el siguiente nivel
+			self.siguienteNivel().configurate()
+			})
+		})		
 	}
 
 }

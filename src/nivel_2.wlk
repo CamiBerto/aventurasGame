@@ -7,34 +7,30 @@ import nivel.*
 import personajes.*
 import config.*
 import nivel_1.*
+import nivel_2.*
 
 object nivel2 inherits Nivel {
-	
+	var property portalCreado = salida
 	var property personaje = new PersonajeNivel2(nivelActual = self)
-	const property cajasEnTablero = #{}
-	override method faltanRequisitos() = not (self.todasLasCajasEnDeposito() && personaje.llavesAgarradas() == 3)
-	
-	
+	override method faltanRequisitos() = game.allVisuals().any{c=>c.image() == "imgs/moneda.png"}
 	method estadoActual() {
-		var palabras = ""
-		if (not self.todasLasCajasEnDeposito()) {
-			palabras = palabras + "Aún faltan cajas en el depósito."
+		return if (self.faltanRequisitos()) {
+			"Aún faltan recolectar ORO."
 		}
-		if (personaje.llavesAgarradas() < 3) {
-			palabras = palabras + "No encontré todas las llaves."
-		}
-		return palabras
+		else{
+			"ir a la salida"
+		}	
 	}
-
+	method aparecerPortalSi(){
+		if(not self.faltanRequisitos()){
+				game.addVisual(portalCreado)
+			}
+	}
 	method efectoPerderVida() {
 		personaje.perderEnergia(15)
 	}
 	method efectoAgregarVida() {
 		personaje.ganarEnergia(30)
-	}
-	
-	method agregarPollo() {
-		self.ponerElementos(1, pollo)
 	}
 	
 	override method configurate() {
@@ -62,14 +58,20 @@ object nivel2 inherits Nivel {
 		keyboard.up().onPressDo{ personaje.moverArriba()}
 		keyboard.down().onPressDo{ personaje.moverAbajo()}
 		keyboard.q().onPressDo{ personaje.agarrarElemento()}
-		keyboard.n().onPressDo({ // al presionar "n" finaliza el juego o da indicaciones
-			if (not self.faltanRequisitos()) {
-				game.say(personaje, "Ganamos!!!")
-				game.schedule(1500, { self.pasarDeNivel()})
-			} else {
-				game.say(personaje, self.estadoActual())
-			}
-		})
+		// al presionar "n"  da indicaciones
+		keyboard.n().onPressDo{game.say(personaje, self.estadoActual())}
+		//colicion con oro
+		game.onCollideDo(personaje, {objeto => self.hayOro(objeto)})
+		game.onCollideDo(personaje, {objeto => if(objeto == portalCreado) {self.pasarDeNivel()}})
 	}
-	
+	method hayOro(objeto){
+		if(objeto.esOro()){
+			objeto.reaccionarA(personaje)
+			self.aparecerPortalSi()
+		}
+	}
+	override method imagenIntermedia(){
+		return "imgs/fondoFinNivel2.png"
+	}
+	override method siguienteNivel() = nivelBonus
 }

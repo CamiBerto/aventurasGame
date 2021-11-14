@@ -7,6 +7,6 @@ class Fondo {
 	var property image = "imgs/fondoCompleto.png"
 
 	method esRecolectable() = false
-
+	method esOro() = false
 }
 

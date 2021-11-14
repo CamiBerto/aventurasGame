@@ -80,20 +80,9 @@ object nivel1 inherits Nivel {
 			}
 		})
 	}
-	override method pasarDeNivel() {
-		super()
-			// después puedo volver a agregar el fondo, y algún visual para que no quede tan pelado
-		game.addVisual(new Fondo(image = "imgs/fondo Completo.png"))
-			// después de un ratito ...
-		game.schedule(1000, { game.clear()
-				// cambio de fondo
-			game.addVisual(new Fondo(image = "imgs/fondoFinNivel1.png"))
-				// después de un ratito ...
-			game.schedule(1500, { // ... limpio todo de nuevo
-			game.clear() // y arranco el siguiente nivel
-			nivel2.configurate()
-			})
-		})
+	override method imagenIntermedia(){
+		return "imgs/fondoFinNivel1.png"
 	}
+	override method siguienteNivel() = nivel2
 }
 
