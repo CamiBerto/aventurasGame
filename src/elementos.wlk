@@ -76,7 +76,7 @@ class Recolectable inherits ElementoJuego {
 	method esCeldaSorpresa() {
 		return false
 	}
-
+ 	method energiaQueOtorga() = 0
 	method oroQueOtorga() = 0
 
 	method oroQueQuita() = 0
@@ -153,11 +153,12 @@ class Pollo inherits Recolectable {
 	var property image = "imgs/pollo.png"
 
 	override method oroQueOtorga() = 5
+	override method energiaQueOtorga() = 5
 
 	override method sonido() = "audio/comerpollo.mp3"
 
 	override method reaccionarA(unPersonaje) {
-		unPersonaje.ganarEnergia(self.energia())
+		unPersonaje.comerPollo(self)
 		super(unPersonaje)
 		game.sound(self.sonido()).play()
 	}

@@ -159,6 +159,12 @@ class Personaje {
 	}
 
 	method avanzarOGanar()
+		method comerPollo(unPollo) {
+		const comerpollo = game.sound(unPollo.sonido())
+		comerpollo.play()
+
+	}
+
 
 }
 

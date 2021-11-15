@@ -10,10 +10,10 @@ class PersonajeNivel2 inherits Personaje {
 	override method avanzarOGanar() {
 	}
 
-	override method ganarEnergia(unPollo) {
-		super(unPollo)
-		self.actualizarOro(unPollo)
-	}
+override method comerPollo(unPollo) {
+	super(unPollo)
+	self.ganarEnergia(unPollo.energiaQueOtorga())
+}
 
 	override method avanzarHaciendoA(posicion) {
 		/* SOLO LAS CAJAS BLOQUEAN EL PASO, LOS OTROS OBJETOS SE AGARRAN */
