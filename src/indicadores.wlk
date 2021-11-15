@@ -61,7 +61,7 @@ object vidaVisual inherits Indicador {
 
 }
 
-object flechasVisual inherits Indicador {
+object flechaVisual inherits Indicador {
 
 	var property imagenes = [ "imgs/green (0).png", "imgs/green (1).png", "imgs/green (2).png", "imgs/green (3).png", "imgs/green (4).png", "imgs/green (5).png", "imgs/green (6).png", "imgs/green (7).png", "imgs/green (8).png", "imgs/green (9).png" ]
 

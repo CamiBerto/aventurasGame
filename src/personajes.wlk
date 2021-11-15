@@ -19,7 +19,7 @@ class Personaje {
 	var property oro = 0
 	var property vida = 50
 	var property energia = 30
-	var property granadas = 0
+	var property flechasAgarradas = 0
 	// Juego
 	var property llavesAgarradas = 0
 	var property positionGuardadas = []
@@ -40,6 +40,9 @@ class Personaje {
 
 	method actualizarOroVisual() {
 		oroVisual.actualizarDato(oro)
+	}
+	method actualizarFlechasVisual() {
+		flechaVisual.actualizarDato(flechasAgarradas)
 	}
 
 	// Valores de estado
@@ -216,13 +219,31 @@ class PersonajeNivel2 inherits Personaje {
 }
 
 class PersonajeNivel3 inherits Personaje {
-
 	override method avanzarOGanar() {
 	}
-
+	method serAtacadoPorBicho(unBicho){
+		game.schedule(500,{self.quitarVida(unBicho)})
+		self.direccion(self.direccion().opuesto())
+		2.times({a =>self.position(direccion.proximaPosicion(self.position()))})
+	}
 	override method avanzarHaciendoA(posicion) {
 		self.avanzar()
 	}
-
+	method agarrarFlecha(){
+		flechasAgarradas += 3
+		self.actualizarFlechasVisual()
+	}
+	method dispararFlecha(){
+		if(flechasAgarradas > 0){
+		var flecha = new FlechaArrojada(image = ("imgs/flecha" + self.direccion() + ".png"), position = self.direccion().siguiente(self.position()), direccion = self.direccion())
+		game.addVisual(flecha)
+		flecha.disparadaPor(self)
+		flechasAgarradas -= 1
+		game.sound(flecha.sonido()).play()
+		self.actualizarFlechasVisual()
+		}
+	}
+	override method actualizarOro(elemento) {}
+	method esBicho() = false
 }
 

@@ -14,7 +14,7 @@ object nivel2 inherits Nivel {
 	var property portalCreado = salida
 	var property personaje = new PersonajeNivel2(nivelActual = self)
 
-	override method faltanRequisitos() = game.allVisuals().any{ c => c.image() == "imgs/moneda.png" }
+	override method faltanRequisitos() =  game.allVisuals().any{c=>self.listBolsasOro().contains(c)}
 
 	method estadoActual() {
 		return if (self.faltanRequisitos()) {
@@ -23,7 +23,9 @@ object nivel2 inherits Nivel {
 			"ir a la salida"
 		}
 	}
-
+	method listBolsasOro(){
+		return elementosEnNivel.filter{c=>c.esOro()}
+	}
 	method aparecerPortalSi() {
 		if (not self.faltanRequisitos()) {
 			game.addVisual(portalCreado)
@@ -81,7 +83,7 @@ object nivel2 inherits Nivel {
 	}
 
 	override method imagenIntermedia() {
-		return "imgs/fondo ganaste.png"
+		return "imgs/fondoFinNivel2.png"
 	}
 
 	override method siguienteNivel() = nivelBonus

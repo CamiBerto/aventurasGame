@@ -27,6 +27,8 @@ class ElementoJuego {
 		game.removeVisual(self)
 	}
 
+	method esBicho() = false
+
 // agregar comportamiento
 }
 
@@ -273,7 +275,7 @@ class CeldaSorpresaD inherits CeldaSorpresa {
 
 }
 
-class Flecha inherits Recolectable {
+class FlechaEnPiso inherits Recolectable {
 
 	var property image = "imgs/flechas.png"
 
@@ -287,25 +289,135 @@ class Flecha inherits Recolectable {
 
 }
 
-class Bicho inherits ElementoJuego {
+class FlechaArrojada{
+	var property position
+	var property image
+	var property direccion
+	var property sonido = "audio/flechas.mp3"
 
-	method saludQueQuita() = 20
+	method disparadaPor(unPersonaje) {
+		var asesino = false
+		game.onCollideDo(self, { enemigo =>if (enemigo.esBicho()) {
+										   	enemigo.asesinadoPor(unPersonaje)
+											asesino = true
+											game.sound("audio/flecha2.mp3").play()
+											self.desaparecer()
+											unPersonaje.nivelActual().aparecerCofreSi()
+										}
+					     })
+		game.schedule(1000, {if (not asesino) {self.position(direccion.siguiente(self.position()))}})
+		game.schedule(2000, {if (not asesino) {self.position(direccion.siguiente(self.position()))}})
+		game.schedule(3000, {if (not asesino) {self.desaparecer() game.say(unPersonaje,"Casi!...")}})
+	}
+	method esOro() = false
+
+	// Para que se ignore (alfombra)
+	method esInteractivo() = true
+	
+	method esRecolectable() = false
+	
+	method desaparecer() {
+		game.removeVisual(self)
+	}
+
+	method esBicho() = false
+
+}
+class Enemigo inherits ElementoJuego {
+
+	var property direcciones = [ arriba, abajo, derecha, izquierda ]
+	var property direccion = arriba
+	var property image = "imgs/fantasma.png"
+	const property sonido = "audio/risa.mp3"
+
+	method vidaQueQuita() = 20
 
 	override method esRecolectable() = false
 
-	method morir() {
+	method moverse(unPersonaje) {
+		game.onTick(1500, "bicho tonto", { self.direccionCambiante()
+			position = direccion.proximaPosicion(self.position())
+		})
+	}
+
+	method direccionCambiante() {
+		direccion = direcciones.get(0.randomUpTo(3))
+	}
+
+	method asesinadoPor(unPersonaje) {
+		game.sound(self.sonido()).play()
 		game.removeVisual(self)
+		unPersonaje.nivelActual().ponerElementos(1, flecha)
+	}
+
+	override method esBicho() = true
+
+}
+
+class Demonio inherits Enemigo {
+	const property sonido = "audio/demonio.mp3"
+	override method vidaQueQuita() = 30
+	
+	override method moverse(unPersonaje) {
+		game.onTick((2000, "demonio", {position = new Position(x = self.asignarPosX(unPersonaje), y = self.asignarPosY(unPersonaje))})
+	}
+
+	method asignarPosX(unPersonaje) {
+		const posPersonajeX = unPersonaje.position().x()
+		return if (posPersonajeX > self.position().x()) {
+			self.position().x() + 1
+		} else {
+			self.position().x() - 1
+		}
+	}
+
+	method asignarPosY(unPersonaje) {
+		const posPersonajeY = unPersonaje.position().y()
+		return if (posPersonajeY > self.position().y()) {
+			self.position().y() + 1
+		} else {
+			self.position().y() - 1
+		}
 	}
 
 }
 
-object cofre { // la salida se visualiza siempre en el mismo lugar del tablero
+class Ogro inherits Enemigo {
+	const property sonido = "audio/ogro.mp3"
+	override method vidaQueQuita() = 30
+
+	override method moverse(unPersonaje) {
+		game.onTick((2000, "ogro", {position = new Position(x = self.asignarPosX(unPersonaje), y = self.asignarPosY(unPersonaje))})
+	}
+
+	method asignarPosX(unPersonaje) {
+		const posPersonajeX = unPersonaje.position().x()
+		return if (posPersonajeX > self.position().x()) {
+			self.position().x() + 1
+		} else {
+			self.position().x() - 1
+		}
+	}
+
+	method asignarPosY(unPersonaje) {
+		const posPersonajeY = unPersonaje.position().y()
+		return if (posPersonajeY > self.position().y()) {
+			self.position().y() + 1
+		} else {
+			self.position().y() - 1
+		}
+	}
+}
+
+object cofre { // el cofre se visualiza siempre en el mismo lugar del tablero
 
 	const property position = utilidadesParaJuego.posicionArbitraria()
-	var property image = "imgs/portal.png"
-	const property sonido = "audio/salir.mp3"
+	var property image = "imgs/cofre.png"
+	const property sonido = "audio/curar.mp3"
 
 	method esOro() = false
+
+	method esBicho() = false
 
 	method esRecolectable() = false
 
@@ -325,6 +437,8 @@ object deposito {
 
 	method esRecolectable() = false
 
+	method esBicho() = false
+
 	method esInteractivo() = false
 
 	method contieneElemento(unElemento) = unElemento.position().x().between(self.position().x(), self.position().x() + 3) && unElemento.position().y().between(self.position().y(), self.position().y() + 3)
@@ -338,6 +452,8 @@ object salida { // la salida se visualiza siempre en el mismo lugar del tablero
 	const property sonido = "audio/salir.mp3"
 
 	method esOro() = false
+
+	method esBicho() = false
 
 	method esRecolectable() = false
 

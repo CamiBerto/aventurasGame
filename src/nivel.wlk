@@ -80,9 +80,12 @@ class Nivel {
 
 	method terminar() {
 		// sonido pasar
-		game.sound("audio/pasar.mp3").play()
+		
+		game.sound("audio/ganarNivel3.mp3").play()
 			// game.clear() limpia visuals, teclado, colisiones y acciones
 		game.clear()
+		game.addVisual(new Fondo(image = "imgs/fondo ganaste.png"))
+		game.schedule(6000, { game.stop() } )
 	}
 	method imagenIntermedia()
 	method siguienteNivel()

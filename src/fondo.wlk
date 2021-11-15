@@ -4,7 +4,7 @@ import utilidades.*
 class Fondo {
 
 	const property position = game.at(0, 0)
-	var property image = "imgs/fondoCompleto.png"
+	var property image = "imgs/fondo Completo.png"
 
 	method esRecolectable() = false
 	method esOro() = false
