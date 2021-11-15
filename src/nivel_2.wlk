@@ -1,20 +1,18 @@
+import config.*
 import wollok.game.*
-import fondo.*
 import elementos.*
 import utilidades.*
 import indicadores.*
 import nivel.*
-import personajes.*
-import config.*
-import nivel_1.*
 import nivel_3.*
+import personaje_nivel2.*
 
 object nivel2 inherits Nivel {
 
 	var property portalCreado = salida
 	var property personaje = new PersonajeNivel2(nivelActual = self)
 
-	override method faltanRequisitos() =  game.allVisuals().any{c=>self.listBolsasOro().contains(c)}
+	override method faltanRequisitos() = game.allVisuals().any{ c => self.listBolsasOro().contains(c) }
 
 	method estadoActual() {
 		return if (self.faltanRequisitos()) {
@@ -23,9 +21,11 @@ object nivel2 inherits Nivel {
 			"ir a la salida"
 		}
 	}
-	method listBolsasOro(){
-		return elementosEnNivel.filter{c=>c.esOro()}
+
+	method listBolsasOro() {
+		return elementosEnNivel.filter{ c => c.esOro() }
 	}
+
 	method aparecerPortalSi() {
 		if (not self.faltanRequisitos()) {
 			game.addVisual(portalCreado)
@@ -52,7 +52,7 @@ object nivel2 inherits Nivel {
 		self.ponerElementos(1, sorpresaC)
 		self.ponerElementos(1, sorpresaD)
 			// Se agregan las visuales de estado de Cantidad de Oro, Vida, Llaves, Energía
-		oroVisual.iniciarGrafico(personaje.oro(), "imgs/IndOro.png", "imgs/IndOroCom.png")
+		oroVisual.iniciarGrafico(personaje.oroJuntado(), "imgs/IndOro.png", "imgs/IndOroCom.png")
 		vidaVisual.iniciarGrafico(personaje.vida(), "imgs/vi.png", "imgs/da.png")
 		energiaVisual.iniciarGrafico(personaje.energia(), "imgs/ene.png", "imgs/rgia.png")
 			// personaje, es importante que sea el último visual que se agregue

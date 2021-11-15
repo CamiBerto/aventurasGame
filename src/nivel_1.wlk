@@ -4,7 +4,7 @@ import elementos.*
 import utilidades.*
 import indicadores.*
 import nivel.*
-import personajes.*
+import personaje_nivel1.*
 import config.*
 import nivel_2.*
 
@@ -30,7 +30,6 @@ object nivel1 inherits Nivel {
 		return palabras
 	}
 
-	
 	// Este método es exclusivo del nivel 1
 	method ponerCajas(cantidad) { // debe recibir cantidad
 		const unaPosicion = utilidadesParaJuego.posicionArbitraria()
@@ -80,9 +79,12 @@ object nivel1 inherits Nivel {
 			}
 		})
 	}
-	override method imagenIntermedia(){
+
+	override method imagenIntermedia() {
 		return "imgs/fondoFinNivel1.png"
 	}
+
 	override method siguienteNivel() = nivel2
+
 }
 

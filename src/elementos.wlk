@@ -289,7 +289,8 @@ class FlechaEnPiso inherits Recolectable {
 
 }
 
-class FlechaArrojada{
+class FlechaArrojada {
+
 	var property position
 	var property image
 	var property direccion
@@ -297,25 +298,37 @@ class FlechaArrojada{
 
 	method disparadaPor(unPersonaje) {
 		var asesino = false
-		game.onCollideDo(self, { enemigo =>if (enemigo.esBicho()) {
-										   	enemigo.asesinadoPor(unPersonaje)
-											asesino = true
-											game.sound("audio/flecha2.mp3").play()
-											self.desaparecer()
-											unPersonaje.nivelActual().aparecerCofreSi()
-										}
-					     })
-		game.schedule(1000, {if (not asesino) {self.position(direccion.siguiente(self.position()))}})
-		game.schedule(2000, {if (not asesino) {self.position(direccion.siguiente(self.position()))}})
-		game.schedule(3000, {if (not asesino) {self.desaparecer() game.say(unPersonaje,"Casi!...")}})
+		game.onCollideDo(self, { objeto =>
+			if (objeto.esBicho()) {
+				objeto.asesinadoPor(unPersonaje)
+				asesino = true
+				game.sound("audio/flecha2.mp3").play()
+				self.desaparecer()
+				unPersonaje.nivelActual().aparecerCofreSi()
+			}
+		})
+		game.schedule(1000, { if (not asesino) {
+				self.position(direccion.siguiente(self.position()))
+			}
+		})
+		game.schedule(2000, { if (not asesino) {
+				self.position(direccion.siguiente(self.position()))
+			}
+		})
+		game.schedule(3000, { if (not asesino) {
+				self.desaparecer()
+				game.say(unPersonaje, "Casi!...")
+			}
+		})
 	}
+
 	method esOro() = false
 
 	// Para que se ignore (alfombra)
 	method esInteractivo() = true
-	
+
 	method esRecolectable() = false
-	
+
 	method desaparecer() {
 		game.removeVisual(self)
 	}
@@ -323,12 +336,13 @@ class FlechaArrojada{
 	method esBicho() = false
 
 }
+
 class Enemigo inherits ElementoJuego {
 
 	var property direcciones = [ arriba, abajo, derecha, izquierda ]
 	var property direccion = arriba
 	var property image = "imgs/fantasma.png"
-	const property sonido = "audio/risa.mp3"
+	var property sonido = "audio/risa.mp3"
 
 	method vidaQueQuita() = 20
 
@@ -355,11 +369,13 @@ class Enemigo inherits ElementoJuego {
 }
 
 class Demonio inherits Enemigo {
-	const property sonido = "audio/demonio.mp3"
+
+	override method sonido() = "audio/demonio.mp3"
+
 	override method vidaQueQuita() = 30
-	
+
 	override method moverse(unPersonaje) {
-		game.onTick((2000, "demonio", {position = new Position(x = self.asignarPosX(unPersonaje), y = self.asignarPosY(unPersonaje))})
+		game.onTick(2000, "demonio", { position = new Position(x = self.asignarPosX(unPersonaje), y = self.asignarPosY(unPersonaje))})
 	}
 
 	method asignarPosX(unPersonaje) {
@@ -383,11 +399,13 @@ class Demonio inherits Enemigo {
 }
 
 class Ogro inherits Enemigo {
-	const property sonido = "audio/ogro.mp3"
+
+	override method sonido() = "audio/ogro.mp3"
+
 	override method vidaQueQuita() = 30
 
 	override method moverse(unPersonaje) {
-		game.onTick((2000, "ogro", {position = new Position(x = self.asignarPosX(unPersonaje), y = self.asignarPosY(unPersonaje))})
+		game.onTick(2000, "ogro", { position = new Position(x = self.asignarPosX(unPersonaje), y = self.asignarPosY(unPersonaje))})
 	}
 
 	method asignarPosX(unPersonaje) {
@@ -407,6 +425,7 @@ class Ogro inherits Enemigo {
 			self.position().y() - 1
 		}
 	}
+
 }
 
 object cofre { // el cofre se visualiza siempre en el mismo lugar del tablero

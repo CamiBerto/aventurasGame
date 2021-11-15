@@ -4,9 +4,11 @@ import nivel_1.*
 
 object pantallaInicio {
 
+// La pantalla de configuración inicial
 	const fondoEmpezar = new Fondo(image = "imgs/fondo empezar.png")
 
 	method configurate() {
+		// Aranca con la dificultad normal
 		game.addVisual(dificultad.fondoNormal())
 		keyboard.x().onPressDo({ game.addVisual(fondoEmpezar)
 			game.schedule(2000, { nivel1.configurate()})

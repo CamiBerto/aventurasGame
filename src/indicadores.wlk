@@ -1,7 +1,7 @@
 import elementos.*
 import wollok.game.*
 import utilidades.*
-import personajes.*
+import personaje.*
 
 class Indicador {
 

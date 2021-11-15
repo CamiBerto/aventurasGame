@@ -16,7 +16,7 @@ class Personaje {
 	var property image = "imgs/heroe.png"
 	var property direccion = arriba
 	// Valores de estado
-	var property oro = 0
+	var property oroJuntado = 0
 	var property vida = 50
 	var property energia = 30
 	var property flechasAgarradas = 0
@@ -39,8 +39,9 @@ class Personaje {
 	}
 
 	method actualizarOroVisual() {
-		oroVisual.actualizarDato(oro)
+		oroVisual.actualizarDato(oroJuntado)
 	}
+
 	method actualizarFlechasVisual() {
 		flechaVisual.actualizarDato(flechasAgarradas)
 	}
@@ -85,11 +86,11 @@ class Personaje {
 	}
 
 	method sacarOro(elemento) {
-		oro = 0.max(self.oro() - elemento.oroQueQuita())
+		oroJuntado = 0.max(self.oroJuntado() - elemento.oroQueQuita())
 	}
 
 	method sumarOro(elemento) {
-		oro = 99.min(self.oro() + elemento.oroQueOtorga())
+		oroJuntado = 99.min(self.oroJuntado() + elemento.oroQueOtorga())
 	}
 
 	method actualizarOro(elemento) {
@@ -172,78 +173,5 @@ class Personaje {
 
 	method avanzarOGanar()
 
-}
-
-class PersonajeNivel1 inherits Personaje {
-
-	override method avanzarOGanar() {
-		if (nivelActual.faltanRequisitos()) {
-			self.avanzar()
-		} else {
-			game.say(self, "Ganamos!!!")
-			game.schedule(1500, { nivelActual.pasarDeNivel()})
-		}
-	}
-
-	override method avanzarHaciendoA(posicion) {
-		/* SOLO LAS CAJAS BLOQUEAN EL PASO, LOS OTROS OBJETOS SE AGARRAN */
-		if (nivelActual.hayCaja(posicion)) {
-			// ?? Esto podría hacerse con el getObjectsIn...?? asumiendo que solo hay una visual por celda
-			const unaCaja = nivelActual.cajasEnTablero().find({ b => b.position() == posicion })
-			unaCaja.reaccionarA(self)
-		}
-			// Si había caja, después del bloque anterior, no debería haber caja
-		if (not nivelActual.hayCaja(posicion)) {
-			self.avanzarOGanar()
-		}
-	}
-
-}
-
-class PersonajeNivel2 inherits Personaje {
-
-	override method avanzarOGanar() {
-	}
-
-	override method comerPollo(unPollo) {
-		super(unPollo)
-		self.actualizarOro(unPollo)
-	}
-
-	override method avanzarHaciendoA(posicion) {
-		/* SOLO LAS CAJAS BLOQUEAN EL PASO, LOS OTROS OBJETOS SE AGARRAN */
-		// Si había caja, después del bloque anterior, no debería haber caja
-		self.avanzar()
-	}
-
-}
-
-class PersonajeNivel3 inherits Personaje {
-	override method avanzarOGanar() {
-	}
-	method serAtacadoPorBicho(unBicho){
-		game.schedule(500,{self.quitarVida(unBicho)})
-		self.direccion(self.direccion().opuesto())
-		2.times({a =>self.position(direccion.proximaPosicion(self.position()))})
-	}
-	override method avanzarHaciendoA(posicion) {
-		self.avanzar()
-	}
-	method agarrarFlecha(){
-		flechasAgarradas += 3
-		self.actualizarFlechasVisual()
-	}
-	method dispararFlecha(){
-		if(flechasAgarradas > 0){
-		var flecha = new FlechaArrojada(image = ("imgs/flecha" + self.direccion() + ".png"), position = self.direccion().siguiente(self.position()), direccion = self.direccion())
-		game.addVisual(flecha)
-		flecha.disparadaPor(self)
-		flechasAgarradas -= 1
-		game.sound(flecha.sonido()).play()
-		self.actualizarFlechasVisual()
-		}
-	}
-	override method actualizarOro(elemento) {}
-	method esBicho() = false
 }
 

@@ -1,5 +1,5 @@
 import wollok.game.*
-import personajes.*
+import personaje.*
 import elementos.*
 import nivel_1.*
 import fondo.*
