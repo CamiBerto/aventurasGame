@@ -9,8 +9,6 @@ import indicadores.*
 // imagen y posición
 /* personaje generico */
 class Personaje {
-
-	var efectoModificador = { unPollo , energiaActual => unPollo.energia() }
 	// Config inicial
 	var property position = utilidadesParaJuego.posicionArbitraria()
 	var property image = "imgs/heroe.png"
@@ -159,17 +157,6 @@ class Personaje {
 			[]
 		}
 	}
-
-	method comerPollo(unPollo) {
-		const comerpollo = game.sound("audio/comerpollo.mp3")
-		comerpollo.play()
-		self.ganarEnergia(unPollo.energia())
-		unPollo.serAgarrado()
-	}
-
-	method incorporaEfecto(unElemento) {
-		efectoModificador = unElemento.efecto()
-	} // usar con los potenciadores
 
 	method avanzarOGanar()
 

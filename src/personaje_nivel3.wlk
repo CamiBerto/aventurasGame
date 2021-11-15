@@ -4,6 +4,7 @@ import elementos.*
 import movimientos.*
 import indicadores.*
 import personaje.*
+import enemigosYFlechaArrojada.*
 
 class PersonajeNivel3 inherits Personaje {
 
@@ -28,7 +29,7 @@ class PersonajeNivel3 inherits Personaje {
 	method dispararFlecha() {
 		if (flechasAgarradas > 0) {
 			const flechaLanzada = new FlechaArrojada(image = ("imgs/flecha" + self.direccion() + ".png"), position = self.direccion().siguiente(self.position()), direccion = self.direccion())
-			game.addVisual(flecha)
+			game.addVisual(flechaLanzada)
 			flechaLanzada.disparadaPor(self)
 			flechasAgarradas -= 1
 			game.sound(flechaLanzada.sonido()).play()

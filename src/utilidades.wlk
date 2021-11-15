@@ -1,5 +1,6 @@
 import wollok.game.*
 import elementos.*
+import enemigosYFlechaArrojada.*
 
 object utilidadesParaJuego {
 
@@ -14,41 +15,13 @@ object utilidadesParaJuego {
 }
 
 /* INSTANCIAR OBJETOS PARA NO USAR STRINGS*/
-object llave {
+object llave {method instanciar(unaPosicion) = new Llave(position = unaPosicion)}
+object pollo {method instanciar(unaPosicion) = new Pollo(position = unaPosicion)}
+object oro {method instanciar(unaPosicion) = new Oro(position = unaPosicion)}
+object pota {method instanciar(unaPosicion) = new Pota(position = unaPosicion)}
+object flecha {method instanciar(unaPosicion) = new FlechaEnPiso(position = unaPosicion)}
 
-	method instanciar(unaPosicion) = new Llave(position = unaPosicion)
-
-}
-
-object pollo {
-
-	method instanciar(unaPosicion) = new Pollo(position = unaPosicion)
-
-}
-
-object oro {
-
-	method instanciar(unaPosicion) = new Oro(position = unaPosicion)
-
-}
-
-object pota {
-
-	method instanciar(unaPosicion) = new Pota(position = unaPosicion)
-
-}
-
-object flecha {
-
-	method instanciar(unaPosicion) = new FlechaEnPiso(position = unaPosicion)
-
-}
-
-object enemigo {
-
-	method instanciar(unaPosicion) = new Enemigo(position = unaPosicion)
-
-}
+object enemigo {method instanciar(unaPosicion) = new Enemigo(position = unaPosicion)}
 
 object demonio {
 

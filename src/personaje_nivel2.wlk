@@ -10,7 +10,7 @@ class PersonajeNivel2 inherits Personaje {
 	override method avanzarOGanar() {
 	}
 
-	override method comerPollo(unPollo) {
+	override method ganarEnergia(unPollo) {
 		super(unPollo)
 		self.actualizarOro(unPollo)
 	}

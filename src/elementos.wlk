@@ -88,7 +88,7 @@ class Recolectable inherits ElementoJuego {
 	}
 
 	method reaccionarA(unPersonaje) {
-		self.dejarPasar(unPersonaje)
+		self.serAgarrado()
 	}
 
 }
@@ -100,22 +100,9 @@ class Llave inherits Recolectable {
 	override method sonido() = "audio/llave.mp3"
 
 	override method reaccionarA(unPersonaje) {
-		unPersonaje.guardarLlave()
-		self.serAgarrado()
-		game.sound(self.sonido()).play()
-	}
-
-}
-
-class Modificador inherits Recolectable {
-
-	method efecto() {
-		return ({ unPollo => unPollo.energia() })
-	}
-
-	override method reaccionarA(unPersonaje) {
 		super(unPersonaje)
-		unPersonaje.incorporaEfecto(self)
+		unPersonaje.guardarLlave()
+		game.sound(self.sonido()).play()
 	}
 
 }
@@ -127,15 +114,11 @@ class Pota inherits Recolectable {
 
 	override method sonido() = "audio/pota.mp3"
 
-	method efecto() {
-		return ({ potita /*energiaActual*/ => potita.vida() })
-	}
-
 	override method oroQueOtorga() = 3
 
 	override method reaccionarA(unPersonaje) {
 		unPersonaje.aumentarVida(self)
-		self.serAgarrado()
+		super(unPersonaje)
 		game.sound(self.sonido()).play()
 	}
 
@@ -154,7 +137,7 @@ class Oro inherits Recolectable {
 	override method reaccionarA(unPersonaje) {
 		unPersonaje.actualizarOro(self)
 		unPersonaje.quitarVida(self)
-		self.serAgarrado()
+		super(unPersonaje)
 		game.sound(self.sonido()).play()
 	}
 
@@ -164,22 +147,24 @@ class Oro inherits Recolectable {
 
 }
 
-class Pollo inherits Modificador {
+class Pollo inherits Recolectable {
 
 	var property energia = 30
 	var property image = "imgs/pollo.png"
 
 	override method oroQueOtorga() = 5
 
-	override method sonido() = "audio/comer.mp3"
+	override method sonido() = "audio/comerpollo.mp3"
 
 	override method reaccionarA(unPersonaje) {
-		unPersonaje.comerPollo(self)
+		unPersonaje.ganarEnergia(self.energia())
+		super(unPersonaje)
+		game.sound(self.sonido()).play()
 	}
 
 }
 
-class CeldaSorpresa inherits Modificador {
+class CeldaSorpresa inherits Recolectable {
 
 	var property fueActivada = false
 	var property image = "imgs/beer premio.png"
@@ -199,7 +184,7 @@ class CeldaSorpresa inherits Modificador {
 	method activarSorpresa(unNivel) {
 		self.cambiarDeIMagen()
 		fueActivada = true
-		game.schedule(500, { game.removeVisual(self)})
+		game.schedule(500, { self.serAgarrado()})
 	}
 
 }
@@ -283,147 +268,8 @@ class FlechaEnPiso inherits Recolectable {
 
 	override method reaccionarA(unPersonaje) {
 		unPersonaje.agarrarFlecha()
-		self.serAgarrado()
+		super(unPersonaje)
 		game.sound(self.sonido()).play()
-	}
-
-}
-
-class FlechaArrojada {
-
-	var property position
-	var property image
-	var property direccion
-	var property sonido = "audio/flechas.mp3"
-
-	method disparadaPor(unPersonaje) {
-		var asesino = false
-		game.onCollideDo(self, { objeto =>
-			if (objeto.esBicho()) {
-				objeto.asesinadoPor(unPersonaje)
-				asesino = true
-				game.sound("audio/flecha2.mp3").play()
-				self.desaparecer()
-				unPersonaje.nivelActual().aparecerCofreSi()
-			}
-		})
-		game.schedule(1000, { if (not asesino) {
-				self.position(direccion.siguiente(self.position()))
-			}
-		})
-		game.schedule(2000, { if (not asesino) {
-				self.position(direccion.siguiente(self.position()))
-			}
-		})
-		game.schedule(3000, { if (not asesino) {
-				self.desaparecer()
-				game.say(unPersonaje, "Casi!...")
-			}
-		})
-	}
-
-	method esOro() = false
-
-	// Para que se ignore (alfombra)
-	method esInteractivo() = true
-
-	method esRecolectable() = false
-
-	method desaparecer() {
-		game.removeVisual(self)
-	}
-
-	method esBicho() = false
-
-}
-
-class Enemigo inherits ElementoJuego {
-
-	var property direcciones = [ arriba, abajo, derecha, izquierda ]
-	var property direccion = arriba
-	var property image = "imgs/fantasma.png"
-	var property sonido = "audio/risa.mp3"
-
-	method vidaQueQuita() = 20
-
-	override method esRecolectable() = false
-
-	method moverse(unPersonaje) {
-		game.onTick(1500, "bicho tonto", { self.direccionCambiante()
-			position = direccion.proximaPosicion(self.position())
-		})
-	}
-
-	method direccionCambiante() {
-		direccion = direcciones.get(0.randomUpTo(3))
-	}
-
-	method asesinadoPor(unPersonaje) {
-		game.sound(self.sonido()).play()
-		game.removeVisual(self)
-		unPersonaje.nivelActual().ponerElementos(1, flecha)
-	}
-
-	override method esBicho() = true
-
-}
-
-class Demonio inherits Enemigo {
-
-	override method sonido() = "audio/demonio.mp3"
-
-	override method vidaQueQuita() = 30
-
-	override method moverse(unPersonaje) {
-		game.onTick(2000, "demonio", { position = new Position(x = self.asignarPosX(unPersonaje), y = self.asignarPosY(unPersonaje))})
-	}
-
-	method asignarPosX(unPersonaje) {
-		const posPersonajeX = unPersonaje.position().x()
-		return if (posPersonajeX > self.position().x()) {
-			self.position().x() + 1
-		} else {
-			self.position().x() - 1
-		}
-	}
-
-	method asignarPosY(unPersonaje) {
-		const posPersonajeY = unPersonaje.position().y()
-		return if (posPersonajeY > self.position().y()) {
-			self.position().y() + 1
-		} else {
-			self.position().y() - 1
-		}
-	}
-
-}
-
-class Ogro inherits Enemigo {
-
-	override method sonido() = "audio/ogro.mp3"
-
-	override method vidaQueQuita() = 30
-
-	override method moverse(unPersonaje) {
-		game.onTick(2000, "ogro", { position = new Position(x = self.asignarPosX(unPersonaje), y = self.asignarPosY(unPersonaje))})
-	}
-
-	method asignarPosX(unPersonaje) {
-		const posPersonajeX = unPersonaje.position().x()
-		return if (posPersonajeX > self.position().x()) {
-			self.position().x() + 1
-		} else {
-			self.position().x() - 1
-		}
-	}
-
-	method asignarPosY(unPersonaje) {
-		const posPersonajeY = unPersonaje.position().y()
-		return if (posPersonajeY > self.position().y()) {
-			self.position().y() + 1
-		} else {
-			self.position().y() - 1
-		}
 	}
 
 }
