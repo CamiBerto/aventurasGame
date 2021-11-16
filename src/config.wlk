@@ -28,12 +28,14 @@ object pantallaInicio {
 				nivelNoIniciado = false
 			}
 		})
-		keyboard.space().onPressDo({ game.stop()})
+		keyboard.space().onPressDo({ 
+			game.addVisual(fondoEmpezar)
+			game.schedule(2000, { game.stop()})
+		})
 		keyboard.num1().onPressDo({ dificultad.facil()})
 		keyboard.num2().onPressDo({ dificultad.normal()})
 		keyboard.num3().onPressDo({ dificultad.dificil()})
 	}
-
 }
 
 object dificultad {
