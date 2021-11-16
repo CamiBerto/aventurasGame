@@ -50,7 +50,7 @@ object nivelBonus inherits Nivel {
 			// otros visuals
 		self.ponerElementos(3, pollo)
 		self.ponerElementos(3, pota)
-		// Cantidad según la dificultad
+			// Cantidad según la dificultad
 		self.ponerEnemigo(dificultad.enemigos() - 2, enemigo)
 		self.ponerElementos(dificultad.enemigos(), flecha)
 		self.ponerEnemigo(1, ogro)
@@ -83,7 +83,7 @@ object nivelBonus inherits Nivel {
 				game.schedule(3000, { self.terminar()})
 			}
 		})
-		// Luego de agregar visuales de enemigos, ordena que se muevan
+			// Luego de agregar visuales de enemigos, ordena que se muevan
 		enemigosEnTablero.forEach({ enemigos => enemigos.moverse(self.personaje())})
 	}
 
@@ -99,6 +99,8 @@ object nivelBonus inherits Nivel {
 	}
 
 	override method siguienteNivel() {
+		pantallaInicio.nivelNoIniciado(true)
+		return pantallaInicio
 	}
 
 }

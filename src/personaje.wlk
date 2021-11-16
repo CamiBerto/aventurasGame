@@ -6,6 +6,7 @@ import indicadores.*
 
 /* personaje generico */
 class Personaje {
+
 	// Config inicial
 	var property position = utilidadesParaJuego.posicionArbitraria()
 	var property image = "imgs/heroe.png"
@@ -22,6 +23,7 @@ class Personaje {
 
 	// Abstractos
 	method avanzarOGanar()
+
 	method avanzarHaciendoA(posicion) // En nivel 1 resuelve lógica de empujar cajas, en el 2 y el 3, solo avanza
 
 	/* VISUALES */
@@ -46,6 +48,8 @@ class Personaje {
 	}
 
 	// Valores de estado
+
+
 	method perderEnergia(cantidad) {
 		// No puede bajar de 0
 		self.energia((0).max(self.energia() - cantidad))
@@ -160,9 +164,6 @@ class Personaje {
 			[]
 		}
 	}
-
-
-
 
 }
 

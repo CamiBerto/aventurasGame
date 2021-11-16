@@ -6,14 +6,29 @@ object pantallaInicio {
 
 // La pantalla de configuración inicial
 	const fondoEmpezar = new Fondo(image = "imgs/fondo empezar.png")
-	var nivelNoIniciado = true
+	var property nivelNoIniciado = true
+
+	method reiniciarVariables(unPersonaje) {
+		unPersonaje.oroJuntado(0)
+		unPersonaje.vida(50)
+		unPersonaje.energia(30)
+		unPersonaje.flechasAgarradas(0)
+		unPersonaje.llavesAgarradas(0)
+		unPersonaje.positionGuardadas([])
+		unPersonaje.image("imgs/heroe.png")
+	}
+
 	method configurate() {
-		// Aranca con la dificultad normal
+		self.reiniciarVariables(nivel1.personaje())
+			// Aranca con la dificultad normal
 		game.addVisual(dificultad.fondoNormal())
-		keyboard.x().onPressDo({ if (nivelNoIniciado) {game.addVisual(fondoEmpezar)
-									game.schedule(2000, { nivel1.configurate()}) 
-									nivelNoIniciado = false}
+		keyboard.x().onPressDo({ if (nivelNoIniciado) {
+				game.addVisual(fondoEmpezar)
+				game.schedule(2000, { nivel1.configurate()})
+				nivelNoIniciado = false
+			}
 		})
+		keyboard.space().onPressDo({ game.stop()})
 		keyboard.num1().onPressDo({ dificultad.facil()})
 		keyboard.num2().onPressDo({ dificultad.normal()})
 		keyboard.num3().onPressDo({ dificultad.dificil()})

@@ -5,23 +5,27 @@ import elementos.*
 import utilidades.*
 import indicadores.*
 import nivel_1.*
+import config.*
 
 class Nivel {
 
 	// Elementos del nivel	
 	var property elementosEnNivel = [] // Array de elementos recolectables interactivos, excepto enemigos
-	
+
 	// Abstractos
 	method personaje()
+
 	method faltanRequisitos()
+
 	method imagenIntermedia()
+
 	method siguienteNivel()
 
 	// Indica si hay elementos interactivo en la posición
 	method hayElementoEn(posicion) = elementosEnNivel.any({ e => e.position() == posicion and e.esInteractivo() })
 
 	/* Metodos que tambien interactuan con los movimientos del personaje */
-	method ponerSalida() { 
+	method ponerSalida() {
 		game.addVisual(salida)
 	} // Se agrega la salida al tablero
 
@@ -65,7 +69,8 @@ class Nivel {
 		// fondo - es importante que sea el primer visual que se agregue
 		game.addVisual(new Fondo()) // Inicio de nivel
 		keyboard.z().onPressDo{ self.pasarDeNivel()} // Tecla secreta para pasar de nivel
-		keyboard.x().onPressDo({})
+		keyboard.x().onPressDo({
+		})
 	}
 
 	method perder() {
@@ -78,8 +83,10 @@ class Nivel {
 				// cambio de fondo
 			game.addVisual(new Fondo(image = "imgs/perdimos.png"))
 				// después de un ratito ...
-			game.schedule(3000, { // fin del juego
-			game.stop()})
+			game.schedule(3000, { // reinicia el juego
+				pantallaInicio.nivelNoIniciado(true)
+				pantallaInicio.configurate()
+			})
 		})
 	}
 
@@ -88,19 +95,17 @@ class Nivel {
 		game.sound("audio/ganarNivel3.mp3").play()
 			// game.clear() limpia visuals, teclado, colisiones y acciones
 		game.clear()
-		// Fondo final
+			// Fondo final
 		game.addVisual(new Fondo(image = "imgs/fondo ganaste.png"))
-		// después de un ratito ...
+			// después de un ratito ...
 		game.schedule(6000, { game.stop()})
 	}
-
-
 
 	method pasarDeNivel() {
 		// Generar el sonido para pasar de nivel
 		const pasarNivel = game.sound("audio/pasarNivel.mp3")
 		pasarNivel.play()
-	 	// Fondo base del juego vacío
+			// Fondo base del juego vacío
 		game.addVisual(new Fondo(image = "imgs/fondo Completo.png"))
 			// después de un ratito ...
 		game.schedule(1000, { game.clear()
@@ -109,7 +114,7 @@ class Nivel {
 				// después de un ratito ...
 			game.schedule(1500, { // ... limpio todo de nuevo
 				game.clear() // y arranco el siguiente nivel
-				// Se configura el próximo nivel
+					// Se configura el próximo nivel
 				self.siguienteNivel().configurate()
 			})
 		})
