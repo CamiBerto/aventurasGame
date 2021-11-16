@@ -6,7 +6,7 @@ class Direccion {
 
 	method esIgual(unaDireccion) = unaDireccion == self
 
-	/* Próxima posición en un tablero al estilo pacman */
+	/* Próxima posición en un tablero al estilo "pacman" */
 	method proximaPosicion(posicion) {
 		var siguientePosicion = self.siguiente(posicion)
 		if (self.esIgual(derecha)) {

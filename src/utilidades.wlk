@@ -11,7 +11,6 @@ object utilidadesParaJuego {
 	method sePuedeMover(posicion) {
 		return posicion.x().between(0, game.width() - 1) and posicion.y().between(0, game.height() - 1)
 	}
-
 }
 
 /* INSTANCIAR OBJETOS PARA NO USAR STRINGS*/
@@ -22,41 +21,12 @@ object pota {method instanciar(unaPosicion) = new Pota(position = unaPosicion)}
 object flecha {method instanciar(unaPosicion) = new FlechaEnPiso(position = unaPosicion)}
 
 object enemigo {method instanciar(unaPosicion) = new Enemigo(position = unaPosicion)}
-
-object demonio {
-
-	method instanciar(unaPosicion) = new Demonio(position = unaPosicion, image = "imgs/golem.png", sonido = "audio/demonio.mp3")
-
-}
-
-object ogro {
-
-	method instanciar(unaPosicion) = new Ogro(position = unaPosicion, image = "imgs/ogro.png", sonido = "audio/ogro.mp3")
-
-}
+object demonio {method instanciar(unaPosicion) = new Demonio(position = unaPosicion, image = "imgs/golem.png", sonido = "audio/demonio.mp3")}
+object ogro {method instanciar(unaPosicion) = new Ogro(position = unaPosicion, image = "imgs/ogro.png", sonido = "audio/ogro.mp3")}
 
 /* CELDAS SORPRESA */
-object sorpresaA {
-
-	method instanciar(unaPosicion) = new CeldaSorpresaA(position = unaPosicion)
-
-}
-
-object sorpresaB {
-
-	method instanciar(unaPosicion) = new CeldaSorpresaB(position = unaPosicion)
-
-}
-
-object sorpresaC {
-
-	method instanciar(unaPosicion) = new CeldaSorpresaC(position = unaPosicion)
-
-}
-
-object sorpresaD {
-
-	method instanciar(unaPosicion) = new CeldaSorpresaD(position = unaPosicion)
-
-}
+object sorpresaA {method instanciar(unaPosicion) = new CeldaSorpresaA(position = unaPosicion)}
+object sorpresaB {method instanciar(unaPosicion) = new CeldaSorpresaB(position = unaPosicion)}
+object sorpresaC {method instanciar(unaPosicion) = new CeldaSorpresaC(position = unaPosicion)}
+object sorpresaD {method instanciar(unaPosicion) = new CeldaSorpresaD(position = unaPosicion)}
 

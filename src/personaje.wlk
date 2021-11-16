@@ -53,6 +53,7 @@ class Personaje {
 			// Se queda sin energía
 		if (self.energia() == 0) {
 			game.say(self, "Me MURI!!! T.T")
+			image = "imgs/heroe caido.png"
 			const muri = game.sound("audio/muri.mp3")
 			muri.play()
 			game.schedule(2000, { => nivelActual.perder()})
@@ -79,6 +80,7 @@ class Personaje {
 		self.actualizarVidaVisual()
 		if (self.vida() == 0) {
 			game.say(self, "Me MURI!!! T.T")
+			image = "imgs/heroe caido.png"
 			const muri = game.sound("audio/muri.mp3")
 			muri.play()
 			game.schedule(2000, { => nivelActual.perder()})

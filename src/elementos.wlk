@@ -8,7 +8,7 @@ class Visual {
 	var property position
 	var property image = ""
 
-	method esInteractivo() = false
+	method esInteractivo() = false // son aquellos con los que interactua el personaje(ejemplo: alfombra no)
 
 }
 
@@ -42,24 +42,25 @@ class Caja inherits ElementoJuego { // Caja
 
 	// agregar comportamiento
 	method estaEnDeposito() = deposito.contieneElemento(self)
-
-	// method sePuedeEmpujarA(posicion) = super(posicion) && nivelActual.hayCaja(posicion)
+	
+	method sePuedeEmpujarA(posicion) = posicion.allElements().all{ e => not e.esInteractivo() } // interactivo es para ignorar alfombra
+	
 	method empujarA(posicion) {
 		if (self.sePuedeEmpujarA(posicion)) {
 			self.position(posicion)
 		}
 	}
 
-	method siguientePosicion(posicion, direccion) = direccion.proximaPosicion(posicion)
+	method siguientePosicion(posicion, direccion) = direccion.proximaPosicion(posicion)//devuelve la siguiente posicion de una posicion
 
 	method reaccionarA(unPersonaje) {
 		const direccion = unPersonaje.direccion() // direccion de personaje actual
 		const proximaPosicionPersonaje = direccion.proximaPosicion(unPersonaje.position()) // posicion proxima de personaje
-		const siguientePosicionCaja = self.siguientePosicion(proximaPosicionPersonaje, direccion) // posicion proxima de proxima de personaje
+		const siguientePosicionCaja = self.siguientePosicion(proximaPosicionPersonaje, direccion) // posicion proxima de "la proxima" de personaje
 		self.empujarA(siguientePosicionCaja)
 	}
 
-	method sePuedeEmpujarA(posicion) = posicion.allElements().all{ e => not e.esInteractivo() } // interactivo es para ignorar alfombra
+	
 
 }
 
@@ -67,15 +68,7 @@ class Recolectable inherits ElementoJuego {
 
 	const property sonido = "audio/coin.mp3"
 
-	method dejarPasar(unPersonaje) {
-		unPersonaje.position(self.position())
-	}
-
 	override method esRecolectable() = true
-
-	method esCeldaSorpresa() {
-		return false
-	}
 
 	method energiaQueOtorga() = 0
 
@@ -102,7 +95,7 @@ class Llave inherits Recolectable {
 	override method sonido() = "audio/llave.mp3"
 
 	override method reaccionarA(unPersonaje) {
-		super(unPersonaje)
+		super(unPersonaje) // ser agarrado
 		unPersonaje.guardarLlave()
 		game.sound(self.sonido()).play()
 	}
@@ -120,7 +113,7 @@ class Pota inherits Recolectable {
 
 	override method reaccionarA(unPersonaje) {
 		unPersonaje.aumentarVida(self)
-		super(unPersonaje)
+		super(unPersonaje) // ser agarrado
 		game.sound(self.sonido()).play()
 	}
 
@@ -139,7 +132,7 @@ class Oro inherits Recolectable {
 	override method reaccionarA(unPersonaje) {
 		unPersonaje.actualizarOro(self)
 		unPersonaje.quitarVida(self)
-		super(unPersonaje)
+		super(unPersonaje) // ser agarrado
 		game.sound(self.sonido()).play()
 	}
 
@@ -162,7 +155,7 @@ class Pollo inherits Recolectable {
 	override method reaccionarA(unPersonaje) {
 		unPersonaje.ganarEnergia(self.energiaQueOtorga())
 		unPersonaje.actualizarOro(self)
-		super(unPersonaje)
+		super(unPersonaje) // ser agarrado
 		game.sound(self.sonido()).play()
 	}
 
@@ -173,12 +166,8 @@ class CeldaSorpresa inherits Recolectable {
 	var property fueActivada = false
 	var property image = "imgs/beer premio.png"
 
-	method cambiarDeIMagen() {
+	method cambiarDeIMagen() { // varia segun la sorpresa, a veces esta vacia
 		image = "imgs/caiste.png"
-	}
-
-	override method esCeldaSorpresa() {
-		return true
 	}
 
 	override method reaccionarA(unPersonaje) {
@@ -188,7 +177,7 @@ class CeldaSorpresa inherits Recolectable {
 	method activarSorpresa(unNivel) {
 		self.cambiarDeIMagen()
 		fueActivada = true
-		game.schedule(500, { self.serAgarrado()})
+		game.schedule(500, { self.serAgarrado()}) // agrega un delay para que de tiempo a cambiarImagen()
 	}
 
 }
@@ -196,7 +185,7 @@ class CeldaSorpresa inherits Recolectable {
 class CeldaSorpresaA inherits CeldaSorpresa {
 
 	override method activarSorpresa(unNivel) {
-		super(unNivel)
+		super(unNivel) // activarSorpresa(unNivel)
 		unNivel.personaje().actualizarOro(self)
 		unNivel.teletransportar()
 	}
@@ -215,7 +204,7 @@ class CeldaSorpresaA inherits CeldaSorpresa {
 class CeldaSorpresaB inherits CeldaSorpresa {
 
 	override method activarSorpresa(unNivel) {
-		super(unNivel)
+		super(unNivel) // activarSorpresa(unNivel)
 		unNivel.personaje().actualizarOro(self)
 		unNivel.efectoAgregarEnergia()
 	}
@@ -234,7 +223,7 @@ class CeldaSorpresaB inherits CeldaSorpresa {
 class CeldaSorpresaC inherits CeldaSorpresa {
 
 	override method activarSorpresa(unNivel) {
-		super(unNivel)
+		super(unNivel) // activarSorpresa(unNivel)
 		unNivel.personaje().actualizarOro(self)
 		unNivel.efectoPerderEnergia()
 	}
@@ -253,7 +242,7 @@ class CeldaSorpresaC inherits CeldaSorpresa {
 class CeldaSorpresaD inherits CeldaSorpresa {
 
 	override method activarSorpresa(unNivel) {
-		super(unNivel)
+		super(unNivel) // activarSorpresa(unNivel)
 		unNivel.agregarPollo()
 	}
 
@@ -272,7 +261,7 @@ class FlechaEnPiso inherits Recolectable {
 
 	override method reaccionarA(unPersonaje) {
 		unPersonaje.agarrarFlecha()
-		super(unPersonaje)
+		super(unPersonaje) // serAgarrado()
 		game.sound(self.sonido()).play()
 	}
 
@@ -309,7 +298,7 @@ object deposito {
 	method esEnemigo() = false
 
 	method esInteractivo() = false
-
+	
 	method contieneElemento(unElemento) = unElemento.position().x().between(self.position().x(), self.position().x() + 3) && unElemento.position().y().between(self.position().y(), self.position().y() + 3)
 
 }

@@ -65,6 +65,7 @@ class Nivel {
 		// fondo - es importante que sea el primer visual que se agregue
 		game.addVisual(new Fondo()) // Inicio de nivel
 		keyboard.z().onPressDo{ self.pasarDeNivel()} // Tecla secreta para pasar de nivel
+		keyboard.x().onPressDo({})
 	}
 
 	method perder() {

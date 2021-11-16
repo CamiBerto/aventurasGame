@@ -6,12 +6,13 @@ object pantallaInicio {
 
 // La pantalla de configuración inicial
 	const fondoEmpezar = new Fondo(image = "imgs/fondo empezar.png")
-
+	var nivelNoIniciado = true
 	method configurate() {
 		// Aranca con la dificultad normal
 		game.addVisual(dificultad.fondoNormal())
-		keyboard.x().onPressDo({ game.addVisual(fondoEmpezar)
-			game.schedule(2000, { nivel1.configurate()})
+		keyboard.x().onPressDo({ if (nivelNoIniciado) {game.addVisual(fondoEmpezar)
+									game.schedule(2000, { nivel1.configurate()}) 
+									nivelNoIniciado = false}
 		})
 		keyboard.num1().onPressDo({ dificultad.facil()})
 		keyboard.num2().onPressDo({ dificultad.normal()})

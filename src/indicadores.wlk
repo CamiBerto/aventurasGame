@@ -95,8 +95,6 @@ object oroVisual inherits Indicador {
 object llavesVisual inherits Indicador {
 
 	var property imagenes = [ "imgs/0-Llave.png", "imgs/1raLlave.png", "imgs/2dallave.png", "imgs/3raLlave.png" ]
-	// El portal que aparece en el tablero
-	const portal = new Visual(position = utilidadesParaJuego.posicionArbitraria(), image = "imgs/entrada.png")
 	// El contador de llaves que aparece en la cabecera
 	var property contadorLlaves = new Visual(position = game.at(3, game.height() - 1))
 
@@ -119,22 +117,9 @@ object llavesVisual inherits Indicador {
 		game.addVisual(self.contadorLlaves())
 	}
 
-	// Actualiza las imágenes según un nuevo valor
+	// Actualiza las imágenes según un nuevo valor cuando guardarLlave()
 	override method actualizarDato(nuevoValor) {
-		if (not game.hasVisual(portal)) self.definirImagenesContador(nuevoValor)
+		self.definirImagenesContador(nuevoValor)
 	}
-
-	method aparecerPortal() {
-		game.addVisual(portal)
-	}
-
-	method terminarSiEstaSobrePortal(nivel, personaje) {
-		game.onCollideDo(personaje, { colisiono =>
-			if (colisiono == portal) {
-				nivel.terminar()
-			}
-		})
-	}
-
 }
 
