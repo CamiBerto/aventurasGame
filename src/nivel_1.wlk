@@ -9,16 +9,18 @@ import config.*
 import nivel_2.*
 
 object nivel1 inherits Nivel {
-
+	// Personaje nivel 1
 	var property personaje = new PersonajeNivel1(nivelActual = self)
+	// cajasEnTablero se utiliza al  momento de usar ponerCajas()
 	const property cajasEnTablero = #{}
 
 	override method faltanRequisitos() = not (self.todasLasCajasEnDeposito() && personaje.llavesAgarradas() == 3)
-
+	// hayCaja lo utiliza ponerCajas como condición para agregar una en la posición
 	method hayCaja(posicion) = self.cajasEnTablero().any({ b => b.position() == posicion })
 
 	method todasLasCajasEnDeposito() = not self.cajasEnTablero().any{ b => !b.estaEnDeposito()}
 
+	// Se activa con la tecla "n"
 	method estadoActual() {
 		var palabras = ""
 		if (not self.todasLasCajasEnDeposito()) {
@@ -47,9 +49,9 @@ object nivel1 inherits Nivel {
 
 	override method configurate() {
 		super()
-			// otros visuals
-			// la alfombra : TODO: resolver que los otros objetos no colapsen
+		// otros visuals
 		game.addVisual(deposito)
+		// La cantidad de cajas depende de la dificultad seleccionada
 		self.ponerCajas(dificultad.cajas())
 		self.ponerElementos(3, llave)
 		self.ponerElementos(3, pollo)
@@ -79,11 +81,11 @@ object nivel1 inherits Nivel {
 			}
 		})
 	}
-
+	// Se utiliza en pasarDeNivel()
 	override method imagenIntermedia() {
 		return "imgs/fondoFinNivel1.png"
 	}
-
+	// Se utiliza en pasarDeNivel()
 	override method siguienteNivel() = nivel2
 
 }

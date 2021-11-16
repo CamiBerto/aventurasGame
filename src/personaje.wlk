@@ -4,9 +4,6 @@ import elementos.*
 import movimientos.*
 import indicadores.*
 
-// en la implementación real, conviene tener un personaje por nivel
-// los personajes probablemente tengan un comportamiendo más complejo que solamente
-// imagen y posición
 /* personaje generico */
 class Personaje {
 	// Config inicial
@@ -22,6 +19,10 @@ class Personaje {
 	var property llavesAgarradas = 0
 	var property positionGuardadas = []
 	var property nivelActual
+
+	// Abstractos
+	method avanzarOGanar()
+	method avanzarHaciendoA(posicion) // En nivel 1 resuelve lógica de empujar cajas, en el 2 y el 3, solo avanza
 
 	/* VISUALES */
 	method actualizarEnergiaVisual() {
@@ -50,7 +51,7 @@ class Personaje {
 		self.energia((0).max(self.energia() - cantidad))
 		self.actualizarEnergiaVisual()
 			// Se queda sin energía
-		if (self.energia() == 0 or self.vida() == 0) {
+		if (self.energia() == 0) {
 			game.say(self, "Me MURI!!! T.T")
 			const muri = game.sound("audio/muri.mp3")
 			muri.play()
@@ -76,6 +77,12 @@ class Personaje {
 	method quitarVida(elemento) {
 		self.vida(0.max(self.vida() - elemento.vidaQueQuita()))
 		self.actualizarVidaVisual()
+		if (self.vida() == 0) {
+			game.say(self, "Me MURI!!! T.T")
+			const muri = game.sound("audio/muri.mp3")
+			muri.play()
+			game.schedule(2000, { => nivelActual.perder()})
+		}
 	}
 
 	method aumentarVida(elemento) {
@@ -91,7 +98,7 @@ class Personaje {
 		oroJuntado = 99.min(self.oroJuntado() + elemento.oroQueOtorga())
 	}
 
-	method actualizarOro(elemento) {
+	method actualizarOro(elemento) { // Se utiliza en las reacciones con elementos
 		self.sacarOro(elemento)
 		self.sumarOro(elemento)
 		self.actualizarOroVisual()
@@ -130,12 +137,6 @@ class Personaje {
 		self.avanzarHaciendoA(direccion.proximaPosicion(self.position()))
 	}
 
-	method avanzarHaciendoA(posicion)
-
-	method moverA(posicion) {
-		self.position(posicion)
-	} // Mueve el personaje a una posicion	
-
 	// Agarrar priemer elemento que se encuentre a mi alrededor
 	method agarrarElemento() {
 		const elementosRecolectables = self.elementosRecolectablesAlrededor()
@@ -158,12 +159,7 @@ class Personaje {
 		}
 	}
 
-	method avanzarOGanar()
-		method comerPollo(unPollo) {
-		const comerpollo = game.sound(unPollo.sonido())
-		comerpollo.play()
 
-	}
 
 
 }

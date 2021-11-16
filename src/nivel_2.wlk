@@ -25,19 +25,11 @@ object nivel2 inherits Nivel {
 	method listBolsasOro() {
 		return elementosEnNivel.filter{ c => c.esOro() }
 	}
-
+	// Si agarró todos los oros del tablero, aparece el portal
 	method aparecerPortalSi() {
 		if (not self.faltanRequisitos()) {
 			game.addVisual(portalCreado)
 		}
-	}
-
-	method efectoPerderVida() {
-		personaje.perderEnergia(15)
-	}
-
-	method efectoAgregarVida() {
-		personaje.ganarEnergia(30)
 	}
 
 	override method configurate() {
@@ -51,13 +43,13 @@ object nivel2 inherits Nivel {
 		self.ponerElementos(1, sorpresaB)
 		self.ponerElementos(1, sorpresaC)
 		self.ponerElementos(1, sorpresaD)
-			// Se agregan las visuales de estado de Cantidad de Oro, Vida, Llaves, Energía
+		// Se agregan las visuales de estado de Cantidad de Oro, Vida, Energía
 		oroVisual.iniciarGrafico(personaje.oroJuntado(), "imgs/IndOro.png", "imgs/IndOroCom.png")
 		vidaVisual.iniciarGrafico(personaje.vida(), "imgs/vi.png", "imgs/da.png")
 		energiaVisual.iniciarGrafico(personaje.energia(), "imgs/ene.png", "imgs/rgia.png")
-			// personaje, es importante que sea el último visual que se agregue
+		// personaje, es importante que sea el último visual que se agregue
 		game.addVisual(personaje)
-			// teclado
+		// teclado
 			/*Movimientos del personaje*/
 		keyboard.right().onPressDo{ personaje.moverDerecha()}
 		keyboard.left().onPressDo{ personaje.moverIzquierda()}
@@ -67,7 +59,8 @@ object nivel2 inherits Nivel {
 			// al presionar "n"  da indicaciones
 		keyboard.n().onPressDo{ game.say(personaje, self.estadoActual())}
 			// colicion con oro
-		game.onCollideDo(personaje, { objeto => self.hayOro(objeto)})
+		game.onCollideDo(personaje, { objeto => self.efectoAlColisionarCon(objeto)})
+		// Si colapsa con el portal, pasa de nivel
 		game.onCollideDo(personaje, { objeto =>
 			if (objeto == portalCreado) {
 				self.pasarDeNivel()
@@ -75,7 +68,7 @@ object nivel2 inherits Nivel {
 		})
 	}
 
-	method hayOro(objeto) {
+	method efectoAlColisionarCon(objeto) {
 		if (objeto.esOro()) {
 			objeto.reaccionarA(personaje)
 			self.aparecerPortalSi()

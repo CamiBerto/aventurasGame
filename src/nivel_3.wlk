@@ -23,18 +23,12 @@ object nivelBonus inherits Nivel {
 		}
 	}
 
+// Se utiliza al disparar una flecha
 	method aparecerCofreSi() {
+		// Si mata al último enemigo aparece el cofre
 		if (not self.faltanRequisitos()) {
 			game.addVisual(cofreCreado)
 		}
-	}
-
-	method efectoPerderVida() {
-		personaje.perderEnergia(15)
-	}
-
-	method efectoAgregarVida() {
-		personaje.ganarEnergia(30)
 	}
 
 	method ponerEnemigo(cantidad, unEnemigo) { // debe recibir cantidad y EL NOMBRE DE UN ELEMENTO
@@ -56,10 +50,11 @@ object nivelBonus inherits Nivel {
 			// otros visuals
 		self.ponerElementos(3, pollo)
 		self.ponerElementos(3, pota)
+		// Cantidad según la dificultad
 		self.ponerEnemigo(dificultad.enemigos() - 2, enemigo)
+		self.ponerElementos(dificultad.enemigos(), flecha)
 		self.ponerEnemigo(1, ogro)
 		self.ponerEnemigo(1, demonio)
-		self.ponerElementos(dificultad.enemigos(), flecha)
 		self.ponerElementos(1, sorpresaA)
 		self.ponerElementos(1, sorpresaB)
 		self.ponerElementos(1, sorpresaC)
@@ -81,19 +76,20 @@ object nivelBonus inherits Nivel {
 		keyboard.n().onPressDo{ game.say(personaje, self.estadoActual())}
 		keyboard.w().onPressDo{ personaje.dispararFlecha()}
 			// colicion con oro
-		game.onCollideDo(personaje, { objeto => self.hayBichos(objeto)})
+		game.onCollideDo(personaje, { objeto => self.efectoAlColisionarCon(objeto)})
 		game.onCollideDo(personaje, { objeto =>
 			if (objeto == cofreCreado) {
 				game.say(personaje, "Lo Consegui")
 				game.schedule(3000, { self.terminar()})
 			}
 		})
+		// Luego de agregar visuales de enemigos, ordena que se muevan
 		enemigosEnTablero.forEach({ enemigos => enemigos.moverse(self.personaje())})
 	}
 
-	method hayBichos(bicho) {
-		if (bicho.esBicho()) {
-			personaje.serAtacadoPorBicho(bicho)
+	method efectoAlColisionarCon(objeto) {
+		if (objeto.esEnemigo()) {
+			personaje.serAtacadoPorBicho(objeto)
 			game.sound("audio/sangre.mp3").play()
 		}
 	}

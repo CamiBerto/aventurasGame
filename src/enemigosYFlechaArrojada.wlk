@@ -32,7 +32,7 @@ class Enemigo inherits ElementoJuego {
 	}
 	method eliminarse(){game.removeVisual(self)}
 
-	override method esBicho() = true
+	override method esEnemigo() = true
 
 }
 
@@ -106,7 +106,7 @@ class FlechaArrojada {
 	method disparadaPor(unPersonaje) {
 		var asesino = false
 		game.onCollideDo(self, { objeto =>
-			if (objeto.esBicho()) {
+			if (objeto.esEnemigo()) {
 				objeto.asesinadoPor(unPersonaje)
 				asesino = true
 				game.sound("audio/flecha2.mp3").play()
@@ -140,7 +140,7 @@ class FlechaArrojada {
 		game.removeVisual(self)
 	}
 
-	method esBicho() = false
+	method esEnemigo() = false
 
 }
 

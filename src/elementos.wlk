@@ -27,7 +27,7 @@ class ElementoJuego {
 		game.removeVisual(self)
 	}
 
-	method esBicho() = false
+	method esEnemigo() = false
 
 // agregar comportamiento
 }
@@ -76,7 +76,9 @@ class Recolectable inherits ElementoJuego {
 	method esCeldaSorpresa() {
 		return false
 	}
- 	method energiaQueOtorga() = 0
+
+	method energiaQueOtorga() = 0
+
 	method oroQueOtorga() = 0
 
 	method oroQueQuita() = 0
@@ -149,16 +151,17 @@ class Oro inherits Recolectable {
 
 class Pollo inherits Recolectable {
 
-	var property energia = 30
 	var property image = "imgs/pollo.png"
 
 	override method oroQueOtorga() = 5
-	override method energiaQueOtorga() = 5
+
+	override method energiaQueOtorga() = 30
 
 	override method sonido() = "audio/comerpollo.mp3"
 
 	override method reaccionarA(unPersonaje) {
-		unPersonaje.comerPollo(self)
+		unPersonaje.ganarEnergia(self.energiaQueOtorga())
+		unPersonaje.actualizarOro(self)
 		super(unPersonaje)
 		game.sound(self.sonido()).play()
 	}
@@ -283,7 +286,7 @@ object cofre { // el cofre se visualiza siempre en el mismo lugar del tablero
 
 	method esOro() = false
 
-	method esBicho() = false
+	method esEnemigo() = false
 
 	method esRecolectable() = false
 
@@ -303,7 +306,7 @@ object deposito {
 
 	method esRecolectable() = false
 
-	method esBicho() = false
+	method esEnemigo() = false
 
 	method esInteractivo() = false
 
@@ -319,7 +322,7 @@ object salida { // la salida se visualiza siempre en el mismo lugar del tablero
 
 	method esOro() = false
 
-	method esBicho() = false
+	method esEnemigo() = false
 
 	method esRecolectable() = false
 
