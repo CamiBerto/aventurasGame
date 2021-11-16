@@ -10,6 +10,8 @@ class Fondo {
 
 	method esInteractivo() = false
 
+	method esEnemigo() = false
+
 	method esOro() = false
 
 }

@@ -35,7 +35,7 @@ object nivel2 inherits Nivel {
 	override method configurate() {
 		super()
 			// otros visuals
-			// la alfombra : TODO: resolver que los otros objetos no colapsen
+			// la alfombra
 		self.ponerElementos(3, pollo)
 		self.ponerElementos(3, pota)
 		self.ponerElementos(5, oro)
