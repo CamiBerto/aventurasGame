@@ -9,7 +9,6 @@ import personaje_nivel3.*
 
 object nivelBonus inherits Nivel {
 
-	var property enemigosEnTablero = []
 	var property cofreCreado = cofre
 	var property personaje = new PersonajeNivel3(nivelActual = self)
 

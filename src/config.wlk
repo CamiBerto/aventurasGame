@@ -1,6 +1,8 @@
 import fondo.*
 import wollok.game.*
 import nivel_1.*
+import nivel_2.*
+import nivel_3.*
 
 object pantallaInicio {
 
@@ -8,18 +10,8 @@ object pantallaInicio {
 	const fondoEmpezar = new Fondo(image = "imgs/fondo empezar.png")
 	var property nivelNoIniciado = true
 
-	method reiniciarVariables(unPersonaje) {
-		unPersonaje.oroJuntado(0)
-		unPersonaje.vida(50)
-		unPersonaje.energia(30)
-		unPersonaje.flechasAgarradas(0)
-		unPersonaje.llavesAgarradas(0)
-		unPersonaje.positionGuardadas([])
-		unPersonaje.image("imgs/heroe.png")
-	}
-
 	method configurate() {
-		self.reiniciarVariables(nivel1.personaje())
+		nivel1.reiniciarVariables()
 			// Aranca con la dificultad normal
 		game.addVisual(dificultad.fondoNormal())
 		keyboard.x().onPressDo({ if (nivelNoIniciado) {

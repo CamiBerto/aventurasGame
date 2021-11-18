@@ -10,8 +10,8 @@ import config.*
 class Nivel {
 
 	// Elementos del nivel	
-	var property elementosEnNivel = [] // Array de elementos recolectables interactivos, excepto enemigos
-
+	var property elementosEnNivel = [] // Lista de elementos recolectables interactivos, excepto enemigos
+	var property enemigosEnTablero = [] // Lista de enemigos interactivos
 	// Abstractos
 	method personaje()
 
@@ -20,7 +20,16 @@ class Nivel {
 	method imagenIntermedia()
 
 	method siguienteNivel()
-
+	//stats globales del personaje para los niveles
+	method reiniciarVariables() {
+		self.personaje().oroJuntado(0)
+		self.personaje().vida(50)
+		self.personaje().energia(30)
+		self.personaje().flechasAgarradas(0)
+		self.personaje().llavesAgarradas(0)
+		self.personaje().positionGuardadas([])
+		self.personaje().image("imgs/heroe.png")
+	}
 	// Indica si hay elementos interactivo en la posición
 	method hayElementoEn(posicion) = elementosEnNivel.any({ e => e.position() == posicion and e.esInteractivo() })
 
@@ -66,6 +75,7 @@ class Nivel {
 	}
 
 	method configurate() {
+		self.reiniciarVariables()
 		// fondo - es importante que sea el primer visual que se agregue
 		game.addVisual(new Fondo()) // Inicio de nivel
 		keyboard.z().onPressDo{ self.pasarDeNivel()} // Tecla secreta para pasar de nivel
@@ -83,7 +93,7 @@ class Nivel {
 				// cambio de fondo
 			game.addVisual(new Fondo(image = "imgs/perdimos.png"))
 				// después de un ratito ...
-			game.schedule(3000, { // reinicia el juego
+			game.schedule(4000, { // reinicia el juego
 				pantallaInicio.nivelNoIniciado(true)
 				pantallaInicio.configurate()
 			})
@@ -98,7 +108,7 @@ class Nivel {
 			// Fondo final
 		game.addVisual(new Fondo(image = "imgs/fondo ganaste.png"))
 			// después de un ratito ...
-		game.schedule(6000, { game.stop()})
+		game.schedule(4000, { game.stop()})
 	}
 
 	method pasarDeNivel() {
@@ -112,7 +122,7 @@ class Nivel {
 				// cambio de fondo. La imagenIntermedia cambia en cada nivel
 			game.addVisual(new Fondo(image = self.imagenIntermedia()))
 				// después de un ratito ...
-			game.schedule(1500, { // ... limpio todo de nuevo
+			game.schedule(4000, { // ... limpio todo de nuevo
 				game.clear() // y arranco el siguiente nivel
 					// Se configura el próximo nivel
 				self.siguienteNivel().configurate()
