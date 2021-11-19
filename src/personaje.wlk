@@ -9,17 +9,28 @@ class Personaje {
 
 	// Config inicial
 	var property position = utilidadesParaJuego.posicionArbitraria()
-	var property image
+	var property image = "imgs/heroe.png"
 	var property direccion = arriba
 	// Valores de estado
 	var property oroJuntado = 0
-	var property vida  = 0
-	var property energia = 0
+	var property vida = 50
+	var property energia = 30
 	var property flechasAgarradas = 0
 	// Juego
-	var property llavesAgarradas  = 0
+	var property llavesAgarradas = 0
 	var property positionGuardadas = []
 	var property nivelActual
+
+	// Reestablecer personaje
+	method reestablecer() {
+		self.oroJuntado(0)
+		self.vida(50)
+		self.energia(30)
+		self.flechasAgarradas(0)
+		self.llavesAgarradas(0)
+		self.positionGuardadas([])
+		self.image("imgs/heroe.png")
+	}
 
 	// Abstractos
 	method avanzarOGanar()
@@ -48,8 +59,6 @@ class Personaje {
 	}
 
 	// Valores de estado
-
-
 	method perderEnergia(cantidad) {
 		// No puede bajar de 0
 		self.energia((0).max(self.energia() - cantidad))

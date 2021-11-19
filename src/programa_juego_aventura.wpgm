@@ -11,7 +11,6 @@ program juego_aventura {
 	game.height(15)
 	game.width(15)
 	pantallaInicio.configurate()
-	const rain = game.sound("audio/nivel.mp3")
 	rain.shouldLoop(true)
 	rain.volume(0.5)
 	keyboard.plusKey().onPressDo({ rain.volume(1) })

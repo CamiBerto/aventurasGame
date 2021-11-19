@@ -13,6 +13,7 @@ class Nivel {
 	var property elementosEnNivel = [] // Lista de elementos recolectables interactivos, excepto enemigos
 	var property enemigosEnTablero = [] // Lista de enemigos interactivos
 	// Abstractos
+
 	method personaje()
 
 	method faltanRequisitos()
@@ -20,16 +21,7 @@ class Nivel {
 	method imagenIntermedia()
 
 	method siguienteNivel()
-	//stats globales del personaje para los niveles
-	method reiniciarVariables() {
-		self.personaje().oroJuntado(0)
-		self.personaje().vida(50)
-		self.personaje().energia(30)
-		self.personaje().flechasAgarradas(0)
-		self.personaje().llavesAgarradas(0)
-		self.personaje().positionGuardadas([])
-		self.personaje().image("imgs/heroe.png")
-	}
+
 	// Indica si hay elementos interactivo en la posición
 	method hayElementoEn(posicion) = elementosEnNivel.any({ e => e.position() == posicion and e.esInteractivo() })
 
@@ -75,12 +67,20 @@ class Nivel {
 	}
 
 	method configurate() {
-		self.reiniciarVariables()
-		// fondo - es importante que sea el primer visual que se agregue
+		// Reinicio el estado del personaje
+		self.personaje().reestablecer()
+			// fondo - es importante que sea el primer visual que se agregue
 		game.addVisual(new Fondo()) // Inicio de nivel
 		keyboard.z().onPressDo{ self.pasarDeNivel()} // Tecla secreta para pasar de nivel
 		keyboard.x().onPressDo({
-		})
+		}) // ??
+			// El sonido para que esté accesible desde todos los niveles
+		keyboard.plusKey().onPressDo({ rain.volume(1)})
+		keyboard.m().onPressDo({ rain.volume(0)})
+		keyboard.minusKey().onPressDo({ rain.volume(0.5)})
+		keyboard.p().onPressDo({ rain.pause()})
+		keyboard.r().onPressDo({ rain.resume()})
+		keyboard.s().onPressDo({ rain.stop()})
 	}
 
 	method perder() {
@@ -108,7 +108,10 @@ class Nivel {
 			// Fondo final
 		game.addVisual(new Fondo(image = "imgs/fondo ganaste.png"))
 			// después de un ratito ...
-		game.schedule(4000, { game.stop()})
+		game.schedule(4000, { // Volver al inicio 
+			pantallaInicio.nivelNoIniciado(true)
+			pantallaInicio.configurate()
+		})
 	}
 
 	method pasarDeNivel() {
