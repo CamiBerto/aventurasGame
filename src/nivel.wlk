@@ -39,14 +39,6 @@ class Nivel {
 		}
 	}
 
-	method efectoPerderEnergia() { // Reacción a la CeldaSorpresaC
-		self.personaje().perderEnergia(15)
-	}
-
-	method efectoAgregarEnergia() { // Reacción a la CeldaSorpresaB
-		self.personaje().ganarEnergia(30)
-	}
-
 	method agregarPollo() { // Reacción a la CeldaSorpresaD
 		self.ponerElementos(1, pollo)
 	}

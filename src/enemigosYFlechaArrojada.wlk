@@ -30,69 +30,55 @@ class Enemigo inherits ElementoJuego {
 		self.eliminarse()
 		unPersonaje.nivelActual().ponerElementos(1, flecha)
 	}
-	method eliminarse(){game.removeVisual(self)}
+
+	method eliminarse() {
+		game.removeVisual(self)
+	}
 
 	override method esEnemigo() = true
 
 }
 
-class Demonio inherits Enemigo {
-
-	override method sonido() = "audio/demonio.mp3"
+// Un enemigo que persigue al personaje
+class EnemigoAgresivo inherits Enemigo {
 
 	override method vidaQueQuita() = 30
 
 	override method moverse(unPersonaje) {
-		game.onTick(2000, "demonio", { position = new Position(x = self.asignarPosX(unPersonaje), y = self.asignarPosY(unPersonaje))})
+		game.onTick(2000, "ogro", { position = new Position(x = self.acercarseHorizontalA(unPersonaje), y = self.acercarseVerticalA(unPersonaje))})
 	}
 
-	method asignarPosX(unPersonaje) {
-		const posPersonajeX = unPersonaje.position().x()
-		return if (posPersonajeX > self.position().x()) {
+	method acercarseHorizontalA(unPersonaje) {
+		return if (self.estaALaIzquierdaDe(unPersonaje)) {
 			self.position().x() + 1
 		} else {
 			self.position().x() - 1
 		}
 	}
 
-	method asignarPosY(unPersonaje) {
-		const posPersonajeY = unPersonaje.position().y()
-		return if (posPersonajeY > self.position().y()) {
+	method acercarseVerticalA(unPersonaje) {
+		return if (self.estaAbajoDe(unPersonaje)) {
 			self.position().y() + 1
 		} else {
 			self.position().y() - 1
 		}
 	}
+
+	method estaALaIzquierdaDe(unElemento) = unElemento.position().x() > self.position().x()
+
+	method estaAbajoDe(unElemento) = unElemento.position().y() > self.position().y()
 
 }
 
-class Ogro inherits Enemigo {
+class Demonio inherits EnemigoAgresivo {
+
+	override method sonido() = "audio/demonio.mp3"
+
+}
+
+class Ogro inherits EnemigoAgresivo {
 
 	override method sonido() = "audio/ogro.mp3"
-
-	override method vidaQueQuita() = 30
-
-	override method moverse(unPersonaje) {
-		game.onTick(2000, "ogro", { position = new Position(x = self.asignarPosX(unPersonaje), y = self.asignarPosY(unPersonaje))})
-	}
-
-	method asignarPosX(unPersonaje) {
-		const posPersonajeX = unPersonaje.position().x()
-		return if (posPersonajeX > self.position().x()) {
-			self.position().x() + 1
-		} else {
-			self.position().x() - 1
-		}
-	}
-
-	method asignarPosY(unPersonaje) {
-		const posPersonajeY = unPersonaje.position().y()
-		return if (posPersonajeY > self.position().y()) {
-			self.position().y() + 1
-		} else {
-			self.position().y() - 1
-		}
-	}
 
 }
 
@@ -104,26 +90,26 @@ class FlechaArrojada {
 	var property sonido = "audio/flechas.mp3"
 
 	method disparadaPor(unPersonaje) {
-		var asesino = false
+		var acerto = false
 		game.onCollideDo(self, { objeto =>
 			if (objeto.esEnemigo()) {
 				objeto.asesinadoPor(unPersonaje)
-				asesino = true
+				acerto = true
 				game.sound("audio/flecha2.mp3").play()
-				self.serAgarrado()
+				self.desaparecer()
 				unPersonaje.nivelActual().aparecerCofreSi()
 			}
 		})
-		game.schedule(1000, { if (not asesino) {
+		game.schedule(1000, { if (not acerto) {
 				self.position(direccion.siguiente(self.position()))
 			}
 		})
-		game.schedule(2000, { if (not asesino) {
+		game.schedule(2000, { if (not acerto) {
 				self.position(direccion.siguiente(self.position()))
 			}
 		})
-		game.schedule(3000, { if (not asesino) {
-				self.serAgarrado()
+		game.schedule(3000, { if (not acerto) {
+				self.desaparecer()
 				game.say(unPersonaje, "Casi!...")
 			}
 		})
@@ -136,7 +122,7 @@ class FlechaArrojada {
 
 	method esRecolectable() = false
 
-	method serAgarrado() {
+	method desaparecer() {
 		game.removeVisual(self)
 	}
 

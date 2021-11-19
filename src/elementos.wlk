@@ -42,16 +42,16 @@ class Caja inherits ElementoJuego { // Caja
 
 	// agregar comportamiento
 	method estaEnDeposito() = deposito.contieneElemento(self)
-	
+
 	method sePuedeEmpujarA(posicion) = posicion.allElements().all{ e => not e.esInteractivo() } // interactivo es para ignorar alfombra
-	
+
 	method empujarA(posicion) {
 		if (self.sePuedeEmpujarA(posicion)) {
 			self.position(posicion)
 		}
 	}
 
-	method siguientePosicion(posicion, direccion) = direccion.proximaPosicion(posicion)//devuelve la siguiente posicion de una posicion
+	method siguientePosicion(posicion, direccion) = direccion.proximaPosicion(posicion) // devuelve la siguiente posicion de una posicion
 
 	method reaccionarA(unPersonaje) {
 		const direccion = unPersonaje.direccion() // direccion de personaje actual
@@ -59,8 +59,6 @@ class Caja inherits ElementoJuego { // Caja
 		const siguientePosicionCaja = self.siguientePosicion(proximaPosicionPersonaje, direccion) // posicion proxima de "la proxima" de personaje
 		self.empujarA(siguientePosicionCaja)
 	}
-
-	
 
 }
 
@@ -206,7 +204,7 @@ class CeldaSorpresaB inherits CeldaSorpresa {
 	override method activarSorpresa(unNivel) {
 		super(unNivel) // activarSorpresa(unNivel)
 		unNivel.personaje().actualizarOro(self)
-		unNivel.efectoAgregarEnergia()
+		unNivel.personaje().ganarEnergia(30)
 	}
 
 	override method oroQueOtorga() = 2
@@ -225,7 +223,7 @@ class CeldaSorpresaC inherits CeldaSorpresa {
 	override method activarSorpresa(unNivel) {
 		super(unNivel) // activarSorpresa(unNivel)
 		unNivel.personaje().actualizarOro(self)
-		unNivel.efectoPerderEnergia()
+		unNivel.personaje().perderEnergia(15)
 	}
 
 	override method oroQueQuita() = 20
@@ -298,7 +296,7 @@ object deposito {
 	method esEnemigo() = false
 
 	method esInteractivo() = false
-	
+
 	method contieneElemento(unElemento) = unElemento.position().x().between(self.position().x(), self.position().x() + 3) && unElemento.position().y().between(self.position().y(), self.position().y() + 3)
 
 }
