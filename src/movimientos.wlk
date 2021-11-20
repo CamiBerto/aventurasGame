@@ -9,27 +9,26 @@ class Direccion {
 	/* Próxima posición en un tablero al estilo "pacman" */
 	method proximaPosicion(posicion) {
 		var siguientePosicion = self.siguiente(posicion)
-		if (self.esIgual(derecha)) {
-			// Si está en el borde derecho del tablero
-			if (game.width() == posicion.x() + 1) {
-				siguientePosicion = game.at(0, posicion.y())
-			}
-		} else if (self.esIgual(izquierda)) {
-			// Si está en el borde izquierdo del tablero
-			if (posicion.x() == 0) {
-				siguientePosicion = game.at(game.width() - 1, posicion.y())
-			}
-		} else if (self.esIgual(abajo)) {
-			if (posicion.y() == 0) {
-				siguientePosicion = game.at(posicion.x(), game.height() - 2)
-			}
-		} else if (self.esIgual(arriba)) {
-			if (game.height() == posicion.y() + 2) {
-				siguientePosicion = game.at(posicion.x(), 0)
-			}
+		if (self.esIgual(derecha) && self.esBordeDerecho(posicion)) {
+			siguientePosicion = game.at(0, posicion.y())
+		} else if (self.esIgual(izquierda) and self.esBordeIzquierdo(posicion)) {
+			siguientePosicion = game.at(game.width() - 1, posicion.y())
+		} else if (self.esIgual(abajo) and self.esBordeInferior(posicion)) {
+			siguientePosicion = game.at(posicion.x(), game.height() - 2)
+		} else if (self.esIgual(arriba) and self.esBordeSuperior(posicion)) {
+			siguientePosicion = game.at(posicion.x(), 0)
 		}
 		return siguientePosicion
 	}
+
+	method esBordeDerecho(posicion) = game.width() == posicion.x() + 1
+
+	method esBordeIzquierdo(posicion) = posicion.x() == 0
+
+	method esBordeInferior(posicion) = posicion.y() == 0
+
+	// Toma en cuenta la franja reservada para los indicadores
+	method esBordeSuperior(posicion) = game.height() == posicion.y() + 2
 
 }
 

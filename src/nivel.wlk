@@ -86,9 +86,7 @@ class Nivel {
 			game.addVisual(new Fondo(image = "imgs/perdimos.png"))
 				// después de un ratito ...
 			game.schedule(4000, { // reinicia el juego
-				pantallaInicio.nivelNoIniciado(true)
-				pantallaInicio.configurate()
-			})
+			pantallaInicio.configurate()})
 		})
 	}
 
@@ -101,9 +99,7 @@ class Nivel {
 		game.addVisual(new Fondo(image = "imgs/fondo ganaste.png"))
 			// después de un ratito ...
 		game.schedule(4000, { // Volver al inicio 
-			pantallaInicio.nivelNoIniciado(true)
-			pantallaInicio.configurate()
-		})
+		pantallaInicio.configurate()})
 	}
 
 	method pasarDeNivel() {

@@ -27,7 +27,7 @@ object nivel2 inherits Nivel {
 	}
 	// Si agarró todos los oros del tablero, aparece el portal
 	method aparecerPortalSi() {
-		if (not self.faltanRequisitos()) {
+		if (not self.faltanRequisitos() and not game.hasVisual(portalCreado)) {
 			game.addVisual(portalCreado)
 		}
 	}

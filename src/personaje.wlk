@@ -65,11 +65,7 @@ class Personaje {
 		self.actualizarEnergiaVisual()
 			// Se queda sin energía
 		if (self.energia() == 0) {
-			game.say(self, "Me MURI!!! T.T")
-			image = "imgs/heroe caido.png"
-			const muri = game.sound("audio/muri.mp3")
-			muri.play()
-			game.schedule(2000, { => nivelActual.perder()})
+			self.morir()
 		}
 	}
 
@@ -78,13 +74,25 @@ class Personaje {
 		self.actualizarEnergiaVisual()
 	}
 
+	method morir() {
+		game.say(self, "Me MURÍ!!! T.T")
+		image = "imgs/heroe caido.png"
+		const muri = game.sound("audio/muri.mp3")
+		muri.play()
+		game.schedule(2000, { => nivelActual.perder()})
+	}
+
 	method guardarLlave() {
 		if (llavesAgarradas < 3) {
 			llavesAgarradas++
 			self.actualizarLLaveVisual()
+			if (not nivelActual.faltanRequisitos()) {
+				game.say(self, "¡¡¡Ganamos!!!")
+				game.schedule(1500, { nivelActual.pasarDeNivel()})
+			}
 		}
 		if (llavesAgarradas == 3) {
-			game.say(self, "Tenemos todas las llaves!")
+			game.say(self, "¡Tenemos todas las llaves!")
 		}
 	}
 
@@ -92,11 +100,7 @@ class Personaje {
 		self.vida(0.max(self.vida() - elemento.vidaQueQuita()))
 		self.actualizarVidaVisual()
 		if (self.vida() == 0) {
-			game.say(self, "Me MURI!!! T.T")
-			image = "imgs/heroe caido.png"
-			const muri = game.sound("audio/muri.mp3")
-			muri.play()
-			game.schedule(2000, { => nivelActual.perder()})
+			self.morir()
 		}
 	}
 
@@ -117,9 +121,6 @@ class Personaje {
 		self.sacarOro(elemento)
 		self.sumarOro(elemento)
 		self.actualizarOroVisual()
-		if (not nivelActual.faltanRequisitos()) {
-			nivelActual.aparecerPortalSi()
-		}
 	}
 
 	// Avanzar a la siguiente casilla según la dirección en la que se esté moviendo
@@ -162,16 +163,12 @@ class Personaje {
 
 	// Elementos recolectables alrededor
 	method elementosRecolectablesAlrededor() {
-		const lindanteDerecha = (new Position(x = self.position().x() + 1, y = self.position().y())).allElements()
-		const lindanteIzquierda = (new Position(x = self.position().x() - 1, y = self.position().y())).allElements()
-		const lindanteArriba = (new Position(x = self.position().x(), y = (self.position().y() + 1))).allElements()
-		const lindanteAbajo = (new Position(x = self.position().x(), y = self.position().y() - 1)).allElements()
+		const lindanteDerecha = derecha.siguiente(self.position()).allElements()
+		const lindanteIzquierda = izquierda.siguiente(self.position()).allElements()
+		const lindanteArriba = arriba.siguiente(self.position()).allElements()
+		const lindanteAbajo = abajo.siguiente(self.position()).allElements()
 		const celdasLindantes = lindanteDerecha + lindanteIzquierda + lindanteArriba + lindanteAbajo
-		return if (not celdasLindantes.isEmpty()) {
-			celdasLindantes.filter{ e => e.esRecolectable()}
-		} else {
-			[]
-		}
+		return celdasLindantes.filter{ e => e.esRecolectable() }
 	}
 
 }

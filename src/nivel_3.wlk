@@ -25,7 +25,7 @@ object nivelBonus inherits Nivel {
 // Se utiliza al disparar una flecha
 	method aparecerCofreSi() {
 		// Si mata al último enemigo aparece el cofre
-		if (not self.faltanRequisitos()) {
+		if (not self.faltanRequisitos() and not game.hasVisual(cofreCreado)) {
 			game.addVisual(cofreCreado)
 		}
 	}
@@ -78,7 +78,7 @@ object nivelBonus inherits Nivel {
 		game.onCollideDo(personaje, { objeto => self.efectoAlColisionarCon(objeto)})
 		game.onCollideDo(personaje, { objeto =>
 			if (objeto == cofreCreado) {
-				game.say(personaje, "Lo Consegui")
+				game.say(personaje, "¡Lo Conseguimos!")
 				game.schedule(3000, { self.terminar()})
 			}
 		})
@@ -88,7 +88,7 @@ object nivelBonus inherits Nivel {
 
 	method efectoAlColisionarCon(objeto) {
 		if (objeto.esEnemigo()) {
-			personaje.serAtacadoPorBicho(objeto)
+			personaje.serAtacadoPorEnemigo(objeto)
 			game.sound("audio/sangre.mp3").play()
 		}
 	}
@@ -98,7 +98,6 @@ object nivelBonus inherits Nivel {
 	}
 
 	override method siguienteNivel() {
-		pantallaInicio.nivelNoIniciado(true)
 		return pantallaInicio
 	}
 

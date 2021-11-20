@@ -76,7 +76,7 @@ object nivel1 inherits Nivel {
 		keyboard.q().onPressDo{ personaje.agarrarElemento()}
 		keyboard.n().onPressDo({ // al presionar "n" finaliza el juego o da indicaciones
 			if (not self.faltanRequisitos()) {
-				game.say(personaje, "Ganamos!!!")
+				game.say(personaje, "¡¡¡Ganamos!!!")
 				game.schedule(1500, { self.pasarDeNivel()})
 			} else {
 				game.say(personaje, self.estadoActual())

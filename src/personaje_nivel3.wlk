@@ -10,18 +10,21 @@ class PersonajeNivel3 inherits Personaje {
 
 	override method avanzarOGanar() {
 	}
+
 	override method avanzarHaciendoA(posicion) {
 		self.avanzar()
 	}
+
 	override method actualizarOro(elemento) {
 	}
-	// La flecha consulta a los elementos con los que colisiona, si son bichos
+
+	// La flecha consulta a los elementos con los que colisiona, si son enemigos
 	method esEnemigo() = false
 
-	method serAtacadoPorBicho(unBicho) {
+	method serAtacadoPorEnemigo(unEnemigo) {
 		// Retrasamos el ataque para que no pierda toda la vida rápidamente
-		game.schedule(500, { self.quitarVida(unBicho)})
-		// Vuelve 2 celdas hacia atrás
+		game.schedule(500, { self.quitarVida(unEnemigo)})
+			// Vuelve 2 celdas hacia atrás
 		self.retrocederPasos(2)
 	}
 
@@ -46,8 +49,6 @@ class PersonajeNivel3 inherits Personaje {
 			self.actualizarFlechasVisual()
 		}
 	}
-
-
 
 }
 

@@ -27,12 +27,13 @@ class Enemigo inherits ElementoJuego {
 
 	method asesinadoPor(unPersonaje) {
 		game.sound(self.sonido()).play()
-		self.eliminarse()
+		self.morir()
 		unPersonaje.nivelActual().ponerElementos(1, flecha)
 	}
 
-	method eliminarse() {
-		game.removeVisual(self)
+	method morir() {
+				utilidadesParaJuego.eliminarVisual(self)
+
 	}
 
 	override method esEnemigo() = true
@@ -45,7 +46,7 @@ class EnemigoAgresivo inherits Enemigo {
 	override method vidaQueQuita() = 30
 
 	override method moverse(unPersonaje) {
-		game.onTick(2000, "ogro", { position = new Position(x = self.acercarseHorizontalA(unPersonaje), y = self.acercarseVerticalA(unPersonaje))})
+		game.onTick(2000, "enemigo se mueve", { position = new Position(x = self.acercarseHorizontalA(unPersonaje), y = self.acercarseVerticalA(unPersonaje))})
 	}
 
 	method acercarseHorizontalA(unPersonaje) {
@@ -110,7 +111,7 @@ class FlechaArrojada {
 		})
 		game.schedule(3000, { if (not acerto) {
 				self.desaparecer()
-				game.say(unPersonaje, "Casi!...")
+				game.say(unPersonaje, "Casi...")
 			}
 		})
 	}
@@ -123,7 +124,7 @@ class FlechaArrojada {
 	method esRecolectable() = false
 
 	method desaparecer() {
-		game.removeVisual(self)
+		utilidadesParaJuego.eliminarVisual(self)
 	}
 
 	method esEnemigo() = false

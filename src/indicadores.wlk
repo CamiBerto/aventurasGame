@@ -9,12 +9,8 @@ class Indicador {
 	var property decimal = new Visual(position = self.positionDecimal())
 	var property unidad = new Visual(position = self.positionUnidad())
 
-	method imagenes()
-
-	/* Obtiene el string de una imagen para un valor de 0 a 9*/
-	method imagenDeValor(unValor) {
-		return self.imagenes().get(unValor)
-	}
+	// El nombre que se usa para la imagen del indicador
+	method nombreImagenIndicador()
 
 	/* Asignar las imágenes para un número de dos cifras */
 	method definirImagenesContador(unNumero) {
@@ -24,6 +20,10 @@ class Indicador {
 		self.decimal().image(self.imagenDeValor(numeroDecena))
 			// Asigno la imagen para decimal
 		self.unidad().image(self.imagenDeValor(numeroUnidad))
+	}
+
+	method imagenDeValor(unValor) {
+		return "imgs/" + self.nombreImagenIndicador() + " (" + unValor.toString() + ").png"
 	}
 
 	// La posición del decimal
@@ -53,7 +53,7 @@ class Indicador {
 
 object vidaVisual inherits Indicador {
 
-	var property imagenes = [ "imgs/red (0).png", "imgs/red (1).png", "imgs/red (2).png", "imgs/red (3).png", "imgs/red (4).png", "imgs/red (5).png", "imgs/red (6).png", "imgs/red (7).png", "imgs/red (8).png", "imgs/red (9).png" ]
+	override method nombreImagenIndicador() = "vida"
 
 	override method positionDecimal() = game.at(0, game.height() - 1)
 
@@ -63,9 +63,9 @@ object vidaVisual inherits Indicador {
 
 object flechaVisual inherits Indicador {
 
-	var property imagenes = [ "imgs/green (0).png", "imgs/green (1).png", "imgs/green (2).png", "imgs/green (3).png", "imgs/green (4).png", "imgs/green (5).png", "imgs/green (6).png", "imgs/green (7).png", "imgs/green (8).png", "imgs/green (9).png" ]
-
 	override method positionDecimal() = game.at(game.center().x() - 1, game.height() - 1)
+
+	override method nombreImagenIndicador() = "flecha"
 
 	override method positionUnidad() = game.at(game.center().x(), game.height() - 1)
 
@@ -73,9 +73,9 @@ object flechaVisual inherits Indicador {
 
 object energiaVisual inherits Indicador {
 
-	var property imagenes = [ "imgs/blue (0).png", "imgs/blue (1).png", "imgs/blue (2).png", "imgs/blue (3).png", "imgs/blue (4).png", "imgs/blue (5).png", "imgs/blue (6).png", "imgs/blue (7).png", "imgs/blue (8).png", "imgs/blue (9).png" ]
-
 	override method positionDecimal() = game.at(game.width() - 2, game.height() - 1)
+
+	override method nombreImagenIndicador() = "energia"
 
 	override method positionUnidad() = game.at(game.width() - 1, game.height() - 1)
 
@@ -83,27 +83,28 @@ object energiaVisual inherits Indicador {
 
 object oroVisual inherits Indicador {
 
-	var property imagenes = [ "imgs/oro (0).png", "imgs/oro (1).png", "imgs/oro (2).png", "imgs/oro (3).png", "imgs/oro (4).png", "imgs/oro (5).png", "imgs/oro (6).png", "imgs/oro (7).png", "imgs/oro (8).png", "imgs/oro (9).png" ]
-
 	override method positionDecimal() = game.at(game.center().x() - 1, game.height() - 1)
 
 	override method positionUnidad() = game.at(game.center().x(), game.height() - 1)
+
+	override method nombreImagenIndicador() = "oro"
 
 }
 
 // La visual de llaves recolectadas (3 por nivel)
 object llavesVisual inherits Indicador {
 
-	var property imagenes = [ "imgs/0-Llave.png", "imgs/1raLlave.png", "imgs/2dallave.png", "imgs/3raLlave.png" ]
 	// El contador de llaves que aparece en la cabecera
 	var property contadorLlaves = new Visual(position = game.at(3, game.height() - 1))
+
+	override method nombreImagenIndicador() = "visualFlecha"
 
 	// Para respetar polimorfismo asigno misma posición
 	override method positionDecimal() = game.at(3, game.height() - 1)
 
 	override method positionUnidad() = game.at(3, game.height() - 1)
 
-	/* Asignar las imágenes según la cantidad de llaves */
+	/* Asignar las imágenes según la cantidad de llaves, al no ser dos dígitos, se sobneescribe */
 	override method definirImagenesContador(unNumero) {
 		// Asigno la imagen del contador de llaves
 		contadorLlaves.image(self.imagenDeValor(unNumero))
@@ -121,5 +122,6 @@ object llavesVisual inherits Indicador {
 	override method actualizarDato(nuevoValor) {
 		self.definirImagenesContador(nuevoValor)
 	}
+
 }
 

@@ -11,7 +11,7 @@ class PersonajeNivel1 inherits Personaje {
 		if (nivelActual.faltanRequisitos()) {
 			self.avanzar()
 		} else {
-			game.say(self, "Ganamos!!!")
+			game.say(self, "¡¡¡Ganamos!!!")
 			game.schedule(1500, { nivelActual.pasarDeNivel()})
 		}
 	}

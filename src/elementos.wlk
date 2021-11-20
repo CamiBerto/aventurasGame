@@ -7,7 +7,6 @@ class Visual {
 
 	var property position
 	var property image = ""
-
 	method esInteractivo() = false // son aquellos con los que interactua el personaje(ejemplo: alfombra no)
 
 }
@@ -24,7 +23,8 @@ class ElementoJuego {
 	method esInteractivo() = true
 
 	method serAgarrado() {
-		game.removeVisual(self)
+				utilidadesParaJuego.eliminarVisual(self)
+
 	}
 
 	method esEnemigo() = false
@@ -75,10 +75,6 @@ class Recolectable inherits ElementoJuego {
 	method oroQueQuita() = 0
 
 	method vidaQueQuita() = 0
-
-	override method serAgarrado() {
-		game.removeVisual(self)
-	}
 
 	method reaccionarA(unPersonaje) {
 		self.serAgarrado()
@@ -246,7 +242,7 @@ class CeldaSorpresaD inherits CeldaSorpresa {
 
 	override method cambiarDeIMagen() {
 		image = "imgs/ver.png"
-		game.say(self, "Más pollos!!!")
+		game.say(self, "¡¡¡Más pollos!!!")
 	}
 
 }
